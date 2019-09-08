@@ -1,0 +1,50 @@
+--- 
+title: "Livestock Breeding and Genomics"
+author: "Peter von Rohr"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+bibliography: [LBGFS2019.bib]
+biblio-style: apalike
+link-citations: yes
+github-repo: charlotte-ngs/LBGFS2019
+description: "These are the lecture notes for the course Livestock Breeding and Genomics. This course is taught during the fall semester 2019 at ETH Zurich."
+---
+
+```{r setup-preq, echo=FALSE, results='hide'}
+### # required packages from CRAN
+vec_reqpkgs_cran <- c("knitr", "rmarkdown", "roxygen2", "bookdown", "caTools", "citr", "devtools", "kableExtra")
+vec_instpkgs <- installed.packages()
+for (p in vec_reqpkgs_cran){
+  if (!p %in% vec_instpkgs)
+    install.packages(pkgs = p, repos = "https://cran.rstudio.com")
+}
+
+### # required packages from github
+list_reqpkgs_github <- list(repo=c("charlotte-ngs"), package = c("rmddochelper"))
+for (idx in seq_along(1:length(list_reqpkgs_github$package))){
+  p <- list_reqpkgs_github$package[idx]
+  if (!p %in% vec_instpkgs)
+    devtools::install_github(paste(list_reqpkgs_github$repo[idx], p, sep = "/"))
+}
+```
+
+```{r knitr-setup, include=FALSE}
+knitr::knit_hooks$set(hook_convert_odg = rmddochelper::hook_convert_odg)
+```
+
+# Preface {-}
+Livestock Breeding and Genomics is a masters course taught in the Institute of Agricultural Sciences at ETH Zurich. The aim of this course is to introduce the basic concepts of livestock breeding and genomics to the students. 
+
+## Prerequisites {-}
+There are no explicit prerequisites for this course. All required concepts are introduced during this course. Although basic knowledge in the following areas is definitely helpful for this course. 
+
+* __Linear Algebra__: Basic properties of and basic operations with vectors and matrices
+* __Statistics__: Simple linear models and least squares
+* __R__: Basics of how to work with data and how to do simple computations 
+
+## Goals {-}
+The following goals are taken from the teaching system at ETH. The students are able to set up design matrices, the additive genetic relationship matrix and its inverse as well as the mixed model equations to estimate BLUP breeding values. The concept of BLUP breeding values are also extended to genomic selection. All concepts introduced during this course are not only presented during the lecture, but students are expected to work with the concepts on small example problems.
+
+
