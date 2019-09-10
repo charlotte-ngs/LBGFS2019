@@ -1,0 +1,33 @@
+# Introduction To Linear Algebra {#intro-linalg}
+```{r mrmt-intro-linalg-reset, echo=FALSE}
+mrmt$set_this_rmd_file(ps_this_rmd_file = rmdhelp::get_this_rmd_file())
+```
+
+Linear Algebra is a large area from which we only need the following three topics
+
+1. Vectors
+2. Matrices and 
+3. Systems of linear equations.
+
+
+## Glimpse Ahead {#intro-linalg-glimpse-ahead}
+The central topic of this course is the prediction of breeding values. Most approaches to predict breeding values require the solution of large systems of linear equations. These systems of equations are written down using vectors and matrices. Hence the three mentioned topics are important to understand at a level that they can be used as tools for the prediction of breeding values. 
+
+
+## Vectors {#intro-linalg-vectors}
+The material of this section is largely based on the video tutorial from `r mrmt$add('3blue1brown2016')`. We try to give a summarized transcript of the video. The vector is the fundamental building block of linear algebra. There are three different but related concepts about what vectors are. We call them 
+
+1. the physics perspective
+2. the computer science perspective and 
+3. the mathematics perspective.
+
+The mathematics perspective tries to provide a very general concept, saying that anything can be a vector as long as, one can add two vectors or a vector can be multiplied by a factor and the result of both operations is a vector again. For what we want to use vectors for in the context of livestock breeding and genomics, the mathematics perspective is not so useful, hence we ignore it from now on.
+
+
+### Physics Perspecitve
+The physics perspective is that vectors are arrows with a certain **length** and a **direction** they are pointing to. As long as length and direction are the same, the arrows can be moved around and they are still the same vector. Different arrows with the same length and the same direction are called **representatives** of the same vector. Vectors that are in a flat plane are called two-dimensional. Those who are sitting in the same Euclidean space that we are all living in, are called three-dimensional. 
+
+
+### Computer Science Perspective
+In the computer science perspective vectors are ordered list of numbers. Later we will see that vectors can also contain more general objects like strings. As an example, we assume that we are analysing carcasses and the only thing we know about a carcass is its slaughterweight (SW) and its price (P). The different carcasses can then be represented by a pair of numbers the first being the slaughterweight and the second being the price. It is important to note here, that the order of the number matters. In terms of vectors, here each carcass is represented by a two-timensional vector. 
+
