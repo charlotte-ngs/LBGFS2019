@@ -1,6 +1,7 @@
 # Introduction To Linear Algebra {#intro-linalg}
 ```{r mrmt-intro-linalg-reset, echo=FALSE}
-mrmt$set_this_rmd_file(ps_this_rmd_file = rmdhelp::get_this_rmd_file())
+s_this_rmd_file <- rmdhelp::get_this_rmd_file()
+mrmt$set_this_rmd_file(ps_this_rmd_file = s_this_rmd_file)
 ```
 
 Linear Algebra is a large area from which we only need the following three topics
@@ -24,10 +25,34 @@ The material of this section is largely based on the video tutorial from `r mrmt
 The mathematics perspective tries to provide a very general concept, saying that anything can be a vector as long as, one can add two vectors or a vector can be multiplied by a factor and the result of both operations is a vector again. For what we want to use vectors for in the context of livestock breeding and genomics, the mathematics perspective is not so useful, hence we ignore it from now on.
 
 
-### Physics Perspecitve
+### Physics Perspecitve {#intro-linalg-physics-perspective}
 The physics perspective is that vectors are arrows with a certain **length** and a **direction** they are pointing to. As long as length and direction are the same, the arrows can be moved around and they are still the same vector. Different arrows with the same length and the same direction are called **representatives** of the same vector. Vectors that are in a flat plane are called two-dimensional. Those who are sitting in the same Euclidean space that we are all living in, are called three-dimensional. 
 
+```{r vector-physics-perspective, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg"}
+#rmdhelp::use_odg_graphic(ps_path = "odg/vector-physics-perspective.odg", ps_rmd_src = s_this_rmd_file)
+knitr::include_graphics(path = "odg/vector-physics-perspective.png")
+```
 
-### Computer Science Perspective
-In the computer science perspective vectors are ordered list of numbers. Later we will see that vectors can also contain more general objects like strings. As an example, we assume that we are analysing carcasses and the only thing we know about a carcass is its slaughterweight (SW) and its price (P). The different carcasses can then be represented by a pair of numbers the first being the slaughterweight and the second being the price. It is important to note here, that the order of the number matters. In terms of vectors, here each carcass is represented by a two-timensional vector. 
+
+### Computer Science Perspective {#intro-linalg-computer-science-perspective}
+In the computer science perspective vectors are ordered list of numbers. Later we will see that vectors can also contain more general objects like strings. As an example, we assume that we are analysing carcasses and the only thing we know about a carcass is its slaughterweight (SW) and its price (P). The different carcasses can then be represented by a pair of numbers the first being the slaughterweight and the second being the price. It is important to note here, that the order of the number matters. In terms of vectors, here each carcass is represented by a two-dimensional vector. 
+ 
+```{r vector-cs-perspecitve, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg"}
+#rmdhelp::use_odg_graphic(ps_path = "odg/vector-cs-perspecitve.odg", ps_rmd_src = s_this_rmd_file)
+knitr::include_graphics(path = "odg/vector-cs-perspecitve.png")
+```
+ 
+ 
+### Geometric Context
+Some basic properties of vectors are introduced using the geometric context, that a vector is an arrow located in a certain coordinate system with its tail sitting at the origin of the coordinate system. This is a little bit different from the physics perspective (see \@ref(intro-linalg-physics-perspective)) where the arrow can sit anywhere in space. In linear algebra it is almost always the case that vectors are rooted at the origin. Once we understand the properties of vectors in the context of arrows in space, we can then translate these properties to the list-of-numbers point of view (see \@ref(intro-linalg-computer-science-perspective)).
+
+
+### Coordinate System
+It is important to introduce the coordinate system, because this will be the basis of the correspondence between the two perspectives of linear algebra. 
+ 
+ 
+ 
+ 
+ 
+ 
 
