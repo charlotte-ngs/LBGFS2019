@@ -6,7 +6,7 @@ output:
   html_document:
     toc_float: true
     toc: true
-    theme: paper
+    theme: simplex
     highlight: default
 ---
 
