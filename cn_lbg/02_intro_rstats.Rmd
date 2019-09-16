@@ -1,0 +1,9 @@
+# Introduction To R and RStudio {#intro-rstats}
+```{r mrmt-intro-rstats-reset, echo=FALSE}
+s_this_rmd_file <- rmdhelp::get_this_rmd_file()
+mrmt$set_this_rmd_file(ps_this_rmd_file = s_this_rmd_file)
+```
+
+According to the website https://www.r-project.org/, R `r mrmt$add('RCoreTeam2018')` is a free software environment for statistical computing and graphics. Because R is free and it is available for the most commonly used operating systems such as Windows, MacOsX and Linux, it has become very popular in statistics and in data science. Furthermore, R can be extended with user-contributed code and documentation (called R-packages) in a very easy and standardised way. The number of available R-packages is growing rapidly and has reached 
+
+RStudio
