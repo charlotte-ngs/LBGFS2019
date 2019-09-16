@@ -53,8 +53,12 @@ SESAM stands for Sensor Assisted Alpine Milk Production and is an Interreg B pro
 In populations with a low rate of artificial insemination, it is often a problem that effects of herds cannot be compared or estimated. There are different measures that indicate such problems. These measures are all contained in the general concept of connectedness.
 
 
-### Evaluation Of Daily Milk Yields To Derive Resilience Traits {#project_header .emphasized}
-More than 100 farms with robotic milking systems are connected to the service of automated data exchange. For those farms, the milk yield per cow is collected on a daily basis. This allows to describe the trajectory of the trait milk yield over time with much more accuracy. This new type of automated data collection is expected to deliver a lot more information about different traits of a cow that are related to health and resilience. This project aims at discovering such new traits which can ultimatively be used as new taits for selection in dairy populations. 
+### Resilience Traits Based on Milk Yields From Robotic Milking Systems {#project_header .emphasized}
+More than 100 farms with robotic milking systems are connected to the service of automated data exchange. For those farms, the milk yield per cow is collected on a daily basis. This allows to describe the trajectory of the trait milk yield over time with much more accuracy. This new type of automated data collection is expected to deliver a lot more information about different traits of a cow that are related to health and resilience. This project aims at discovering such new traits which can ultimately be used as new traits for selection in dairy populations. 
+
+
+### Evaluation of Fertalys Data
+Fertalys is a pregnancy testing service offered by the Swiss Dairy Cattle Breeding Organisations together with Swisslab. Results from Fertalys tests might contain information about different relevant fertility traits. The goals of this project is to find possible connections between test results and other traits.
 
 ---
 
