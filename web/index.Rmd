@@ -88,7 +88,7 @@ Course material (notes and slides) and Exercises with Solutions can be downloade
 ### Course Notes
 ```{r MaterialTable, echo=FALSE, results='asis'}
 # define course start date
-dCourseStart <- as.Date("2019/09/21")
+dCourseStart <- as.Date("2019/09/20")
 # set number of weeks in semester
 nNrSemesterWeeks <- 14
 # define columns for weaks, dates, and subjects
@@ -97,11 +97,13 @@ Date <- format(seq(dCourseStart, by = "week", length.out = nNrSemesterWeeks), "%
 vecCnTopic <- vector(mode = "character", length = nNrSemesterWeeks)
 # exam
 vecCnTopic[length(vecCnTopic)] <- "Exam"
+# base url
+s_base_url_cn <- 'https://charlotte-ngs.github.io/LBGFS2019/cn_lbg'
 # subjects per week
 ### # w1
-# vecCnTopic[which(Date == format(as.Date("2019/09/20"), "%d.%m"))] <- "[]()"
+vecCnTopic[which(Date == format(as.Date("2019/09/20"), "%d.%m"))] <- paste0("[Introduction to Livestock Breeding and Genomics](", s_base_url_cn, "/03_intro_lbg.pdf)", collapse = '')
 ### # w2
-# vecCnTopic[which(Date == format(as.Date("2019/09/27"), "%d.%m"))] <- "[]()"
+# vecCnTopic[which(Date == format(as.Date("2019/09/27"), "%d.%m"))] <- paste0("[Quantitative Genetics]((", s_base_url_cn, "/04_basics_qg.pdf)", collapse = '')
 ### # w3
 # vecCnTopic[which(Date == format(as.Date("2019/10/04"), "%d.%m"))] <- "[]()"
 ### # w4 cn/03-prediction-bv.pdf
@@ -249,7 +251,7 @@ knitr::kable(dfSolTable)
 ### # define vector for subjects
 vecAddMatTopic = vector(mode = "character", length = nNrSemesterWeeks)
 ### # w1
-# vecAddMatTopic[which(Date == format(as.Date("2019/09/20"), "%d.%m"))] <- "[]()"
+vecAddMatTopic[which(Date == format(as.Date("2019/09/20"), "%d.%m"))] <- "[Introduction to Linear Algebra](https://charlotte-ngs.github.io/LBGFS2019/cn_lbg/01_intro_linalg.pdf), [Introduction to R/RStudio](https://charlotte-ngs.github.io/LBGFS2019/cn_lbg/02_intro_rstats.pdf), [Questionnaire](https://charlotte-ngs.github.io/LBGFS2019/misc/20190920_students_questionnaire/20190920_students_questionnaire.pdf)"
 
 ### # construct the table
 dfAddMatTable <- data.frame(Woche, Date, vecAddMatTopic, stringsAsFactors = FALSE)
