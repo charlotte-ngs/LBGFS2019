@@ -137,9 +137,11 @@ knitr::kable(dfCnTable)
 vecSlTopic = vector(mode = "character", length = nNrSemesterWeeks)
 # exam
 vecSlTopic[length(Topic)] <- "Exam"
+# base url
+s_base_url_sl <- 'https://charlotte-ngs.github.io/LBGFS2019/sl'
 ### # assign slides
 ### # w1 
-# vecSlTopic[which(Date == format(as.Date("2019/09/20"), "%d.%m"))] <- "[]()"
+vecSlTopic[which(Date == format(as.Date("2019/09/20"), "%d.%m"))] <- paste0("[Introduction to Livestock Breeding and Genomics](", s_base_url_sl, "/w01/lbgfs2019_slides_w01_intro-lbg.pdf)", collapse = '')
 ### # w2
 # vecSlTopic[which(Date == format(as.Date("2019/09/27"), "%d.%m"))] <- "[]()"
 ### # w3
