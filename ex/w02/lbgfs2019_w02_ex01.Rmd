@@ -1,5 +1,5 @@
 ---
-title: "Livestock Breeding and Genomics - Solution 1"
+title: "Livestock Breeding and Genomics - Exercise 1"
 author: "Peter von Rohr"
 date: '2019-09-27'
 output:

@@ -103,7 +103,7 @@ s_base_url_cn <- 'https://charlotte-ngs.github.io/LBGFS2019/cn_lbg'
 ### # w1
 vecCnTopic[which(Date == format(as.Date("2019/09/20"), "%d.%m"))] <- paste0("[Introduction to Livestock Breeding and Genomics](", s_base_url_cn, "/03_intro_lbg.pdf)", collapse = '')
 ### # w2
-# vecCnTopic[which(Date == format(as.Date("2019/09/27"), "%d.%m"))] <- paste0("[Quantitative Genetics]((", s_base_url_cn, "/04_basics_qg.pdf)", collapse = '')
+vecCnTopic[which(Date == format(as.Date("2019/09/27"), "%d.%m"))] <- paste0("[Quantitative Genetics](", s_base_url_cn, "/04_basics_qg.pdf)", collapse = '')
 ### # w3
 # vecCnTopic[which(Date == format(as.Date("2019/10/04"), "%d.%m"))] <- "[]()"
 ### # w4 cn/03-prediction-bv.pdf
@@ -179,8 +179,10 @@ vecExTopic = vector(mode = "character", length = nNrSemesterWeeks)
 # set subject for special dates
 # exam
 vecExTopic[length(Topic)] <- "Exam"
+# base url
+s_base_url_sl <- 'https://charlotte-ngs.github.io/LBGFS2019/ex'
 # w2
-# vecExTopic[which(Date == format(as.Date("2019/09/27"), "%d.%m"))] <- "[]()"
+vecExTopic[which(Date == format(as.Date("2019/09/27"), "%d.%m"))] <- paste0("[Introduction to Linear Algebra and Livestock Breeding](", s_base_url_sl, "/w02/lbgfs2019_w02_ex01.pdf)", collapse = '')
 # w3
 # vecExTopic[which(Date == format(as.Date("2019/10/04"), "%d.%m"))] <- "[]()"
 # w4 w04/lbg_fs_2019_w04_ex3.pdf
