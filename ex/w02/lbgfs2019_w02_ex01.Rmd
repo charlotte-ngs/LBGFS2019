@@ -1,0 +1,106 @@
+---
+title: "Livestock Breeding and Genomics - Solution 1"
+author: "Peter von Rohr"
+date: '2019-09-27'
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+```
+
+## Problem 1: Vectors
+
+Given are the following two vectors $v$ and $w$. Compute
+
+* the sum $v+w$, 
+* the difference $v-w$ and 
+* the dot product $v\cdot w$. 
+
+\begin{center}
+$v = \left[\begin{array}{c}
+   3  \\ 
+  -5  \\ 
+   1  \\ 
+   9  \\
+  \end{array}\right]$, \hspace{2ex} 
+$w = \left[\begin{array}{c}
+    1  \\ 
+    9  \\ 
+  -12  \\ 
+   27  \\
+  \end{array}\right]$
+\end{center}
+
+
+## Problem 2: Vectors in R
+
+Verify your computations from Problem 1 in R. Start by assigning the vectors $v$ and $w$ with the components given in Problem 1. If you are not sure how to assign vectors in R, please have a look at https://bookdown.org/rdpeng/rprogdatascience/r-nuts-and-bolts.html#creating-vectors and its the corresponding video at https://youtu.be/w8_XdYI3reU
+
+
+
+## Problem 3: Angle between Vectors
+
+Given are two vectors
+
+\begin{center}
+$a = \left[\begin{array}{c}
+  8  \\ 
+  0 \\ 
+  4  \\
+  \end{array}\right]$ and  
+$b = \left[\begin{array}{c}
+  2  \\ 
+  21 \\ 
+  x  \\
+  \end{array}\right]$
+\end{center}
+
+How do we have to choose $x$, such that the vectors are perpendicular? Verify your solution with R
+
+
+## Problem 4: Phenotypes and Genotypes
+```{r MilkYieldDelilah, echo=FALSE}
+# milk yield of Delilah
+vec_lact_perf_Delilah <- c(5852, 6833, 7984, 7869, 7322, 8216, 8622, 7851)
+```
+
+```{r MilkYieldRosy, echo=FALSE}
+# milk yield of Rosy
+vec_lact_perf_Rosy <- c(6249, 7312)
+```
+
+```{r Problem4Setup, echo=FALSE}
+# breeding values of Delilah
+nLactDelilah <- length(vec_lact_perf_Delilah)
+l_ebv_Delilah <- list(Milk = -1037, ND = 112)
+
+# breeding values of Rosy
+nLactRosy <- length(vec_lact_perf_Rosy)
+l_ebv_Rosy <- list(Milk = 471, ND = 122)
+```
+
+Farmer Frank Miller has two cows named `Delilah` and `Rosy`. Delilah has completed `r nLactDelilah` lactations with the following results
+
+```{r TableLactDelilah, echo=FALSE}
+knitr::kable(data.frame(Lactation = 1:nLactDelilah, `Milk Yield` = vec_lact_perf_Delilah))
+```
+
+Rosy is a young cow and has completed just `r nLactRosy` lactation which is shown below.
+
+```{r TableLactRosy, echo=FALSE}
+knitr::kable(data.frame(Lactation = 1:nLactRosy, `Milk Yield` = vec_lact_perf_Rosy))
+```
+
+### Your Tasks
+a. Compute for both cows the sum and the mean of all lactation results using R. __Hint__: Have a look at the functions `mean()` and `sum()` in R.
+b. Our farmer wants to know which of the two cows would be a better mother for his breeding herd when looking at the traits __milk yield__ and __longevity__. The trait longevity is defined as the number of years a cow is able to produce milk. From the breeding association the farmer receives the following predicted breeding values for the two cows. Please explain which of the two cows is the better choice as a mother. 
+
+```{r PredictedBv, echo=FALSE}
+knitr::kable(data.frame(Cows = c("Delilah", "Rosy"), `Milk Yield` = c(l_ebv_Delilah$Milk, l_ebv_Rosy$Milk), Longevity = c(l_ebv_Delilah$ND, l_ebv_Rosy$ND)))
+```
+
+
