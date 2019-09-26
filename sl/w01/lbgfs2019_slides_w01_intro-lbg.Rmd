@@ -54,7 +54,7 @@ knitr::knit_hooks$set(hook_convert_odg = rmdhelp::hook_convert_odg)
     + selection
     + breeding value
     + selection response
-- Be able to exlpain certain phenomena (see next slide)
+- Be able to explain certain phenomena (see next slide)
 - Better understanding of statistics
 - Exercises in R
 
@@ -74,6 +74,9 @@ knitr::knit_hooks$set(hook_convert_odg = rmdhelp::hook_convert_odg)
 
 \note{
 \noindent\textbf{Notes}:
+
+\verb+TODO+: Work on this to better explain what this means
+
 \begin{itemize}
 \item Depending on where you will get a job later, you might get in contact with farmers and they sometimes have special opions about different concepts in animal breeding
 \item After this course you will be able to explain the relevant concepts related to selection and breeding.
@@ -206,7 +209,17 @@ knitr::kable(dfCnTable)
 \note{
 \noindent\textbf{Notes}:
 \begin{itemize}
-\item 
+\item Hard pre-requisites for the course are none
+\item I explain all concepts from scratch such that also people without any prior knowledge are able to understand
+\item It is helpful, if you have heard something about the following topics that were already part of the questionnaire. 
+\item These topics are 
+  \begin{itemize}
+  \item quantitative genetics. We will get to a short overview, either at the end of this week or at the beginning of next week
+  \item statistics
+  \item linear algebra
+  \item R
+  \end{itemize}
+\item If you were not able to answer the questions about these topics, I recommend that you got to the website and have look at the first two chapters of the course notes which are available under the last section called More Material.
 \end{itemize}
 }
     
@@ -225,7 +238,13 @@ knitr::kable(dfCnTable)
 \note{
 \noindent\textbf{Notes}:
 \begin{itemize}
-\item 
+\item In this course I use the terms animal breeding and livestock breeding interchangably, although, in principle the latter is more specific and applies only to farm animals which are kept for their performance to produce a product that is used for human consumption. Animal breeding might also apply for pet animals, but in pets the focus is not so much on performance and production, but mostly on avoiding diseases. 
+\item The German language often does not differentiate well between rearing a young animal and breeding in a population. Furthermore, especially in cattle there is no clear separation between production and breeding. In the Swiss cattle industry, most farmers would call themselves as breeders, but most of their activity is really centered around livestock production. 
+\item In this course, we are using a science based definition of livestock breeding. At the center of this definition is the breeding goal for a certain population. 
+\item The breeding goal is formulated in terms of an aggregate genotype $H$. $H$ contains all traits of economic interest. 
+\item $H$ is estimated using an index $I$ which is a linear combination of different sources of information based on measured traits.
+\item The goal of livestock breeding is to select from a current population those animals as parents that produce offspring that are closer to the breeding goal than their parents.
+\item This leads to the two fundamental questions of livestock breeding 
 \end{itemize}
 }
     
