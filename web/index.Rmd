@@ -143,7 +143,7 @@ s_base_url_sl <- 'https://charlotte-ngs.github.io/LBGFS2019/sl'
 ### # w1 
 vecSlTopic[which(Date == format(as.Date("2019/09/20"), "%d.%m"))] <- paste0("[Introduction to Livestock Breeding and Genomics](", s_base_url_sl, "/w01/lbgfs2019_slides_w01_intro-lbg.pdf)", collapse = '')
 ### # w2
-# vecSlTopic[which(Date == format(as.Date("2019/09/27"), "%d.%m"))] <- "[]()"
+vecSlTopic[which(Date == format(as.Date("2019/09/27"), "%d.%m"))] <- paste0("[Quantitative Genetics](", s_base_url_sl,"/w02/lbg_fs_2019_slides_basics-qg.pdf)", collapse = '')
 ### # w3
 # vecSlTopic[which(Date == format(as.Date("2019/10/04"), "%d.%m"))] <- "[]()"
 ### # w4 w04/lbg_fs_2019_slides_gen-eval.pdf
