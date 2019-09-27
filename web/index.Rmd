@@ -33,7 +33,7 @@ Methods for analysing livestock data, in particular for the estimation of breedi
     + Room: LFW C 11
     
 ### Exercise Platform
-The exercise platform can be used to work on the exercises. The platform will be available soon.
+The exercise platform can be used to work on the exercises. The platform is available at: https://1-htz.quagzws.com/rstudio.
 
 The username corresponds to the part of your e-mail address before the `@`-sign. The password is sent to you by a separate e-mail.
 

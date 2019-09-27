@@ -1,0 +1,6 @@
+# cloning material
+
+echo pvrlbgfs2019 | while read s;do echo $s;../source/misctools/github/clone.sh -s $s;sleep 2;done
+
+cat student-usernames-lbgfs2019 | while read s;do echo $s;../source/misctools/github/clone.sh -s $s;sleep 2;done
+
