@@ -66,5 +66,10 @@ docker run -d -p 8787:8787 --name rstudio -v $HOME:/home/`whoami` -e PASSWORD=MY
 ```
 
 
+```
+docker run -d -p 8787:8787 --name rstudio -v /home/pvrlbgfs2019:/home/`whoami` -e PASSWORD=MYywgvD3k9 rocker/tidyverse
+```
+
+
 
 
