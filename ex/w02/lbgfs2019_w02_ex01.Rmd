@@ -36,9 +36,16 @@ $w = \left[\begin{array}{c}
 \end{center}
 
 
+### Your Solution
+
+
+
 ## Problem 2: Vectors in R
 
 Verify your computations from Problem 1 in R. Start by assigning the vectors $v$ and $w$ with the components given in Problem 1. If you are not sure how to assign vectors in R, please have a look at https://bookdown.org/rdpeng/rprogdatascience/r-nuts-and-bolts.html#creating-vectors and its the corresponding video at https://youtu.be/w8_XdYI3reU
+
+
+### Your Solution
 
 
 
@@ -60,6 +67,9 @@ $b = \left[\begin{array}{c}
 \end{center}
 
 How do we have to choose $x$, such that the vectors are perpendicular? Verify your solution with R
+
+
+### Your Solution
 
 
 ## Problem 4: Phenotypes and Genotypes
@@ -102,5 +112,11 @@ b. Our farmer wants to know which of the two cows would be a better mother for h
 ```{r PredictedBv, echo=FALSE}
 knitr::kable(data.frame(Cows = c("Delilah", "Rosy"), `Milk Yield` = c(l_ebv_Delilah$Milk, l_ebv_Rosy$Milk), Longevity = c(l_ebv_Delilah$ND, l_ebv_Rosy$ND)))
 ```
+
+
+### Your Solution
+
+
+
 
 
