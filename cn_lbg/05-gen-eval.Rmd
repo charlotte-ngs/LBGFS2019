@@ -26,14 +26,15 @@ y_{ij} = \mu_i + g_i + e_{ij}
 where  &  &  \\
        &  $y_{ij}$  &  $j^{th}$ record of animal $i$ \\
        &  $\mu_i$   &  identifiable fixed environmental effect \\
-       &  $g_i$     &  sum of all additive ($a$), dominance ($d$) and epistatic effects of the genotype of animal $i$ \\
+       &  $g_i$     &  sum of all additive ($u$), dominance ($d$) and epistatic effects of the genotype of animal $i$ \\
        &  $e_{ij}$  &  random environmental effects of animal $i$
 \end{tabular}
 
-The additive genetic part of $g_i$ in equation \@ref(eq:breedvalpredbasicmodel) represents the average genetic effect that animal $i$ receives from its parents. It is therefore called the __breeding value__. Because the additive genetic effect is a function of the alleles passed from the parents to the progeny, it is the only component that can be selected for and is therefore the main component of interest. Due to the major interest in the genetic additive component, the terms in the basic model in \@ref(eq:breedvalpredbasicmodel) are re-arranged as follows.
+<!-- TODO: Improvement on the following paragraph -->
+The additive genetic part ($u_i$) of $g_i$ in equation \@ref(eq:breedvalpredbasicmodel) represents the average genetic effect that animal $i$ receives from its parents. It is therefore called the __breeding value__. Because the additive genetic effect is a function of the alleles passed from the parents to the progeny, it is the only component that can be selected for and is therefore the main component of interest. Due to the major interest in the genetic additive component, the terms in the basic model in \@ref(eq:breedvalpredbasicmodel) are re-arranged as follows.
 
 \begin{equation}
-y_{ij} = \mu_i + a_i + e_{ij}^*
+y_{ij} = \mu_i + u_i + e_{ij}^*
 (\#eq:breedvalpredmodifiedmodel)
 \end{equation}
 
@@ -41,8 +42,8 @@ y_{ij} = \mu_i + a_i + e_{ij}^*
 where  &  &  \\
        &  $y_{ij}$  &  $j^{th}$ record of animal $i$ \\
        &  $\mu_i$   &  identifiable fixed environmental effect \\
-       &  $a_i$       &  sum of all additive ($a$) genetic effects of the genotype of animal $i$ \\
-       &  $e_{ij}^*$  &  dominance, epistatic and random environmental effects of animal $i$
+       &  $u_i$       &  sum of all additive ($u$) genetic effects of the genotype of animal $i$ \\
+       &  $e_{ij}^*$  &  dominance, epistatic and random environmental effects of the $j^{th}$ record of animal $i$
 \end{tabular}
 
 The same re-arrangment of terms in the basic model is illustrated by Figure \@ref(fig:basicmodelrearrterm)
@@ -52,7 +53,7 @@ The same re-arrangment of terms in the basic model is illustrated by Figure \@re
 knitr::include_graphics(path = "odg/basicmodelrearrterm.png")
 ```
   
-Equation \@ref(eq:breedvalpredmodifiedmodel) constitutes the linear model that forms the basis for most problems of breeding value prediction in livestock breeding. Usually it is assumed that the phenotypic observations $y_{ij}$ follow a multivariate normal distribution. We have already seen in section \@ref(genetic-models) that the additive genetic effect ($a_i$) is thought to be the sum of a large number of unlinked loci that all contribute a very small amount to the total breeding value. Then by the central limit theorem it follows that $a_i$ converges to a normal distribution. By the same reasoning that the environmental effect $e_{ij}^*$ is composed of very many small contributions, also $e_{ij}^*$ converges to a normal distribution. From distribution theory it is known that the sum of two normally distributed random variables (like $a_i$ and $e_{ij}^*$) plus a fixed term (like $\mu$) is again a random variable that follows a normal distribution. We can conclude that the assumption that all the random effects ($y_{ij}$, $a_i$ and $e_{ij}^*$) in model \@ref(eq:breedvalpredmodifiedmodel) is consistent with distribution theory. Furthermore the central limit theorem implies that in principle the number of breeding values from single loci tends to infinity. That means the total breeding value $a_i$ corresponds to a sum of infinitely many contributions. Based on the fact that in theory $a_i$ is composed of an infinite number of infinitely small components, the model in \@ref(eq:breedvalpredmodifiedmodel) is called the __infinitesimal model__. 
+Equation \@ref(eq:breedvalpredmodifiedmodel) constitutes the linear model that forms the basis for most problems of breeding value prediction in livestock breeding. Usually it is assumed that the phenotypic observations $y_{ij}$ follow a multivariate normal distribution. We have already seen in section \@ref(genetic-models) that the additive genetic effect ($u_i$) is thought to be the sum of a large number of unlinked loci that all contribute a very small amount to the total breeding value. Then by the central limit theorem it follows that $u_i$ converges to a normal distribution. By the same reasoning that the environmental effect $e_{ij}^*$ is composed of very many small contributions, also $e_{ij}^*$ converges to a normal distribution. From distribution theory it is known that the sum of two normally distributed random variables (like $u_i$ and $e_{ij}^*$) plus a fixed term (like $\mu$) is again a random variable that follows a normal distribution. We can conclude that the assumption that all the random effects ($y_{ij}$, $u_i$ and $e_{ij}^*$) in model \@ref(eq:breedvalpredmodifiedmodel) is consistent with distribution theory. Furthermore the central limit theorem implies that in principle the number of breeding values from single loci tends to infinity. That means the total breeding value $u_i$ corresponds to a sum of infinitely many contributions. Based on the fact that in theory $u_i$ is composed of an infinite number of infinitely small components, the model in \@ref(eq:breedvalpredmodifiedmodel) is called the __infinitesimal model__. 
 
 Concerning the variances, it is assumed that $var(y_{ij})$, $var(a_i)$ and $var(e_{ij})$ are all known. Covariances ($cov(a_i, e_{ij})$) between genetic and environmental effects and covariances ($cov(e_{ij}^*, e_{kl}^*)$) between environmental effects of mates $i$ and $k$ are assumed to be zero, respectively. 
 
