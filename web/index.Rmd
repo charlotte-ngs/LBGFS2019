@@ -222,7 +222,7 @@ s_base_url_sol <- 'https://charlotte-ngs.github.io/LBGFS2019/sol'
 # w3
 # vecSolTopic[which(Date == format(as.Date("2019/10/04"), "%d.%m"))] <- paste0("[Introduction to Linear Algebra and Livestock Breeding](", s_base_url_sol, "/w02/lbgfs2019_w02_sol01.pdf)", collapse = '')
 # w4 Matrices and Population Mean w03/lbg_fs_2019_w03_sol02.pdf
-# vecSolTopic[which(Date == format(as.Date("2019/10/11"), "%d.%m"))] <- "[]()"
+# vecSolTopic[which(Date == format(as.Date("2019/10/11"), "%d.%m"))] <- paste0("[Matrices and Quantitative Genetics](", s_base_url_sol, "/w03/lbgfs2019_w03_sol02.pdf)", collapse = '')
 # w5 sol/w04/lbg_fs_2019_w04_sol3.pdf
 # vecSolTopic[which(Date == format(as.Date("2019/10/18"), "%d.%m"))] <- "[]()"
 # w6 sol/w05/lbg_fs_2019_w05_sol04.pdf

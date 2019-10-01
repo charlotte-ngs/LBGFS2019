@@ -39,7 +39,7 @@ matC <- matrix(data = c(1,2,3), nrow = 3, ncol = 3)
 matC2 <- matrix(data = c(1,2,3,4), nrow = 3, ncol = 3)
 ```
 
-\pagebreak
+
 
 ### Parameters `nrow` and `ncol`
 * Leaving out one of both parameters
@@ -80,7 +80,7 @@ Find out which matrix multiplication with `%*%` corresponds to the following sta
 crossprod(matA,matB)
 ```
 
-### Your Solution
+
 
 
 Alternatively there is the function `tcrossprod()`. Find out which matrix multiplication is executed by
@@ -90,7 +90,7 @@ tcrossprod(matA, matB)
 ```
 
 
-### Your Solution
+
 
 
 b) Given is the vector `vecB`
@@ -104,7 +104,7 @@ Multiply the matrix `matA` with the vector `vecB` once using `%*%` and then with
 __Hint__: a vector can be converted to a matrix using the function `as.matrix()`.
 
 
-### Your Solution
+
 
 
 ## Problem 3: Quantitative Genetics
@@ -119,12 +119,12 @@ knitr::kable(dfGenotypeFreq)
 
 a) Compute the genotype frequencies
 
-### Your Solution
+
 
 
 b) Compute the allele frequencies
 
-### Your Solution
+
 
 
 c) Compute the population mean $\mu$ under the following assumptions
@@ -132,5 +132,5 @@ c) Compute the population mean $\mu$ under the following assumptions
 * the difference between the genotypic values of the homozygous genotypes is $20$ and
 * the genotypic value of the heterozygous genotype is $2$.
 
-### Your Solution
+
 
