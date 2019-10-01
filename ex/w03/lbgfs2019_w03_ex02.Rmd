@@ -1,0 +1,136 @@
+---
+title:  Livestock Breeding and Genomics - Exercise 2
+author: Peter von Rohr
+date: 2019-10-04
+output: 
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+```
+
+
+## Problem 1: Matrices in R
+In R, matrices are constructed using the function `matrix()`. This function accepts different options. We want to see, how these options work.
+
+__Your Task__: Construct matrices using the different options to better understand the meaning of the different options.
+
+
+### Parameter `data`
+* `data`: Specify the different matrix elements
+```{r echo=TRUE, results='markup', eval=FALSE}
+matA <- matrix(data = c(1:9), nrow = 3, ncol = 3)
+```
+
+* `data`: without specifying the matrix elements
+```{r echo=TRUE, results='markup', eval=FALSE}
+matB <- matrix(nrow = 3, ncol = 3)
+```
+
+* `data`: specifying not all matrix elements
+```{r echo=TRUE, results='markup', eval=FALSE}
+matC <- matrix(data = c(1,2,3), nrow = 3, ncol = 3)
+```
+
+```{r echo=TRUE, results='markup', eval=FALSE}
+matC2 <- matrix(data = c(1,2,3,4), nrow = 3, ncol = 3)
+```
+
+
+
+### Parameters `nrow` and `ncol`
+* Leaving out one of both parameters
+
+```{r echo=TRUE, results='markup', eval=FALSE}
+matD <- matrix(data = c(1:9), nrow = 3)
+```
+
+```{r echo=TRUE, results='markup', eval=FALSE}
+matE <- matrix(data = c(1:9), ncol = 3)
+```
+
+### Parameter `byrow`
+```{r echo=TRUE, results='markup', eval=FALSE}
+matF <- matrix(data = c(1:9), nrow = 3, ncol = 3, byrow = TRUE)
+```
+
+```{r echo=TRUE, results='markup', eval=FALSE}
+matG <- matrix(data = c(1:9), nrow = 3, ncol = 3, byrow = FALSE)
+```
+
+
+## Problem 2: Matrix multiplication in R
+In R, matrices can be multiplied using the operator `%*%` or with the functions `crossprod()` or `tcrossprod()`. With `crossprod()` and `tcrossprod()` vectors and matrices can be multiplied directly. The conversion of vectors to matrices is done automatically inside of these functions. The result will always be a matrix. When doing matrix-vector multiplications with `%*%` the vector has to be converted first into a matrix using the function `as.matrix()`.
+
+In a first part of this problem, compare the results of the functions `crossprod()`, `tcrossprod()` and `%*%`. 
+
+a) Given are the following matrices
+
+```{r MatMultMatDef, echo=TRUE, results='markup'}
+matA <- matrix(data = c(1:9), ncol = 3)
+matB <- matrix(data = c(2:10), ncol = 3)
+```
+
+Find out which matrix multiplication with `%*%` corresponds to the following statement?
+
+```{r, echo=TRUE, results='markup', eval=TRUE}
+crossprod(matA,matB)
+```
+
+### Your Solution
+
+
+Alternatively there is the function `tcrossprod()`. Find out which matrix multiplication is executed by
+
+```{r, echo=TRUE, results='markup', eval=TRUE}
+tcrossprod(matA, matB)
+```
+
+
+### Your Solution
+
+
+b) Given is the vector `vecB`
+
+```{r, echo=TRUE}
+vecB <- c(-3,16,1)
+```
+
+Multiply the matrix `matA` with the vector `vecB` once using `%*%` and then with the function `crossprod()`.
+
+__Hint__: a vector can be converted to a matrix using the function `as.matrix()`.
+
+
+### Your Solution
+
+
+## Problem 3: Quantitative Genetics
+In a population the following numbers of genotypes were counted for a given genetic locus called $A$. 
+
+```{r GenotypeFreqs}
+dfGenotypeFreq <- data.frame(Genotypes = c("$A_1A_1$", "$A_1A_2$", "$A_2A_2$"),
+                             Numbers   = c(24, 53, 23),
+                             stringsAsFactors = FALSE)
+knitr::kable(dfGenotypeFreq)
+```
+
+a) Compute the genotype frequencies
+
+### Your Solution
+
+
+b) Compute the allele frequencies
+
+### Your Solution
+
+
+c) Compute the population mean $\mu$ under the following assumptions
+
+* the difference between the genotypic values of the homozygous genotypes is $20$ and
+* the genotypic value of the heterozygous genotype is $2$.
+
+### Your Solution
+
