@@ -1,0 +1,18 @@
+---
+title: "From One Locus To The Infinitesimal Model"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::knit_hooks$set(hook_convert_odg = rmdhelp::hook_convert_odg)
+```
+
+
+## Disclaimer
+Explaining the transition from the one locus model to the infinitesimal model is difficult. Here a few attempts and experiments are shown.
+
+
+## One Locus
+We assume a bi-allelic locus with allele frequencies equal to $p$ and $q = 1-p$. The genotypic values for the three genotypes are
+
+
