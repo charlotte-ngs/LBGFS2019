@@ -22,7 +22,7 @@ y_{ij} = \mu_i + g_i + e_{ij}
 (\#eq:breedvalpredbasicmodel)
 \end{equation}
 
-\begin{tabular}{llp{8cm}}
+\begin{tabular}{llp{9cm}}
 where  &  &  \\
        &  $y_{ij}$  &  $j^{th}$ record of animal $i$ \\
        &  $\mu_i$   &  identifiable fixed environmental effect \\
@@ -38,7 +38,7 @@ y_{ij} = \mu_i + u_i + e_{ij}^*
 (\#eq:breedvalpredmodifiedmodel)
 \end{equation}
 
-\begin{tabular}{lll}
+\begin{tabular}{llp{9cm}}
 where  &  &  \\
        &  $y_{ij}$  &  $j^{th}$ record of animal $i$ \\
        &  $\mu_i$   &  identifiable fixed environmental effect \\
@@ -46,7 +46,7 @@ where  &  &  \\
        &  $e_{ij}^*$  &  dominance, epistatic and random environmental effects of the $j^{th}$ record of animal $i$
 \end{tabular}
 
-The same re-arrangment of terms in the basic model is illustrated by Figure \@ref(fig:basicmodelrearrterm)
+The same re-arrangement of terms in the basic model is illustrated by Figure \@ref(fig:basicmodelrearrterm)
 
 ```{r basicmodelrearrterm, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg", fig.cap="Re-arrangment of Terms Representing Genetic Effects"}
 #rmddochelper::use_odg_graphic(ps_path = "odg/basicmodelrearrterm.odg")
