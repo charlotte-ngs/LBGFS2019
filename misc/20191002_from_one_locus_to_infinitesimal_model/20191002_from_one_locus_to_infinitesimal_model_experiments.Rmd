@@ -16,3 +16,9 @@ Explaining the transition from the one locus model to the infinitesimal model is
 We assume a bi-allelic locus with allele frequencies equal to $p$ and $q = 1-p$. The genotypic values for the three genotypes are
 
 
+```{r}
+tbl_gv <- tibble::tibble(Genotype = c("$G_1G_1$", "$G_1G_2$", "$G_2G_2$"),
+                         `Genotypic Value` = c("$a$", "$d$", "$-a$"))
+knitr::kable(tbl_gv)
+```
+
