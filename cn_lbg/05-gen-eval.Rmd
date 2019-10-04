@@ -55,20 +55,20 @@ knitr::include_graphics(path = "odg/basicmodelrearrterm.png")
   
 Equation \@ref(eq:breedvalpredmodifiedmodel) constitutes the linear model that forms the basis for most problems of breeding value prediction in livestock breeding. Usually it is assumed that the phenotypic observations $y_{ij}$ follow a multivariate normal distribution. We have already seen in section \@ref(genetic-models) that the additive genetic effect ($u_i$) is thought to be the sum of a large number of unlinked loci that all contribute a very small amount to the total breeding value. Then by the central limit theorem it follows that $u_i$ converges to a normal distribution. By the same reasoning that the environmental effect $e_{ij}^*$ is composed of very many small contributions, also $e_{ij}^*$ converges to a normal distribution. From distribution theory it is known that the sum of two normally distributed random variables (like $u_i$ and $e_{ij}^*$) plus a fixed term (like $\mu$) is again a random variable that follows a normal distribution. We can conclude that the assumption that all the random effects ($y_{ij}$, $u_i$ and $e_{ij}^*$) in model \@ref(eq:breedvalpredmodifiedmodel) is consistent with distribution theory. Furthermore the central limit theorem implies that in principle the number of breeding values from single loci tends to infinity. That means the total breeding value $u_i$ corresponds to a sum of infinitely many contributions. Based on the fact that in theory $u_i$ is composed of an infinite number of infinitely small components, the model in \@ref(eq:breedvalpredmodifiedmodel) is called the __infinitesimal model__. 
 
-Concerning the variances, it is assumed that $var(y_{ij})$, $var(a_i)$ and $var(e_{ij})$ are all known. Covariances ($cov(a_i, e_{ij})$) between genetic and environmental effects and covariances ($cov(e_{ij}^*, e_{kl}^*)$) between environmental effects of mates $i$ and $k$ are assumed to be zero, respectively. 
+Concerning the variances, it is assumed that $var(y_{ij})$, $var(u_i)$ and $var(e_{ij})$ are all known. Covariances ($cov(u_i, e_{ij})$) between genetic and environmental effects and covariances ($cov(e_{ij}^*, e_{kl}^*)$) between environmental effects of mates $i$ and $k$ are assumed to be zero, respectively. 
 
 Also $\mu_i$ which is used to represent the mean performance of animals in the same identifiable environment such as herd or management group or have the same sex or age, is assumed to be known.
 
 
 ### Decomposition of Breeding Value
-As already mentioned earlier, the breeding value $a_i$ of an individual $i$ represents the average additive genetic effect that animal $i$ receives from its parents $s$ and $d$. Hence $a_i$ can be decomposed into 
+As already mentioned earlier, the breeding value $u_i$ of an individual $i$ represents the average additive genetic effect that animal $i$ receives from its parents $s$ and $d$. Hence $u_i$ can be decomposed into 
 
 \begin{equation}
-a_i = {1\over 2} a_s + {1\over 2} a_d + m_i
+u_i = {1\over 2} u_s + {1\over 2} u_d + m_i
 (\#eq:breedingvalueanimalparent)
 \end{equation}
 
-where $a_s$ and $a_d$ correspond to the breeding values of parents $s$ and $d$, respectively and $m_i$ is the deviation of $a_i$ from the average breeding values of the parents and is called __Mendelian sampling__. The term $m_i$ is necessary, because two fullsibs $i$ and $k$ both having parents $s$ and $d$ receive different random samples of the set of parental alleles. Hence the breeding values $a_i$ and $a_k$ of fullsibs $i$ and $k$ are not going to be the same. The difference between breeding values $a_i$ and $a_k$ is reflected in the different Mendelian sampling terms $m_i$ and $m_k$ for fullsibs $i$ and $k$. 
+where $u_s$ and $u_d$ correspond to the breeding values of parents $s$ and $d$, respectively and $m_i$ is the deviation of $u_i$ from the average breeding values of the parents and is called __Mendelian sampling__. The term $m_i$ is necessary, because two fullsibs $i$ and $k$ both having parents $s$ and $d$ receive different random samples of the set of parental alleles. Hence the breeding values $u_i$ and $u_k$ of fullsibs $i$ and $k$ are not going to be the same. The difference between breeding values $u_i$ and $u_k$ is reflected in the different Mendelian sampling terms $m_i$ and $m_k$ for fullsibs $i$ and $k$. 
 
 
 ## Basic Principle of Predicting Breeding Values {#principle-predic-breedingvalue}
@@ -84,20 +84,20 @@ In what follows, we have a look at how breeding values are predicted from differ
 
 ## Animal's Own Performance {#own-performance}
 ### Single Record {#single-record}
-When one phenotypic observation per animal is the only information we have available, the predictor $\hat{a_i}$ of the breeding value $a_i$ of animal $i$ can be derived according to the following line of argument. Let us assume for a moment that we know the true breeding value $a_i$ for a population of animals. In addition to that each animal $i$ has one observation $y_i$ available. Then we plot the values of $a_i$ against the values of $y_i$ for the complete population. 
+When one phenotypic observation per animal is the only information we have available, the predictor $\hat{u_i}$ of the breeding value $u_i$ of animal $i$ can be derived according to the following line of argument. Let us assume for a moment that we know the true breeding value $u_i$ for a population of animals. In addition to that each animal $i$ has one observation $y_i$ available. Then we plot the values of $u_i$ against the values of $y_i$ for the complete population. 
 
 ```{r regbreedingvaluesinglerecord, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg", fig.cap="Regression of Breeding Values onto Phenotypic Observations"}
 #rmddochelper::use_odg_graphic(ps_path = "odg/regbreedingvaluesinglerecord.odg")
 knitr::include_graphics(path = "odg/regbreedingvaluesinglerecord.png")
 ```
 
-The plot in Figure \@ref(fig:regbreedingvaluesinglerecord) suggests that we fit a regression of the breeding values onto the phenotypic records. The fitted regression is represented by the red line. Hence as soon as we can draw the regression line, we can predict breeding values based on the phenotypic observations. The predicted breeding value $\hat{a_i}$ for a given $y_i$ corresponds to the value on the red line corresponding to the value of $y_i$. The slope of the regression line corresponds to the regression coefficient $b$. From regression theory, the coefficient $b$ is computed as 
+The plot in Figure \@ref(fig:regbreedingvaluesinglerecord) suggests that we fit a regression of the breeding values onto the phenotypic records. The fitted regression is represented by the red line. Hence as soon as we can draw the regression line, we can predict breeding values based on the phenotypic observations. The predicted breeding value $\hat{u_i}$ for a given $y_i$ corresponds to the value on the red line corresponding to the value of $y_i$. The slope of the regression line corresponds to the regression coefficient $b$. From regression theory, the coefficient $b$ is computed as 
 
 \begin{align}
-b &= \frac{cov(a,y)}{var(y)} \notag \\
-  &= \frac{cov(a,\mu + a + e)}{var(y)}  \notag \\
-  &= \frac{cov(a,a)}{var(y)}  \notag \\
-  &= \frac{var(a)}{var(y)}  \notag \\
+b &= \frac{cov(u,y)}{var(y)} \notag \\
+  &= \frac{cov(u,\mu + u + e)}{var(y)}  \notag \\
+  &= \frac{cov(u,u)}{var(y)}  \notag \\
+  &= \frac{var(u)}{var(y)}  \notag \\
   &= h^2
 (\#eq:regcoeffaony)
 \end{align}
@@ -105,7 +105,7 @@ b &= \frac{cov(a,y)}{var(y)} \notag \\
 where $h^2$ corresponds to the ratio between the genetic additive and the phenotypic variance and is called __heritability__. We are using the regression coefficient to predict the breeding value for animal $i$ based on a single record $y_i$. 
 
 \begin{align}
-\hat{a_i} &= b * (y_i - \mu) \notag \\
+\hat{u_i} &= b * (y_i - \mu) \notag \\
           &= h^2 * (y_i - \mu)
 (\#eq:predbreedvalueownsinglerecord)
 \end{align}
@@ -113,9 +113,9 @@ where $h^2$ corresponds to the ratio between the genetic additive and the phenot
 From that it follows that the predicted breeding value for an animal based on a single own performance record corresponds to the observation corrected for the general mean $\mu$ times the heritability. The correlation between the selection criterion, in our case the phenotypic record and the true breeding value is known as the accuracy of the prediction. It provides a means of evaluating the different selection criteria. The higher the correlation between selection criterion and breeding value, the better is the prediction. Sometimes the accuracy of evaluation is reported in terms of reliability ($r^2$) which corresponds to the squared correlation between selection criterion and true breeding value. With a single own performance record per animal, the correlation is 
 
 \begin{align}
-r_{a,y} &= \frac{cov(a, y)}{\sigma_a \ \sigma_y} \notag \\
-        &= \frac{\sigma_a^2}{\sigma_a \ \sigma_y} \notag \\
-        &= \frac{\sigma_a}{\sigma_y} \notag \\
+r_{u,y} &= \frac{cov(u, y)}{\sigma_u \ \sigma_y} \notag \\
+        &= \frac{\sigma_u^2}{\sigma_u \ \sigma_y} \notag \\
+        &= \frac{\sigma_u}{\sigma_y} \notag \\
         &= h
 (\#eq:corownperftruebreedingvalue)
 \end{align}
@@ -123,17 +123,17 @@ r_{a,y} &= \frac{cov(a, y)}{\sigma_a \ \sigma_y} \notag \\
 An alternative way to assess the quality of the breeding value prediction is to compute the variance of the predicted breeding values. 
 
 \begin{align}
-var(\hat{a_i}) &= var(by) = var(h^2y) \notag \\
+var(\hat{u_i}) &= var(by) = var(h^2y) \notag \\
                &= h^4 var(y) \notag \\
-               &= r_{a,y}^2 h^2 \sigma_y^2 \notag \\
-               &= r_{a,y}^2 \sigma_a^2
+               &= r_{u,y}^2 h^2 \sigma_y^2 \notag \\
+               &= r_{u,y}^2 \sigma_a^2
 (\#eq:varpredictedbreedingvalue)
 \end{align}
 
 Hence the variance of the predicted breeding values corresponds to the product of the reliability times the genetic additive variance. The expected response ($R$) to selection on the basis of one record per animal is 
 
 \begin{equation}
-R = i * r_{a,y}^2 * \sigma_y = i * h^2 * \sigma_y
+R = i * r_{u,y}^2 * \sigma_y = i * h^2 * \sigma_y
 (\#eq:selectionresponseownperformance)
 \end{equation}
 
@@ -171,24 +171,24 @@ With this model, it is assumed that the repeated records on the animal are the s
 (\#eq:meanrepeatedrecords)
 \end{equation}
 
-In this case, we use the mean ($\tilde{y_i}$) to predict the breeding value ($\hat{a_i}$)
+In this case, we use the mean ($\tilde{y_i}$) to predict the breeding value ($\hat{u_i}$)
 
 \begin{equation}
-\hat{a_i} = b(\tilde{y_i} - \mu)
+\hat{u_i} = b(\tilde{y_i} - \mu)
 (\#eq:predbreedingvaluerepeatedrecords)
 \end{equation}
 
 where 
 
 \begin{equation}
-b = \frac{cov(a,\tilde{y})}{var(\tilde{y})}
+b = \frac{cov(u,\tilde{y})}{var(\tilde{y})}
 (\#eq:regcoeffrepeatedrecords)
 \end{equation}
 
 The single elements are computed as
 
 \begin{equation}
-cov(a,\tilde{y}) = cov(a, g + pe + {1\over n} \sum_{k=1}^n te_k) = \sigma_a^2
+cov(u,\tilde{y}) = cov(u, g + pe + {1\over n} \sum_{k=1}^n te_k) = \sigma_a^2
 (\#eq:covayrepeatedrecords)
 \end{equation}
 
@@ -211,13 +211,13 @@ var(\tilde{y}) &= t * \sigma_y^2 + {1\over n} (1-t) * \sigma_y^2 \notag \\
 Inserting this into \@ref(eq:regcoeffrepeatedrecords) results in 
 
 \begin{align}
-b &= \frac{cov(a,\tilde{y})}{var(\tilde{y})} \notag \\
-  &= \frac{n \sigma_a^2}{(1 + (n-1)t) \sigma_y^2} \notag \\
+b &= \frac{cov(u,\tilde{y})}{var(\tilde{y})} \notag \\
+  &= \frac{n \sigma_u^2}{(1 + (n-1)t) \sigma_y^2} \notag \\
   &= \frac{nh^2}{1 + (n-1)t}
 (\#eq:regcoeffrepeatedrecordsresult)
 \end{align}
 
-When we predict the breeding value $a_i$ of animal $i$ using repeated records, the regression coefficient $b$ depends on 
+When we predict the breeding value $u_i$ of animal $i$ using repeated records, the regression coefficient $b$ depends on 
 
 1. the heritability ($h^2$) 
 2. the repeatability ($t$) and 
@@ -229,8 +229,8 @@ The difference between repeated records of an animal is assumed to be due to tem
 The accuracies of the predicted breeding value using repeated records is 
 
 \begin{align}
-r_{a,\tilde{y}} &= \frac{cov(a,\tilde{y}) }{\sigma_a \sigma_y} \notag \\
-                &= \frac{\sigma_a^2}{\sigma_a \sqrt{(1 + (n-1)t)/n \sigma_y^2}} \notag \\
+r_{u,\tilde{y}} &= \frac{cov(u,\tilde{y}) }{\sigma_u \sigma_y} \notag \\
+                &= \frac{\sigma_u^2}{\sigma_u \sqrt{(1 + (n-1)t)/n \sigma_y^2}} \notag \\
                 &= h \sqrt{n/(1 + (n-1)t)} \notag \\
                 &= \sqrt{nh^2/(1 + (n-1)t)} \notag \\
                 &= \sqrt{b}
@@ -244,37 +244,37 @@ The expected response to selection using repeated records will be covered in an 
 For traits that are recorded only on female animals, the prediction of breeding values for male animals (sires) is usually based on the mean of their female progeny. This is typical in dairy cattle, where bulls are evaluated on the basis of their daughters. Let $\bar{y_i}$ be the mean of single records of $n$ daughters of sire $i$ with the assumption that the daughters are only related through the sire (paternal half-sibs), the predicted breeding value of sire i can then be computed as 
 
 \begin{equation}
-\hat{a_i} = b * (\bar{y_i} - \mu)
+\hat{u_i} = b * (\bar{y_i} - \mu)
 (\#eq:predictedbreedingvalueprogeny)
 \end{equation}
 
 where 
 
 \begin{equation}
-b = \frac{cov(a, \bar{y})}{var(\bar{y})}
+b = \frac{cov(u, \bar{y})}{var(\bar{y})}
 (\#eq:regressioncoefficientprogeny)
 \end{equation}
 
 In the current case of using progeny records to predict a breeding value, we have 
 
 \begin{align}
-cov(a, \bar{y}) &= cov(a, {1\over 2}a_s + {1\over 2}a_d + {1\over n}\sum_{k=1}^n m_k + {1\over n}\sum_{k=1}^n e_k) \notag \\
-                &= cov(a, {1\over 2}a_s) \notag \\
-                &= {1\over 2} cov(a, a_s) \notag \\
-                &= {1\over 2} \sigma_a^2
+cov(u, \bar{y}) &= cov(u, {1\over 2}u_s + {1\over 2}u_d + {1\over n}\sum_{k=1}^n m_k + {1\over n}\sum_{k=1}^n e_k) \notag \\
+                &= cov(u, {1\over 2}u_s) \notag \\
+                &= {1\over 2} cov(u, u_s) \notag \\
+                &= {1\over 2} \sigma_u^2
 \end{align}
 
-where $a_s$ and $a_d$ denote the breeding values of sire $s$ and dam $d$, respectively and $m_k$ and $e_k$ stand for the mendelian sampling and the environmental effect of daughter $k$. Using the same principles as in section \@ref(repeatedrecords), we get
+where $u_s$ and $u_d$ denote the breeding values of sire $s$ and dam $d$, respectively and $m_k$ and $e_k$ stand for the mendelian sampling and the environmental effect of daughter $k$. Using the same principles as in section \@ref(repeatedrecords), we get
 
 \begin{equation}
 var(\bar{y}) = (t + (1-t)/n) \sigma_y^2
 (\#eq:variancedaughtermean)
 \end{equation}
 
-assuming there is no environmental covariance between half-sib records and the intra-class correlation $t$ is $\frac{1/4 \sigma_a^2}{\sigma_y^2}$. Then we can compute the regression coefficient as 
+assuming there is no environmental covariance between half-sib records and the intra-class correlation $t$ is $\frac{1/4 \sigma_u^2}{\sigma_y^2}$. Then we can compute the regression coefficient as 
 
 \begin{align}
-b &= \frac{1/2 \sigma_a^2}{(t + (1-t)/n) \sigma_y^2} \notag \\
+b &= \frac{1/2 \sigma_u^2}{(t + (1-t)/n) \sigma_y^2} \notag \\
   &= \frac{1/2 h^2 \sigma_y^2}{({1\over 4}h^2 + (1 - {1\over 4}h^2)/n) \sigma_y^2} \notag \\
   &= \frac{2nh^2}{nh^2 + (4-h^2)} \notag \\
   &= \frac{2n}{n + (4-h^2)/h^2} \notag \\
@@ -289,7 +289,7 @@ The term $k$ is constant for any assumed heritability ($h^2$). The regression co
 The accuracy of the estimated breeding value is
 
 \begin{align}
-r_{a, \bar{y}} &= \frac{cov(a, \bar{y})}{\sqrt{var(a) var(\bar{y})}} \notag \\
+r_{u, \bar{y}} &= \frac{cov(u, \bar{y})}{\sqrt{var(u) var(\bar{y})}} \notag \\
                &= \frac{1/2 h^2 \sigma_y^2}{\sqrt{h^2 \sigma_y^2 ({1\over 4}h^2 + (1 - {1\over 4}h^2)/n) \sigma_y^2}} \notag \\
                &= \frac{1/2 h}{\sqrt{{1\over 4}h^2 + (1 - {1\over 4}h^2)/n}} \notag \\
                &= \sqrt{\frac{nh^2}{nh^2 + (4-h^2)}} \notag \\
@@ -297,5 +297,5 @@ r_{a, \bar{y}} &= \frac{cov(a, \bar{y})}{\sqrt{var(a) var(\bar{y})}} \notag \\
 (\#eq:accuracyprogeny)
 \end{align}
 
-The term for $r_{a, \bar{y}}$ in \@ref(eq:accuracyprogeny) approaches $1$ as the number of progeny increases. The reliability ($r_{a, \bar{y}}$) of the predicted breeding value is $n/(n+k)$ and corresponds to $1/2 * b$ computed in \@ref(eq:regcoeffprogeny). 
+The term for $r_{u, \bar{y}}$ in \@ref(eq:accuracyprogeny) approaches $1$ as the number of progeny increases. The reliability ($r_{u, \bar{y}}$) of the predicted breeding value is $n/(n+k)$ and corresponds to $1/2 * b$ computed in \@ref(eq:regcoeffprogeny). 
 

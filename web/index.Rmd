@@ -143,9 +143,9 @@ s_base_url_sl <- 'https://charlotte-ngs.github.io/LBGFS2019/sl'
 ### # w1 
 vecSlTopic[which(Date == format(as.Date("2019/09/20"), "%d.%m"))] <- paste0("[Introduction to Livestock Breeding and Genomics](", s_base_url_sl, "/w01/lbgfs2019_slides_w01_intro-lbg.pdf)", collapse = '')
 ### # w2
-vecSlTopic[which(Date == format(as.Date("2019/09/27"), "%d.%m"))] <- paste0("[Quantitative Genetics](", s_base_url_sl,"/w02/lbg_fs_2019_slides_basics-qg.pdf)", collapse = '')
+vecSlTopic[which(Date == format(as.Date("2019/09/27"), "%d.%m"))] <- paste0("[Quantitative Genetics](", s_base_url_sl,"/w02/lbg_fs_2019_slides_basics-qg.pdf), [Part 2](", s_base_url_sl, "/w03/lbgfs2019_slides_basics-qg-teil2.pdf)", collapse = '')
 ### # w3
-# vecSlTopic[which(Date == format(as.Date("2019/10/04"), "%d.%m"))] <- "[]()"
+vecSlTopic[which(Date == format(as.Date("2019/10/04"), "%d.%m"))] <- paste0("[Genetic Evaluation](", s_base_url_sl,"/w04/lbgfs2019_slides_gen-eval.pdf)", collapse = '')
 ### # w4 w04/lbg_fs_2019_slides_gen-eval.pdf
 # vecSlTopic[which(Date == format(as.Date("2019/10/11"), "%d.%m"))] <- "[]()"
 ### # w5 w05/lbg_fs_2019_slides_selection-index.pdf

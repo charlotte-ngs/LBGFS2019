@@ -1,6 +1,8 @@
 ---
 title: "From One Locus To The Infinitesimal Model"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -12,6 +14,17 @@ knitr::knit_hooks$set(hook_convert_odg = rmdhelp::hook_convert_odg)
 Explaining the transition from the one locus model to the infinitesimal model is difficult. Here a few attempts and experiments are shown.
 
 
+## Model Backgrounds
+(Chpt 7 of Mackay1996) Genetic properties of a population are expressible in terms of allele frequencies and genotype frequencies. To establish a connection between these genetic quantities on the one hand and the differences observed in a metric character on the other hand, we have to introduce the concept of **value**. Values observed in a population are **phenotypic** values of a given individual. To analyse genetic properties of populations, we have to divide the phenotypic values into components attributable to different causes. 
+
+### Decomposition of phenotype
+The first division of phenotypic values is into components attributable to the influence of genotype and environment. The two components of value associated with genotype and environment are the **genotypic value"** (G) and the **environmental deviation** (E). Hence the model can be written as 
+
+$$P = G + E$$
+
+In this parametrisation (definition of effects), the mean environmental deviation is $0$ and the mean phenotypic value corresponds to the mean genotypic value which is just called the **population mean** ($\mu$).
+
+
 ## One Locus
 We assume a bi-allelic locus with allele frequencies equal to $p$ and $q = 1-p$. The genotypic values for the three genotypes are
 
@@ -21,4 +34,8 @@ tbl_gv <- tibble::tibble(Genotype = c("$G_1G_1$", "$G_1G_2$", "$G_2G_2$"),
                          `Genotypic Value` = c("$a$", "$d$", "$-a$"))
 knitr::kable(tbl_gv)
 ```
+
+
+## Concept of Breeding Value
+The breeding value of a given animal is defined as two times the deviation of a large number of offspring of that animal form the population mean. 
 
