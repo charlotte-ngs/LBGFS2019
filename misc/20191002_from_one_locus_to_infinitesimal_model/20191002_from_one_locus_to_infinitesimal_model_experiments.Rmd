@@ -24,6 +24,9 @@ $$P = G + E$$
 
 In this parametrisation (definition of effects), the mean environmental deviation is $0$ and the mean phenotypic value corresponds to the mean genotypic value which is just called the **population mean** ($\mu$).
 
+### Population Mean
+
+
 
 ## One Locus
 We assume a bi-allelic locus with allele frequencies equal to $p$ and $q = 1-p$. The genotypic values for the three genotypes are
@@ -39,3 +42,10 @@ knitr::kable(tbl_gv)
 ## Concept of Breeding Value
 The breeding value of a given animal is defined as two times the deviation of a large number of offspring of that animal form the population mean. 
 
+
+## Decomposition
+The genotypic value $V$ can be decomposed into
+
+$$V_{ij} = \mu + BV_{ij} + D_{ij}$$
+
+This is inserted into the population genetic model and leads to the linear mixed effects model. 
