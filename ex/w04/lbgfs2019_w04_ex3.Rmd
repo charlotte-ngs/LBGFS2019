@@ -1,0 +1,66 @@
+---
+title: Livestock Breeding and Genomics - Solution 3
+author: Peter von Rohr
+date: 2019-10-11
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+```
+
+```{r ParameterAssignment, echo=FALSE}
+nHomDiff <- 15
+p_orig <- p <- 0.08
+p_incr <- 1.2 * p
+q <- 1-p
+a <- nHomDiff/2
+d <- -1.5
+alpha <- a + (q-p)*d
+alpha_orig <- alpha
+```
+
+## Problem 1: Breeding Value
+We are considering a quantitative trait that depends on a given bi-allelic locus $G$. The frequency of the favorable allele corresponds to $`r p`$. Suppose that genotype frequencies follow the Hardy-Weinberg equilibrium. The difference between the homozygous genotypes corresponds to $`r nHomDiff`$. The heterozygous genotype has a value of $`r d`$. 
+
+a) Compute the breeding values and the dominance deviations for the three genotypes.
+b) Because of selecting the positive allele the frequency has increased to `r p_incr`. How does this increased allele frequency change the breeding values?
+
+__Hint__: Have a look at the summary table of all values in the course notes.
+
+
+### Your Solution
+
+
+
+## Problem 2: Allele Substitution
+What is the meaning of the term __allele substituion__ an how big is it in 1a) and 1b)?
+
+
+### Your Solution
+
+
+
+## Problem 3: Reading Data into R
+```{r problem3-setup, echo=FALSE}
+siris_url <- "https://charlotte-ngs.github.io/LBGFS2019/ex/w04/iris.csv"
+```
+
+You can download a file in csv-format from the course website. The URL is `r siris_url`. Read the data from that csv-file into R using the function `read.csv2()`. Test the consequences of specifying the option `stringsAsFactors=FALSE`. 
+
+__Hints__: 
+
+1. You can first download the csv-file to your local computer and then read the data, or you can directly indicate the URL when reading the data. You get more information with the command `?read.csv2` at the R-console.
+2. Assign the result of `read.csv2()` to a variable
+3. Use the function `str()` on the result of `read.csv2()` to see the difference between the two results of reading the data.
+4. Use the description at https://bookdown.org/rdpeng/rprogdatascience/getting-data-in-and-out-of-r.html as a reference to read data into R. There is also a video on the same subject under https://youtu.be/Z_dc_FADyi4.
+
+
+### Your Solution
+
+
+## Additional Problem: Create a plot in R
+Plot the values in the columns `Sepal.Length` and `Petal.Length` of the Iris data set. 
+
+
+### Your Solution
