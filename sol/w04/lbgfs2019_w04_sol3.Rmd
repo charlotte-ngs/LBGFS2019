@@ -44,9 +44,13 @@ a) The summary table of all values then looks as follows.
 
 ```{r genotypicdecomptable, echo=FALSE}
 tbl_genotypic_decomp <- tibble::tibble(Genotype             = c("$G_1G_1$", "$G_1G_2$", "$G_2G_2$"),
-                                       `Genotypic Value`    = c("$a = `r a`$", "$d = `r d`$", "$-a = `r -a`$"),
-                                       `Breeding Value`     = c("$2q\\alpha = `r 2*q*alpha`$", "$(q-p)\\alpha = `r (q-p) * alpha`$", "$-2p\\alpha = `r -2*p*alpha`$"),
-                                       `Dominance Deviation`= c("$-2q^2d = `r -2*q^2*d`$", "$2pqd = `r 2*p*q*d`$", "$-2p^2d = `r -2*p^2*d`$"))
+                                       `Genotypic Value`    = c(paste0("$a = ", a, "$"), paste0("$d = ", d, "$"), paste0("$-a = ", -a, "$")),
+                                       `Breeding Value`     = c(paste0("$2q\\alpha = ", 2*q*alpha, "$"), 
+                                                                paste0("$(q-p)\\alpha = ", (q-p) * alpha, "$"), 
+                                                                paste0("$-2p\\alpha = ", -2*p*alpha, "$")),
+                                       `Dominance Deviation`= c(paste0("$-2q^2d = ",  -2*q^2*d, "$"), 
+                                                                paste0("$2pqd = ", 2*p*q*d, "$"), 
+                                                                paste0("$-2p^2d = ",  -2*p^2*d, "$")))
 knitr::kable(tbl_genotypic_decomp,
              booktabs = TRUE,
              longtable = TRUE)
@@ -65,9 +69,13 @@ b) Based on the change in the allele frequency to $p = `r p`$ and $q = `r q`$. T
 
 ```{r decomptablefreqchanged, echo=FALSE}
 tbl_genotypic_decomp <- tibble::tibble(Genotype             = c("$G_1G_1$", "$G_1G_2$", "$G_2G_2$"),
-                                       `Genotypic Value`    = c("$a = `r a`$", "$d = `r d`$", "$-a = `r -a`$"),
-                                       `Breeding Value`     = c("$2q\\alpha = `r 2*q*alpha`$", "$(q-p)\\alpha = `r (q-p) * alpha`$", "$-2p\\alpha = `r -2*p*alpha`$"),
-                                       `Dominance Deviation`= c("$-2q^2d = `r -2*q^2*d`$", "$2pqd = `r 2*p*q*d`$", "$-2p^2d = `r -2*p^2*d`$"))
+                                       `Genotypic Value`    = c(paste0("$a = ", a, "$"), paste0("$d = ", d, "$"), paste0("$-a = ", -a, "$")),
+                                       `Breeding Value`     = c(paste0("$2q\\alpha = ", 2*q*alpha, "$"), 
+                                                                paste0("$(q-p)\\alpha = ", (q-p) * alpha, "$"), 
+                                                                paste0("$-2p\\alpha = ", -2*p*alpha, "$")),
+                                       `Dominance Deviation`= c(paste0("$-2q^2d = ",  -2*q^2*d, "$"), 
+                                                                paste0("$2pqd = ", 2*p*q*d, "$"), 
+                                                                paste0("$-2p^2d = ",  -2*p^2*d, "$")))
 knitr::kable(tbl_genotypic_decomp,
              booktabs = TRUE,
              longtable = TRUE)
