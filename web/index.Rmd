@@ -186,7 +186,7 @@ vecExTopic[which(Date == format(as.Date("2019/09/27"), "%d.%m"))] <- paste0("[In
 # w3
 vecExTopic[which(Date == format(as.Date("2019/10/04"), "%d.%m"))] <- paste0("[Matrices and Quantitative Genetics](", s_base_url_ex, "/w03/lbgfs2019_w03_ex02.pdf)", collapse = '')
 # w4 w04/lbg_fs_2019_w04_ex3.pdf
-# vecExTopic[which(Date == format(as.Date("2019/10/11"), "%d.%m"))] <- "[]()"
+vecExTopic[which(Date == format(as.Date("2019/10/11"), "%d.%m"))] <- paste0("[Single Locus Breeding Values](", s_base_url_ex, "/w04/lbgfs2019_w04_ex03.pdf)", collapse = '')
 # w5 ex/w05/lbg_fs_2019_w05_ex04.pdf
 # vecExTopic[which(Date == format(as.Date("2019/10/18"), "%d.%m"))] <- "[]()"
 # w6 ex/w06/lbg_fs_2019_w06_ex05.pdf
@@ -220,11 +220,11 @@ vecSolTopic = vector(mode = "character", length = nNrSemesterWeeks)
 # base url
 s_base_url_sol <- 'https://charlotte-ngs.github.io/LBGFS2019/sol'
 # w3
-# vecSolTopic[which(Date == format(as.Date("2019/10/04"), "%d.%m"))] <- paste0("[Introduction to Linear Algebra and Livestock Breeding](", s_base_url_sol, "/w02/lbgfs2019_w02_sol01.pdf)", collapse = '')
+vecSolTopic[which(Date == format(as.Date("2019/10/04"), "%d.%m"))] <- paste0("[Introduction to Linear Algebra and Livestock Breeding](", s_base_url_sol, "/w02/lbgfs2019_w02_sol01.pdf)", collapse = '')
 # w4 Matrices and Population Mean w03/lbg_fs_2019_w03_sol02.pdf
-# vecSolTopic[which(Date == format(as.Date("2019/10/11"), "%d.%m"))] <- paste0("[Matrices and Quantitative Genetics](", s_base_url_sol, "/w03/lbgfs2019_w03_sol02.pdf)", collapse = '')
+vecSolTopic[which(Date == format(as.Date("2019/10/11"), "%d.%m"))] <- paste0("[Matrices and Quantitative Genetics](", s_base_url_sol, "/w03/lbgfs2019_w03_sol02.pdf)", collapse = '')
 # w5 sol/w04/lbg_fs_2019_w04_sol3.pdf
-# vecSolTopic[which(Date == format(as.Date("2019/10/18"), "%d.%m"))] <- "[]()"
+# vecSolTopic[which(Date == format(as.Date("2019/10/18"), "%d.%m"))] <- paste0("[Single Locus Breeding Values](", s_base_url_sol, "/w04/lbgfs2019_w04_sol03.pdf)", collapse = '')
 # w6 sol/w05/lbg_fs_2019_w05_sol04.pdf
 # vecSolTopic[which(Date == format(as.Date("2019/10/25"), "%d.%m"))] <- "[]()"
 # w7 sol/w06/lbg_fs_2019_w06_sol05.pdf

@@ -1,5 +1,5 @@
 ---
-title: Livestock Breeding and Genomics - Solution 3
+title: Livestock Breeding and Genomics - Exercise 3
 author: Peter von Rohr
 date: 2019-10-11
 output: pdf_document
