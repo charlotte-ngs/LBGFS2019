@@ -35,11 +35,12 @@ b) Compute the reliability of $\hat{a_i}$ from 1a)
 ```
 
   -->
-  
-  ```{r ResultComputeBreedingValue}
+```{r ResultComputeBreedingValue}
 ### # Compute predicted breeding value in R
 hat_a_el <- h2*(y-mu)
 ```
+  
+  
 
 
 
@@ -76,6 +77,7 @@ c) Compare the reliability from 2b) with the reliability from Problem 1.
   --       mean_weight:  mean of the weights                           --
   --       mu2:          population mean                               --
   -->
+
 
 
 
@@ -130,6 +132,7 @@ Compute the $95\%$-confidence interval for the predicted breeding values in Prob
   -->
   
   
+ 
 
 ## Problem 4: Response To Selection
 ```{r problem4setup}
@@ -146,5 +149,6 @@ R &= i * r_{a,\tilde{y}}^2 * \sigma_{\tilde{y}} \notag
 \end{align}
 
 Compute the response to selection $R$ for the results that you found in Problem 2. The selection intensity $i$ can be assumed to be $`r sel_int`$ and the phenotypic standard deviation is taken to be the same value as in Problem 3, $\sigma_y = `r phen_sd`$.
+
 
 
