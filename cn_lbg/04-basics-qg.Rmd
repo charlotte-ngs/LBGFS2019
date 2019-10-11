@@ -1,4 +1,12 @@
 # Basics in Quantitative Genetics {#quan-gen}
+<!-- ---------------------------------------------------------- --
+  -- TODO: Improvement of extension to more than one locus
+  --  * In section {#extension-to-more-loci} put a diagram and  --
+  --    an instructive example of a two locus model showing the --
+  --    decomposition of genotypic values, and the appearance   --
+  --    of the interaction effect.                              --
+  -- ---------------------------------------------------------- -->
+
 ```{r mrmt-intro-qg-reset, echo=FALSE}
 s_this_rmd_file <- rmdhelp::get_this_rmd_file()
 mrmt$set_this_rmd_file(ps_this_rmd_file = s_this_rmd_file)
@@ -427,11 +435,11 @@ where $I_{AB}$ is the deviation from additive combination of these genotypic val
 Interaction between loci may occur between pairs or between higher numbers of different loci. The complex nature of higher order interactions, i.e., interactions between higher number of loci does not need to concern us. Because in the aggregate genotypic value $V$, interaction deviations of all sorts are treated together in an overall interaction deviation $I$. This leads to the following generalized form of decomposing the overall aggregate genotype $V$ for the case of multiple loci affecting a certain trait of interest.
 
 \begin{equation}
-V = \mu + A + D + I
+V = \mu + U + D + I
 (\#eq:AggregateGenotypicValueMultipleLoci)
 \end{equation}
 
-where $A$ is the sum of the breeding values attributable to the separate loci and $D$ is the sum of all dominance deviations. For our purposes in livestock breeding where we want to assess the genetic potential of a selection candidate to be a parent of offspring forming the next generation, the __breeding value__ is the most important quantity. The breeding value is of primary importance because a given parent passes a random sample of its alleles to its offspring. We have seen in section \@ref(allele-substitution) that breeding values are additive in the number of favorable alleles. Hence the more favorable alleles a given parent passes to its offspring the higher the breeding value of this parent. 
+where $U$ is the sum of the breeding values attributable to the separate loci and $D$ is the sum of all dominance deviations. For our purposes in livestock breeding where we want to assess the genetic potential of a selection candidate to be a parent of offspring forming the next generation, the __breeding value__ is the most important quantity. The breeding value is of primary importance because a given parent passes a random sample of its alleles to its offspring. We have seen in section \@ref(allele-substitution) that breeding values are additive in the number of favorable alleles. Hence the more favorable alleles a given parent passes to its offspring the higher the breeding value of this parent. 
 
 On the other hand, the dominance deviation measures the effect of a certain genotype occurring in an individual and the interaction deviation estimates the effects of combining different genotypes at different loci in the genome. But because parents do not pass complete genotypes nor do they pass stretches of DNA with several loci, but only a random collection of its alleles, it is really the breeding value that is of primary importance in assessing the genetic potential of a given selection candidate. 
 

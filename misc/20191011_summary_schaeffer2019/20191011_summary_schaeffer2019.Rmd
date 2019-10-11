@@ -1,0 +1,26 @@
+---
+title: "Summary of Schaeffer2019"
+author: "Peter von Rohr"
+date: "10/11/2019"
+output: bookdown::pdf_document2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Background History
+
+## Sire Model
+
+\begin{align}
+y_{ijklm} = YS_i + HYS_{ij} + G_k + S_{kl} + e_{ijklm}
+\end{align}
+
+```{r, echo=FALSE}
+tbl_where_sire_model <- tibble::tibble(where = c(""),
+                                       Variable = c("$y_{ijklm}$"),
+                                       Meaning = c("was first lactation 305-d milk yield"))
+knitr::kable(tbl_where_sire_model)
+```
+

@@ -107,7 +107,7 @@ vecCnTopic[which(Date == format(as.Date("2019/09/27"), "%d.%m"))] <- paste0("[Qu
 ### # w3
 vecCnTopic[which(Date == format(as.Date("2019/10/04"), "%d.%m"))] <- paste0("[Genetic Evaluation](", s_base_url_cn, "/05_gen_eval.pdf)", collapse = '')
 ### # w4 cn/03-prediction-bv.pdf
-# vecCnTopic[which(Date == format(as.Date("2019/10/11"), "%d.%m"))] <- "[]()"
+vecCnTopic[which(Date == format(as.Date("2019/10/11"), "%d.%m"))] <- paste0("[BLUP](", s_base_url_cn, "/06_blup.pdf)", collapse = '')
 ### # w5 04-selection-index.pdf
 # vecCnTopic[which(Date == format(as.Date("2019/10/18"), "%d.%m"))] <- "[]()"
 ### # w6 cn/05-blup.pdf

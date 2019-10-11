@@ -23,15 +23,16 @@ knitr::knit_hooks$set(hook_convert_odg = rmdhelp::hook_convert_odg)
 
 ## The Basic Model
 
-\begin{equation}
-y_{ij} = \mu_i + g_i + e_{ij} \notag
-\end{equation}
+\begin{align}
+y_{ij} &= v_i + e_{ij} \notag \\
+       &= \mu + u_i + d_i + i_i  + e_{ij} \notag 
+\end{align}
 
 \begin{tabular}{llp{8cm}}
 where  &  &  \\
        &  $y_{ij}$  &  $j^{th}$ record of animal $i$ \\
-       &  $\mu_i$   &  identifiable fixed environmental effect \\
-       &  $g_i$     &  sum of all additive ($u$), dominance ($d$) and epistatic effects of the genotype of animal $i$ \\
+       &  $\mu$     &  population mean \\
+       &  $v_i$     &  genotypic value, corresponding to the sum of all additive ($u$), dominance ($d$) and epistatic ($i_i$) effects of the genotype of animal $i$ \\
        &  $e_{ij}$  &  random environmental effects of animal $i$
 \end{tabular}
 
@@ -49,7 +50,7 @@ knitr::include_graphics(path = "odg/basicmodelrearrterm.png")
 y_{ij} = \mu_i + u_i + e_{ij}^* \notag
 \end{equation}
 
-\begin{tabular}{lll}
+\begin{tabular}{llp{8.5cm}}
 where  &  &  \\
        &  $y_{ij}$  &  $j^{th}$ record of animal $i$ \\
        &  $\mu_i$   &  identifiable fixed environmental effect \\
@@ -110,6 +111,13 @@ knitr::include_graphics(path = "odg/regbreedingvaluesinglerecord.png")
 * red line denotes __regression line__ from $u_i$ onto $y_i$
 * because phenotypes have genetic basis $\rightarrow$ connection between $u_i$ and $y_i$
 * measure for connection: regression coefficient $b$
+* new model can be interpreted as regression
+
+\begin{equation}
+u_i = y_{ij} - \mu_i - e_{ij}^* \notag
+\end{equation}
+
+## Regression Coefficient
 
 \vspace{-2ex}
 \begin{align}
@@ -157,11 +165,11 @@ R = i * r_{u,y}^2 * \sigma_y = i * h^2 * \sigma_y \notag
 * Additional component of variation
 
 \begin{equation}
-var(y) = var(g) + var(pe) + var(te) \notag
+var(y) = var(u) + var(pe) + var(te) \notag
 \end{equation}
 
 \begin{equation}
-t = \frac{var(g) + var(pe)}{var(y)} \notag
+t = \frac{var(u) + var(pe)}{var(y)} \notag
 \end{equation}
 
 * Predicted breeding value
@@ -178,11 +186,11 @@ b = \frac{cov(u,\tilde{y})}{var(\tilde{y})} \notag
 \end{equation}
 
 \begin{equation}
-cov(u,\tilde{y}) = cov(u, g + pe + {1\over n} \sum_{k=1}^n te_k) = \sigma_u^2 \notag
+cov(u,\tilde{y}) = cov(u, u + pe + {1\over n} \sum_{k=1}^n te_k) = \sigma_u^2 \notag
 \end{equation}
 
 \begin{equation}
-var(\tilde{y}) = var(g) + var(pe) + {1\over n} var(te) \notag
+var(\tilde{y}) = var(u) + var(pe) + {1\over n} var(te) \notag
 \end{equation}
 
 \begin{align}
@@ -210,22 +218,44 @@ b &= \frac{cov(u,\tilde{y})}{var(\tilde{y})} \notag \\
 where 
 
 \begin{equation}
-b = \frac{cov(u, \bar{y})}{var(\bar{y})} \notag
+b = \frac{cov(u_i, \bar{y_i})}{var(\bar{y_i})} \notag
 \end{equation}
 
 ## Covariance and Variance
 
 \begin{align}
-cov(u, \bar{y}) &= cov(u, {1\over 2}u_s + {1\over 2}u_d + {1\over n}\sum_{k=1}^n m_k + {1\over n}\sum_{k=1}^n e_k) \notag \\
-                &= cov(u, {1\over 2}u_s) \notag \\
-                &= {1\over 2} cov(u, u_s) \notag \\
-                &= {1\over 2} \sigma_u^2 \notag
+cov(u_i, \bar{y_i}) &= cov(u_i, {1\over 2}u_i 
+                       + {1\over 2}{1\over n}\sum_{k=1}^n u_{d,i} 
+                       + {1\over n}\sum_{k=1}^n m_k 
+                       + {1\over n}\sum_{k=1}^n e_k) \notag \\
+                &= cov(u_i, {1\over 2}u_i) \notag \\
+                &= {1\over 2} cov(u_i, u_i) = {1\over 2} \sigma_u^2 \notag
 \end{align}
 
 \begin{equation}
-var(\bar{y}) = (t + (1-t)/n) \sigma_y^2 \notag
+var(\bar{y_i}) = (t + (1-t)/n) \sigma_y^2 \notag
 \end{equation}
 
+with $t = \sigma_u^2 / 4$
+
+## Intra-Class $t$
+
+* Progeny mean
+\begin{align}
+\bar{y_i} &= {1 \over n} \sum_{k=1}^ny_k = {1 \over n} \sum_{k=1}^n u_k 
+             + {1 \over n} \sum_{k=1}^n e_k  \notag \\
+          &= {1 \over n} \sum_{k=1}^n (1/2 u_i + 1/2 u_{d,k}) 
+             + {1 \over n} \sum_{k=1}^n e_k  \notag \\
+          &= {1 \over 2} u_i + {1 \over n} \sum_{k=1}^n 1/2 u_{d,k} 
+             + {1 \over n} \sum_{k=1}^n e_k  \notag
+\end{align}
+
+* Variance
+\begin{align}
+var(\bar{y_i}) &= var({1 \over 2} u_i) + var({1 \over n} \sum_{k=1}^n 1/2 u_{d,k}) + var({1 \over n} \sum_{k=1}^n e_k) \notag
+\end{align}
+
+with $cov(.) = 0$, $t = var({1 \over 2} u_i) / var(y) = h^2/4$
 
 ## Results
 \begin{align}

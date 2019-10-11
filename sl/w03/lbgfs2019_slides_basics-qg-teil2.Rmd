@@ -91,19 +91,19 @@ where $I_{AB}$:  deviation from additively combining $A$ and $B$
 * Decomposition of $V_A$ and $V_B$ as before and re-grouping additive and dominance terms
 
 \begin{equation}
-V = \mu + A + D + I_{AB} \notag
+V = \mu + U + D + I_{AB} \notag
 \end{equation}
 
-where $A$ : breeding values and $D$: Dominance deviations
+where $U$ : breeding values and $D$: Dominance deviations
 
 
 ## Interaction Variance
 * Interaction deviation lead to new variance component $\sigma_I^2$
 
 \begin{align}
-\sigma_G^2 &= var(V) = var(\mu + A + D + I_{AB}) \notag \\
-           &= var(A) + var(D) + var(I_{AB}) \notag \\
-           &= \sigma_A^2 + \sigma_D^2 + \sigma_I^2 \notag
+\sigma_G^2 &= var(V) = var(\mu + U + D + I_{AB}) \notag \\
+           &= var(U) + var(D) + var(I_{AB}) \notag \\
+           &= \sigma_U^2 + \sigma_D^2 + \sigma_I^2 \notag
 \end{align}
 
 
