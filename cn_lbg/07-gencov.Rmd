@@ -3,7 +3,7 @@
 s_this_rmd_file <- rmdhelp::get_this_rmd_file()
 mrmt$set_this_rmd_file(ps_this_rmd_file = s_this_rmd_file)
 ```
-The prediction of breeding values using BLUP as shown in chapter \@ref(blup) uses linear mixed effects models where the breeding value of each animal is included as a random effect. Linear mixed effect models in general and specifically Hendersons mixed model equations require us to be able to specify the variance-covariance matrix of all random effects. When using the animal model, the breeding value of each animal is included as a random effect in the linear mixed effects model. As a consequence of that we need to determine the covariance between the true breeding values of all animals. Figure \@ref(fig:animalcov) tries to display the structure of the required variance-covariance diagrammatically.
+The prediction of breeding values using BLUP as shown in chapter \@ref(blup) uses linear mixed effects models where the breeding value of each animal is included as a random effect. Linear mixed effect models in general and specifically Henderson's mixed model equations require us to be able to specify the variance-covariance matrix of all random effects. When using the animal model, the breeding value of each animal is included as a random effect in the linear mixed effects model. As a consequence of that we need to determine the covariance between the true breeding values of all animals. Figure \@ref(fig:animalcov) tries to display the structure of the required variance-covariance diagrammatically.
 
 ```{r animalcov, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg", fig.cap="Genetic Covariance Between Animals"}
 #rmddochelper::use_odg_graphic(ps_path = "odg/animalcov.odg")
@@ -37,9 +37,9 @@ The notations inside of the symbols stand for the different genotypes of the ani
 
 
 ## Numerator Relationship Matrix {#numeratorrelationshipmatrix} 
-The probability of identical genes by descent (IBD) occurring in two individuals is termed the coancestry or the coefficient of kinship [@FM1996]. The additive genetic relationship between two individuals is twice their coancestry. The matrix that expresses the additive genetic relationship among animals in a population is called the __numerator relationship matrix__ $A$. The matrix $A$ is symmetric and its diagonal elements $(A)_{ii}$ are equal to $1 + F_i$ where $F_i$ is the __coefficient of inbreeding __ of animal $i$. The coefficient of inbreeding $F_i$ indicates whether an animal $i$ is inbred or not. $F_i$ is defined to be half the additive genetic relationship between the parents of $i$. Hence the diagonal element $(A)_{ii}$ of matrix $A$ corresponds to twice the probability that two gametes taken at random from an animal $i$ will carry IBD-alleles.
+The probability of identical genes by descent (IBD) occurring in two individuals is termed the co-ancestry or the coefficient of kinship [`r mrmt$add('Falconer1996')`]. The additive genetic relationship between two individuals is twice their co-ancestry. The matrix that expresses the additive genetic relationship among animals in a population is called the __numerator relationship matrix__ $A$. The matrix $A$ is symmetric and its diagonal elements $(A)_{ii}$ are equal to $1 + F_i$ where $F_i$ is the __coefficient of inbreeding __ of animal $i$. The coefficient of inbreeding $F_i$ indicates whether an animal $i$ is inbred or not. $F_i$ is defined to be half the additive genetic relationship between the parents of $i$. Hence the diagonal element $(A)_{ii}$ of matrix $A$ corresponds to twice the probability that two gametes taken at random from an animal $i$ will carry IBD-alleles.
 
-The off-diagonal elements $(A)_{ij}$ equals the numerator of the coefficent of relationship between animals $i$ and $j$. Multiplying the matrix $A$ by the additive genetic variance $\sigma_u^2$ leads to the covariance among breeding values. Thus if $u_i$ is the breeding value of animal $i$ then 
+The off-diagonal elements $(A)_{ij}$ equals the numerator of the coefficient of relationship between animals $i$ and $j$. Multiplying the matrix $A$ by the additive genetic variance $\sigma_u^2$ leads to the covariance among breeding values. Thus if $u_i$ is the breeding value of animal $i$ then 
 
 \begin{equation}
 var(u_i) = (A)_{ii} \sigma_u^2 = (1 + F_i) \sigma_u^2
@@ -50,14 +50,14 @@ var(u_i) = (A)_{ii} \sigma_u^2 = (1 + F_i) \sigma_u^2
 ### Algorithm To Compute $A$ {#algorithmtocomputea}
 The matrix $A$ can be computed using either the 
 
-1. path coefficient method od 
+1. path coefficient method or 
 2. recursive method.
 
 The second method is especially suitable for an implementation by a software program. In what follows the recursive method to compute the components of $A$ is described now. Initially, animals in a pedigree are numbered from $1$ to $n$ and ordered such that parents precede their progeny. The following rules are then  used to compute the components of $A$. 
 
 * If both parents $s$ and $d$ of animal $i$ are known then 
     + the diagonal element $(A)_{ii}$ corresponds to: $(A)_{ii} = 1 + F_i = 1 + {1\over 2} (A)_{sd}$ and
-    + the offdiagonal element $(A)_{ji}$ is computed as:  $(A)_{ji} = {1\over 2} ((A)_{js} + (A)_{jd})$
+    + the off-diagonal element $(A)_{ji}$ is computed as:  $(A)_{ji} = {1\over 2} ((A)_{js} + (A)_{jd})$
     + because $A$ is symmetric $(A)_{ji} = (A)_{ij}$
     
 * If only one parent $s$ is known and assumed unrelated to the mate
@@ -74,7 +74,7 @@ The second method is especially suitable for an implementation by a software pro
 suppressPackageStartupMessages( library(pedigreemm) )
 n_nr_ani_ped <- 6
 n_nr_parent <- 2
-tbl_ped <- dplyr::data_frame(Calf = c((n_nr_parent+1):n_nr_ani_ped),
+tbl_ped <- tibble::tibble(Calf = c((n_nr_parent+1):n_nr_ani_ped),
                              Sire = c(1, 1, 4, 5),
                              Dam  = c(2, NA, 3, 2))
 ped <- pedigree(sire = c(rep(NA, n_nr_parent), tbl_ped$Sire), dam = c(rep(NA, n_nr_parent), tbl_ped$Dam), label = as.character(1:n_nr_ani_ped))
@@ -84,8 +84,9 @@ matAinv <- as.matrix(getAInv(ped = ped))
 
 We are given the following pedigree and we want to compute the matrix $A$ using the recursive method described in \@ref(algorithmtocomputea). 
 
-```{r tabpedexample, echo=FALSE}
+```{r tabpedexample, echo=FALSE, results='asis'}
 knitr::kable(tbl_ped,
+             format = 'latex',
              booktabs = TRUE,
              longtable = TRUE,
              caption = "Example Pedigree To Compute Additive Genetic Relationship Matrix")
@@ -124,14 +125,14 @@ The general form of Henderson's mixed model equations as shown in \@ref(eq:mixed
 3. The inverse variance-covariance matrix $R^{-1}$ for the residuals $e$ and
 4. The inverse variance-covariance matrix $G^{-1}$ for the random breeding values $a$. 
 
-When using the animal model as described in section \@ref(#animalmodel), we have seen in \@ref(eq:genvarcovarmatrixanimalmodel) that $G$ corresponds to the product of the numerator relationship matrix $A$ and the genetic additive variance $\sigma_a^2$. But the mixed model equations depend on the inverse $G^{-1}$ of $G$ which means
+When using the animal model as described in section \@ref(#animalmodel), we have seen in \@ref(eq:genvarcovarmatrixanimalmodel) that $G$ corresponds to the product of the numerator relationship matrix $A$ and the genetic additive variance $\sigma_u^2$. But the mixed model equations depend on the inverse $G^{-1}$ of $G$ which means
 
 \begin{equation}
 G^{-1} = (A * \sigma_u^2)^{-1} = A^{-1} * {1\over \sigma_u^2}
 (\#eq:ginvformme)
 \end{equation}
 
-From \@ref(eq:ginvformme) we can see that in order to be able to set up the mixed model equations for an animal model, we need the inverse numerator relationship matrix $A^{-1}$. Because in practical routine predictions of breeding values, we have something in the order of 10 million animals that we predict breeding values for. Hence the matrix $A$ has 10 million rows and 10 million columns. A matrix of that size cannot be inverted explicitly with commonly known methods such as described under https://en.wikipedia.org/wiki/Invertible_matrix. This would have been the end of the BLUP animal model, if not Henderson published in [@Henderson1976] a set of simple rules to directly construct the matrix $A^{-1}$ without setting up the numerator relationship matrix.
+From \@ref(eq:ginvformme) we can see that in order to be able to set up the mixed model equations for an animal model, we need the inverse numerator relationship matrix $A^{-1}$. Because in practical routine predictions of breeding values, we have something in the order of 10 million animals that we predict breeding values for. Hence the matrix $A$ has 10 million rows and 10 million columns. A matrix of that size cannot be inverted explicitly with commonly known methods such as described under https://en.wikipedia.org/wiki/Invertible_matrix. This would have been the end of the BLUP animal model, if not Henderson published in [`r mrmt$add('Henderson1976')`] a set of simple rules to directly construct the matrix $A^{-1}$ without setting up the numerator relationship matrix.
 
 
 ## Structure of $A^{-1}$
@@ -146,12 +147,13 @@ tbl_ped_simple <- dplyr::data_frame(Calf = c(1:n_nr_ani_ped),
                              Sire = c(NA, NA, NA, 1, 3),
                              Dam  = c(NA, NA, NA, 2, 2))
 ped_simple <- pedigree(sire = tbl_ped_simple$Sire, dam = tbl_ped_simple$Dam, label = as.character(1:n_nr_ani_ped))
-matA_simple <- as.matrix(getA(ped = ped_simple))
+matu_simple <- as.matrix(getA(ped = ped_simple))
 matAinv_simple <- as.matrix(getAInv(ped = ped_simple))
 ```
 
 ```{r tabpedsimpleexample, echo=FALSE}
 knitr::kable(tbl_ped_simple,
+             format = 'latex',
              booktabs = TRUE,
              longtable = TRUE,
              caption = "Pedigree Used To Compute Inverse Numerator Relationship Matrix")
@@ -162,7 +164,7 @@ The numerator relationship matrix $A$ for the pedigree shown in Table \@ref(tab:
 ```{r displaymatrixasimple, echo=FALSE, results='asis'}
 cat("\\begin{equation}\n")
 cat("A = \\left[")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matA_simple, pnDigits = 4), sep = "\n"), "\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matu_simple, pnDigits = 4), sep = "\n"), "\n")
 cat("\\right]\n")
 cat("\\label{eq:numeratorrelationshipmatrix}\n")
 cat("\\end{equation}\n")
@@ -237,7 +239,7 @@ where  &       &  \\
        &  $m$  &  vector of mendelian sampling terms
 \end{tabular}
 
-Equation \@ref(eq:decomposetruebreedingvaluematvec) can be interpreted as regression of the true breeding values onto parental breeding values. In such a regression the random term $m$ is like a residual term. The genetic meaning of $m$ corresponds to the deviation of $u_i$ from the full-sib average of the true breeding values within the nuclear family with parents $s$ and $d$. The term $m$ is called __mendelian sampling__ term. The source of $m$ is the fact that during meiosis, parental alleles are randomly assigned to each progeny. Bulmer [@Bulmer1971] has shown that $m_i$ are independent from true breeding values of parents $s$ and $d$. Using this result, we take the variance on both sides of \@ref(eq:decomposeanimaltruebreedingvalue) leading to
+Equation \@ref(eq:decomposetruebreedingvaluematvec) can be interpreted as regression of the true breeding values onto parental breeding values. In such a regression the random term $m$ is like a residual term. The genetic meaning of $m$ corresponds to the deviation of $u_i$ from the full-sib average of the true breeding values within the nuclear family with parents $s$ and $d$. The term $m$ is called __mendelian sampling__ term. The source of $m$ is the fact that during meiosis, parental alleles are randomly assigned to each progeny. Bulmer [`r mrmt$add('Bulmer1971')`] has shown that $m_i$ are independent from true breeding values of parents $s$ and $d$. Using this result, we take the variance on both sides of \@ref(eq:decomposeanimaltruebreedingvalue) leading to
 
 \begin{align}
 var(u_i)  &=  var({1\over 2} u_s + {1\over 2} u_d + m_i) \notag \\
@@ -273,30 +275,29 @@ u_i = {1\over 2} u_s + {1\over 2} u_d + m_i
 (\#eq:decomposeanimaltruebreedingvalue)
 \end{equation}
 
-<!-- continue here -->
 
 \begin{align}
-a_i       &=  {1\over 2} a_s + m_i \notag \\
-var(m_i)  &=  \left(1 - {1\over 4}(1+ F_s)\right) \sigma_a^2 \notag \\
-          &=  \left({3\over 4} - {1\over 4}F_s\right) \sigma_a^2
+u_i       &=  {1\over 2} u_s + m_i \notag \\
+var(m_i)  &=  \left(1 - {1\over 4}(1+ F_s)\right) \sigma_u^2 \notag \\
+          &=  \left({3\over 4} - {1\over 4}F_s\right) \sigma_u^2
 (\#eq:mendeliansamplingvarianceoneparentknown)          
 \end{align}
 
 When both parents are unknown, we get
 
 \begin{align}
-a_i       &=  m_i \notag \\
-var(m_i)  &=  \sigma_a^2
+u_i       &=  m_i \notag \\
+var(m_i)  &=  \sigma_u^2
 (\#eq:mendeliansamplingvariancebothparentunknown)          
 \end{align}
 
 
 ### Decomposition of $A$ {#decompositionofa}
-The true breeding values $a_s$ of sire $s$ and $a_d$ of dam $d$ can be decomposed in a similar way as shown for the true breeding value $a_i$ in \@ref(eq:decomposeanimaltruebreedingvalue). 
+The true breeding values $u_s$ of sire $s$ and $u_d$ of dam $d$ can be decomposed in a similar way as shown for the true breeding value $u_i$ in \@ref(eq:decomposeanimaltruebreedingvalue). 
 
 \begin{align}
-a_s  &=  {1\over 2} a_{ss} + {1\over 2} a_{ds} + m_s \notag \\
-a_d  &=  {1\over 2} a_{sd} + {1\over 2} a_{dd} + m_d
+u_s  &=  {1\over 2} u_{ss} + {1\over 2} u_{ds} + m_s \notag \\
+u_d  &=  {1\over 2} u_{sd} + {1\over 2} u_{dd} + m_d
 (\#eq:decomposeparenttruebreedingvalue)
 \end{align}
 
@@ -308,16 +309,16 @@ where  &  &  \\
        &  $dd$  &  dam of $d$  
 \end{tabular}
 
-Using \@ref(eq:decomposeparenttruebreedingvalue) together with \@ref(eq:decomposeanimaltruebreedingvalue) leads to the following expression for $a_i$
+Using \@ref(eq:decomposeparenttruebreedingvalue) together with \@ref(eq:decomposeanimaltruebreedingvalue) leads to the following expression for $u_i$
 
 \begin{align}
-a_i  &=  {1\over 2} a_s + {1\over 2} a_d + m_i \notag \\
-     &=  {1\over 2} ({1\over 2} a_{ss} + {1\over 2} a_{ds} + m_s)+ {1\over 2} ({1\over 2} a_{sd} + {1\over 2} a_{dd} + m_d) + m_i \notag \\
-     &=  {1\over 4} a_{ss} + {1\over 4} a_{ds} + {1\over 4} a_{sd} + {1\over 4} a_{dd} + {1\over 2} m_s + {1\over 2} m_d + m_i  \notag
+u_i  &=  {1\over 2} u_s + {1\over 2} u_d + m_i \notag \\
+     &=  {1\over 2} ({1\over 2} u_{ss} + {1\over 2} u_{ds} + m_s)+ {1\over 2} ({1\over 2} u_{sd} + {1\over 2} u_{dd} + m_d) + m_i \notag \\
+     &=  {1\over 4} u_{ss} + {1\over 4} u_{ds} + {1\over 4} u_{sd} + {1\over 4} u_{dd} + {1\over 2} m_s + {1\over 2} m_d + m_i  \notag
 (\#eq:recursivedecomposeanimaltruebreedingvalue)
 \end{align}
 
-This type of decomposition can also be done for the grand-parents of animal $i$ and further back until we get to true breeding values of animals with unknown parents. Animals of ancestor generations with unknown parents are called __founder population__. The process of decomposing true breeding values back through all generations of a pedigree is called __recursive decomposition__ of animal $i$'s true breeding value. Because we know from \@ref(eq:mendeliansamplingvariancebothparentunknown) that the decomposition of true breeding values $a_k$ for an animal $k$ with unknown parents is $a_k = m_k$, the result of the recursive decomposition of $a_i$ is a sum of mendelian sampling terms linking the ancestors of $i$ back to the founder population. 
+This type of decomposition can also be done for the grand-parents of animal $i$ and further back until we get to true breeding values of animals with unknown parents. Animals of ancestor generations with unknown parents are called __founder population__. The process of decomposing true breeding values back through all generations of a pedigree is called __recursive decomposition__ of animal $i$'s true breeding value. Because we know from \@ref(eq:mendeliansamplingvariancebothparentunknown) that the decomposition of true breeding values $u_k$ for an animal $k$ with unknown parents is $u_k = m_k$, the result of the recursive decomposition of $u_i$ is a sum of mendelian sampling terms linking the ancestors of $i$ back to the founder population. 
 
 Ordering all animals in a pedigree according to their age and writing the result of the recursive decomposition of all true breeding values in matrix-vector notation leads to
 
@@ -329,15 +330,15 @@ a = L \cdot m
 The matrix $L$ is a lower triangular matrix. The row corresponding to animal $i$ is the average of the rows in $L$ corresponding to parents $s$ and $d$ of $i$. The matrix $L$ contains the path of the gene flow from the base population to all animals in the population. From equation \@ref(eq:resultrecursivedecomposition), we are computing the variance of all true breeding values which leads to
 
 \begin{align}
-var(a)  &=  var(L \cdot m) \notag \\
+var(u)  &=  var(L \cdot m) \notag \\
         &=  L \cdot var(m) \cdot L^T \notag \\
-        &=  L \cdot (D \sigma_a^2) \cdot L^T \notag \\
-        &=  L \cdot D \cdot L^T  \sigma_a^2 \notag
-        &=  A \sigma_a^2
+        &=  L \cdot (D \sigma_u^2) \cdot L^T \notag \\
+        &=  L \cdot D \cdot L^T  \sigma_u^2 \notag
+        &=  A \sigma_u^2
 (\#eq:vararecursivedecomposition)
 \end{align}
 
-From \@ref(eq:vararecursivedecomposition), the `LDL`-decomposition of $A$ follows directly as $A = LDL^T$. The single components $m_i$ are independent of each other. This also means that $cov(m_i, m_j) = 0$ for $i \ne j$. Hence the matrix $D$ is a diagonal matrix. In section \@ref(#variancemendeliansamplingterm) we have seen that $var(m_i)$ always contain $\sigma_a^2$ as a factor. Hence it is reasonable to express $var(m)$ as a product of a diagonal matrix $D$ times the genetic additive variance $\sigma_a^2$. The diagonal elements of matrix $D$ are computed as shown in section \@ref(#variancemendeliansamplingterm).
+From \@ref(eq:vararecursivedecomposition), the `LDL`-decomposition of $A$ follows directly as $A = LDL^T$. The single components $m_i$ are independent of each other. This also means that $cov(m_i, m_j) = 0$ for $i \ne j$. Hence the matrix $D$ is a diagonal matrix. In section \@ref(#variancemendeliansamplingterm) we have seen that $var(m_i)$ always contain $\sigma_u^2$ as a factor. Hence it is reasonable to express $var(m)$ as a product of a diagonal matrix $D$ times the genetic additive variance $\sigma_u^2$. The diagonal elements of matrix $D$ are computed as shown in section \@ref(#variancemendeliansamplingterm).
 
 The mixed model equations require the inverse numerator relationship matrix $A^{-1}$. Thanks to the `LDL`-decomposition of $A$, we can compute $A^{-1}$ as
 
@@ -389,7 +390,7 @@ The contributions to rows and columns corresponding to parents $s$ and $d$ are o
 
 
 ## Computing Inbreeding Coefficients {#computinginbreedingcoefficients}
-Inbreeding coefficients can be computed using different methods. From all these methods, we are just showing the one method which was described in [@Quaas1976]. This method is based on the properties of a second decomposition of the numerator relationship matrix $A$ which is called the __cholesky decomposition__. The cholesky decomposition of a matrix $A$ corresponds to 
+Inbreeding coefficients can be computed using different methods. From all these methods, we are just showing the one method which was described in [`r mrmt$add('Quaas1976')`]. This method is based on the properties of a second decomposition of the numerator relationship matrix $A$ which is called the __cholesky decomposition__. The cholesky decomposition of a matrix $A$ corresponds to 
 
 \begin{equation}
 A = RR^T
@@ -511,7 +512,7 @@ With that we have shown how to compute all elements of $R$ recursively. This req
 
 <!--
 ## Appendix: Derivation of Diagonalelements of Numerator Relationship Matrix $A$
-The material shown in this section is based on chapter 15 of [@FM1996]. (TBC)
+The material shown in this section is based on chapter 15 of [@Falconer1996]. (TBC)
 -->
 
 
