@@ -1,0 +1,270 @@
+---
+title: "Genetic Covariances Between Animals"
+author: "Peter von Rohr"
+date: "25 Oktober 2019"
+output:
+  beamer_presentation:
+    includes:
+      in_header: header.tex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = "asis")
+knitr::knit_hooks$set(hook_convert_odg = rmdhelp::hook_convert_odg)
+```
+
+## BLUP Animal Model
+
+* Traditional prediction of breeding values
+    + i.e. no genomic information available
+    + de-facto standard method
+    
+* Model recap
+
+$$y = X\beta + Zu + e$$
+\begin{tabular}{lll}
+where  &       &     \\
+       &  $y$  &   vector of length $n$ of phenotypic information \\
+       &  $\beta$  &  vector of length $p$ of unknown fixed effects \\
+       &  $X$      &  $n \times p$ incidence matrix \\
+       &  $u$      &  vector of length $q$ of unknown random breeding values \\
+       &  $Z$      &  $n \times q$ incidence matrix \\
+       &  $e$      &  vector of length $n$ of unknown random residuals
+\end{tabular}  
+
+
+## Example
+```{r numexblupanimalmodel, echo=FALSE, results='asis'}
+n_nr_ani_ped <- 6
+n_nr_parent <- 2
+tbl_ped <- tibble::tibble(Calf = c((n_nr_parent+1):n_nr_ani_ped),
+                             Sire = c(1, 1, 4, 5),
+                             Dam  = c(2, NA, 3, 2),
+                             Herd = c(1, 2, 2, 1),
+                             WWG  = c(4.5, 2.9, 3.9, 3.5))
+knitr::kable(tbl_ped, booktabs = TRUE)
+```
+
+
+## Animal Model Setup
+
+* Convert information from data into model
+
+```{r numexanimodsetup, echo=FALSE, results='hide'}
+vec_y = as.vector(tbl_ped$WWG)
+fact_herd <- as.factor(tbl_ped$Herd)
+n_nr_obs <- length(vec_y)
+n_nr_herds <- nlevels(fact_herd)
+### # fixed effects
+mat_X <- matrix(c(1, 0,
+                  0, 1,
+                  0, 1,
+                  1, 0), ncol = n_nr_herds, byrow = TRUE)
+vec_beta <- rmddochelper::vecGetVecElem(psBaseElement = "\\beta", pnVecLen = n_nr_herds, psResult = "latex")
+### # random effects
+n_nr_ani <- 6
+mat_Z <- cbind(matrix(0, nrow = n_nr_obs, ncol = (n_nr_ani-n_nr_obs)), diag(1, nrow = n_nr_obs))
+vec_a <- rmddochelper::vecGetVecElem(psBaseElement = "u", pnVecLen = n_nr_ani, psResult = "latex")
+### # residuals
+vec_e <- rmddochelper::vecGetVecElem(psBaseElement = "e", pnVecLen = n_nr_obs, psResult = "latex")
+```
+
+* Put observations in vector $y$
+
+```{r numexanidisplay, echo=FALSE, results='asis'}
+cat("$$\n")
+cat("y = \\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_y, pnDigits = 1), "\n"))
+cat("\\right]\n")
+# cat(" = \n")
+# cat("\\left[\n")
+# cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_X, pnDigits = 0), "\n"), "\n")
+# cat("\\right]\n")
+# cat("\\left[\n")
+# cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_beta), "\n"), "\n")
+# cat("\\right]\n")
+# cat(" + \n")
+# cat("\\left[\n")
+# cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_Z, pnDigits = 0), "\n"), "\n")
+# cat("\\right]\n")
+# cat("\\left[\n")
+# cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_a), "\n"), "\n")
+# cat("\\right]\n")
+# cat(" + \n")
+# cat("\\left[\n")
+# cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_e), "\n"), "\n")
+# cat("\\right]\n")
+cat("$$\n")
+```
+
+* Fixed effects such as `herd` go in vector $\beta$ and $X$ links observations to components in $\beta$
+
+```{r, echo=FALSE, results='asis'}
+cat("$$\n")
+cat(" X = \n")
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_X, pnDigits = 0), "\n"))
+cat("\\right] \\text{, }")
+
+cat("\\beta = \\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_beta), "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+
+## Breeding Values As Random Effects and Residuals
+
+```{r echo=FALSE, results='asis'}
+cat("$$\n")
+cat("Z = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_Z, pnDigits = 0), "\n"))
+cat("\\right] \\text{, }")
+cat("u = \\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_a), "\n"))
+cat("\\right] \\text{, }")
+cat("e = \\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_e), "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+
+## Putting Everything Together
+
+```{r, echo=FALSE, results='asis'}
+cat("$$\n")
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_y, pnDigits = 1), "\n"))
+cat("\\right]\n")
+cat(" = \n")
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_X, pnDigits = 0), "\n"))
+cat("\\right]")
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_beta), "\n"))
+cat("\\right]\n")
+cat(" + \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_Z, pnDigits = 0), "\n"))
+cat("\\right] ")
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_a), "\n"))
+cat("\\right] ")
+cat(" + \\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_e), "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+
+## Solution with Mixed Model Equations
+
+* General form
+
+\begin{equation}
+\left[
+  \begin{array}{lr}
+  X^T R^{-1} X  &  X^T R^{-1} Z \\
+  Z^T R^{-1} X  &  Z^T R^{-1} Z + G^{-1}
+  \end{array}
+\right]
+\left[
+  \begin{array}{c}
+  \hat{\beta} \\
+  \hat{u}
+  \end{array}
+\right]
+=
+\left[
+  \begin{array}{c}
+  X^T R^{-1} y \\
+  Z^T R^{-1} y
+  \end{array}
+\right] \notag
+\end{equation}
+
+* Assume $R = I * \sigma_e^2$ and we set $G = A * \sigma_u^2$
+
+\begin{equation}
+\left[
+  \begin{array}{lr}
+  X^T  X  &  X^T  Z \\
+  Z^T  X  &  Z^T  Z + \lambda * A^{-1}
+  \end{array}
+\right]
+\left[
+  \begin{array}{c}
+  \hat{\beta} \\
+  \hat{u}
+  \end{array}
+\right]
+=
+\left[
+  \begin{array}{c}
+  X^T  y \\
+  Z^T  y
+  \end{array}
+\right] \notag
+\end{equation}
+
+with $\lambda = \sigma_e^2 / \sigma_u^2$
+
+
+## Components of Mixed Model Equations
+
+```{r, echo=FALSE, results='asis'}
+### # preliminary computations
+mat_xtx <- crossprod(mat_X)
+mat_xtz <- crossprod(mat_X, mat_Z)
+mat_ztx <- t(mat_xtz)
+mat_ztz <- crossprod(mat_Z)
+mat_xty <- crossprod(mat_X, vec_y)
+mat_zty <- crossprod(mat_Z, vec_y)
+
+### # show components
+cat("$$\n")
+cat("X^TX = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(mat_xtx, pnDigits = 0), "\n"))
+cat("\\right] \\text{, } ")
+cat("X^TZ = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(mat_xtz, pnDigits = 0), "\n"))
+cat("\\right]")
+cat("$$\n")
+cat("$$\n")
+cat("Z^TZ = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(mat_ztz, pnDigits = 0), "\n"))
+cat("\\right] \\text{, } ")
+cat("X^Ty = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(mat_xty, pnDigits = 0), "\n"))
+cat("\\right] \\text{, } ")
+cat("Z^Ty = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(mat_zty, pnDigits = 0), "\n"))
+cat("\\right]")
+cat("$$\n")
+```
+
+
+## Numerator Relationship Matrix
+
+* Only component missing in mixed model equations: matrix $A$ 
+* $A$ is called the __numerator relationship matrix__
+* Properties of $A$
+
+$$var(a) = G = A * \sigma_u^2$$
+
+
+## Meaning of $A$
+
+```{r animalcov, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg"}
+#rmddochelper::use_odg_graphic(ps_path = "odg/animalcov.odg")
+knitr::include_graphics(path = "odg/animalcov.png")
+``` 
+
+
+## Elements of $A$
+
+* Diagonal elements $(A)_{ii} = 1 + F_i$ where $F_i$: inbreeding coefficient of $i$
+* Offdiagonal elements $(A)_{ij} = cov(u_i, u_j) / \sigma_u^2$
+* Symmetric
+* Definition leads to recursive algorithm for computing components of $A$
+
