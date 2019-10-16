@@ -10,7 +10,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, results = "asis")
-knitr::knit_hooks$set(hook_convert_odg = rmddochelper::hook_convert_odg)
+knitr::knit_hooks$set(hook_convert_odg = rmdhelp::hook_convert_odg)
 ```
 
 ## General Principle
@@ -21,10 +21,12 @@ knitr::knit_hooks$set(hook_convert_odg = rmddochelper::hook_convert_odg)
 2. Multiply corrected information source by an appropriate factor
 
 * Regression Method
-$$\hat{a} = b (y - \mu)$$
+$$\hat{u} = b (y - \mu)$$
 
-* Selection Index
-$$ \hat{a} = I = b^T y^*$$
+* Selection Index 
+    + will be presented later
+    + corresponds to multiple regression approach
+$$ \hat{u} = I = b^T y^*$$
 
 where $b = P^{-1}Gw$ and $y^*$ corrected information sources.
 
@@ -34,7 +36,7 @@ where $b = P^{-1}Gw$ and $y^*$ corrected information sources.
 * Population mean is ideal as correction
 
 $$
-y = \mu + a + e  \qquad \rightarrow \qquad \bar{y} = \bar{\mu} + \bar{a} + \bar{e} = \mu
+y = \mu + u + e  \qquad \rightarrow \qquad \bar{y} = \bar{\mu} + \bar{u} + \bar{e} = \mu
 $$
 
 * Because performances are observed in different
@@ -51,16 +53,16 @@ $$
 * With small comparison groups, it is more likely that mean breeding value of animals in a single group is not $0$
 * Average performance of all animals in a comparison group
 
-$$\bar{y}_{CG} = \mu + \bar{a}_{CG} + \bar{e}_{CG}$$
-* If $\bar{a}_{CG}$ is not $0$, the predicted breeding value $\hat{a}_i$ of animal $i$ is
+$$\bar{y}_{CG} = \mu + \bar{u}_{CG} + \bar{e}_{CG}$$
+* If $\bar{u}_{CG}$ is not $0$, the predicted breeding value $\hat{u}_i$ of animal $i$ is
 
 \begin{align}
-\hat{a}_i = I  &=  b(y_i - (\mu + \bar{a}_{CG})) \notag \\
-   &=  b(y_i - \mu) - b\bar{a}_{CG} \notag \\
-   &=  \hat{a}_i  - b\bar{a}_{CG} \notag
+\hat{u}_i = I  &=  b(y_i - (\mu + \bar{u}_{CG})) \notag \\
+   &=  b(y_i - \mu) - b\bar{u}_{CG} \notag \\
+   &=  \hat{u}_i  - b\bar{u}_{CG} \notag
 \end{align}
 
-where $b\bar{a}_{CG}$ is called bias. 
+where $b\bar{u}_{CG}$ is called bias. 
 
 
 ## Solution - BLUP
@@ -69,13 +71,13 @@ where $b\bar{a}_{CG}$ is called bias.
 * Estimates environmental effects at the same time as breeding values are predicted
 * Linear mixed effects model
 * Meaning of BLUP
-    + __B__ stands for __best__ which means that the correlation between the true ($a$) and the predicted breeding value ($\hat{a}$) is maximal or the prediction error variance ($var(a - \hat{a})$) is minimal.
-    + __L__ stands for __linear__ which means the predicted breeding values are linear functions of the observations ($y$)
-    + __U__ stands for __unbiased__ which means that the expected values of the predicted breeding values are equal to the true breeding values
+    + __B__ stands for __best__ $\rightarrow$ correlation between true ($u$) and its prediction ($\hat{u}$) is maximal or the prediction error variance ($var(u - \hat{u})$) is minimal.
+    + __L__ stands for __linear__  $\rightarrow$ predicted breeding values are linear functions of the observations ($y$)
+    + __U__ stands for __unbiased__ $\rightarrow$ expected values of the predicted breeding values are equal to the true breeding values
     + __P__ stands for __prediction__ 
 
 
-## Numeric Example
+## Example
 ```{r TableBeefExample, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
 ### # fix the numbers parents and offspring
 n_nr_sire <- 3
@@ -111,15 +113,15 @@ knitr::kable( tbl_beef_data,
 ```
 
 
-## Linear Mixed Effects Model
+## Linear Models
 
 * Simple linear model
 
 $$y_{ij} = \mu + herd_j + e_{ij}$$
 
 * Result: Estimate of effect of herd j
-* What about breeding value $a_i$ for animal $i$?
-    + Problem: breeding values have a variance $\sigma_a^2$
+* What about breeding value $u_i$ for animal $i$?
+    + Problem: breeding values have a variance $\sigma_u^2$
     + Cannot be specified in simple linear model
 
 $\rightarrow$ __Linear Mixed Effects Model__ (LME)
