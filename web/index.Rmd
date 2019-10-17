@@ -149,7 +149,7 @@ vecSlTopic[which(Date == format(as.Date("2019/10/04"), "%d.%m"))] <- paste0("[Ge
 ### # w4 w04/lbg_fs_2019_slides_gen-eval.pdf
 vecSlTopic[which(Date == format(as.Date("2019/10/11"), "%d.%m"))] <- paste0("[BLUP](", s_base_url_sl,"/w05/lbgfs2019_slides_blup.pdf)", collapse = '')
 ### # w5 w05/lbg_fs_2019_slides_selection-index.pdf
-# vecSlTopic[which(Date == format(as.Date("2019/10/18"), "%d.%m"))] <- "[]()"
+vecSlTopic[which(Date == format(as.Date("2019/10/18"), "%d.%m"))] <- paste0("[Genetic Covariance](", s_base_url_sl,"/w06/lbgfs2019_slides_gencov.pdf)", collapse = '')
 ### # w6 w06/lbg_fs_2019_slides_blup.pdf
 # vecSlTopic[which(Date == format(as.Date("2019/10/25"), "%d.%m"))] <- "[]()"
 ### # w7 w07/lbg_fs_2019_slides_pbvsi.pdf w07/lbg_fs_2019_slides_gencov.pdf
