@@ -1,0 +1,156 @@
+---
+title: Livestock Breeding and Genomics - Solution 5
+author: Peter von Rohr
+date: 2019-10-25
+#output: pdf_document 
+output:
+  bookdown::pdf_document2:
+    toc: false
+    number_sections: false
+    includes:
+      in_header: header.tex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+```
+
+```{r PrepareBeefExample, results='hide'}
+n_nr_sire <- 3
+n_nr_dam <- 8
+n_nr_parents <- n_nr_sire + n_nr_dam
+n_nr_offspring <- 16
+n_nr_animals <- n_nr_parents + n_nr_offspring
+dam_id <- rep(4:11,2)
+
+tbl_beef_data <- tibble::tibble(Animal = (n_nr_parents + 1):n_nr_animals,
+                                   Sire = c(rep(1,8), rep(2,6), rep(3,2)),
+                                   # Dam = dam_id[order(dam_id)],
+                                   # Herd = c(rep(1,4), rep(2,4), rep(1,4), rep(2,4)),
+                                   `Weaning Weight`= c(2.61,2.31,2.44,2.41,2.51,2.55,2.14,2.61,2.34,1.99,3.1,2.81,2.14,2.41,2.54,3.16))
+# names(tbl_beef_data) <- c("Animal", "Sire", "Weaning Weight")
+n_nr_observation <- nrow(tbl_beef_data)
+
+### # parameters
+h2 <- .25
+n_var_p <- round(var(tbl_beef_data$`Weaning Weight`), digits = 4)
+n_var_g <- round(h2 * n_var_p, digits = 4)
+n_pop_mean <- round(mean(tbl_beef_data$`Weaning Weight`), digits = 2)
+```
+
+## Prediction of Breeding Values Using the Regression Method
+
+We are using the dataset shown in Table \@ref(tab:TabBeefExample) for this exercise. For the animals listed in Table \@ref(tab:TabBeefExample), the weaning weight  (in 100kg) was observed as phenotypic records. The following parameters are associated with the observed data
+
+* The population mean is assumed to be equal to the average of all observations: $\mu = `r n_pop_mean`$
+* The phenotypic variance is assumed to correspond to the empirical variance from the observations and corresponds to $\sigma_p^2 = `r n_var_p`$
+* The heritability is assumed to be $h^2 = `r h2`$
+* The genetic-additive variance can be computed as $\sigma_a^2 = h^2 * \sigma_p^2 = `r h2` * `r n_var_p` = `r n_var_g`$
+
+
+```{r TabBeefExample}
+knitr::kable(tbl_beef_data, 
+             booktabs = TRUE, 
+             longtable = TRUE,
+             caption = "Example Data Set To Predict Breeding Values")
+```
+
+
+## Problem 1: Own performance
+Compute the predicted breeding values and the reliabilities for the animals listed in Table \@ref(tab:TabBeefExample). Compare the ranking of the animals according to their phenotypic values and according to their predicted breeding values. Compare the reliabilities of the predicted breeding values.  
+
+
+### Solution
+The predicted breeding values based on own performance are computed as 
+
+$$\hat{a_i} = h^2(y_i - \mu)$$
+The reliabilities are constant and correspond to
+
+$$B = r_{a,y}^2 = h^2$$
+
+The results are listed in the following table.
+
+```{r PbvOpBeef}
+suppressPackageStartupMessages( require(dplyr) )
+tbl_beef_pbv_op <- tbl_beef_data %>% 
+  mutate(`Predicted Breeding Value` = h2 * (`Weaning Weight` - n_pop_mean)) %>%
+  mutate(Reliability = h2) %>%
+  select(Animal, `Weaning Weight`, `Predicted Breeding Value`, Reliability)
+knitr::kable(tbl_beef_pbv_op,
+             booktabs = TRUE,
+             longtable = TRUE,
+             caption = "Predicted Breeding Values Using Own Performance Records")
+```
+
+The ranking according to the phenotypic records and according to the predicted breeding values are the same, because each phenotypic record is corrected for the same population mean and is multiplied with the same factor which corresponds to $h^2$. The main difference between the phenotypic records and the predicted breeding values is the variability. The predicted breeding values have a much smaller variability compared to the phenotypic records. 
+
+
+## Problem 2: Predicted Breeding Values Based on Progeny Records
+Compute the predicted breeding values and the reliabilities for the sires based on the progeny records. We are assuming that all progeny for a given sire are half-sibbs. Compare the ranking of the sires according to the average progeny performance values and according to the predicted breeding values.
+
+
+### Solution
+
+```{r PbvProgSetup, results='hide'}
+k <- (4-h2)/h2
+```
+
+The predicted breeding values for the sires based on the average performance of their progeny is computed as 
+
+$$\hat{a_i} = \frac{2n_i}{n_i + k}(\bar{y_i} - \mu)$$
+
+where $n_i$ is the number of progeny of sire $i$, $\bar{y_i}$ is the average of the performance values of the progeny of sire $i$ and $k = \frac{4-h^2}{h^2} = \frac{4 - `r h2`}{`r h2`} = `r k`$
+The reliabilities are no longer constant, but they depend on the number of progeny
+
+$$B_i = \frac{n_i}{n_i+k}$$
+
+
+### Preparatory Steps
+Before we compute the predicted values, we have to prepare a few intermediate quantities that are needed for the computation such as 
+
+* the number $n_i$ of progeny records for each sire
+* the average progeny performance value $\bar{y_i}$ for each sire
+
+
+```{r PbvPapBeefPrep}
+tbl_beef_pap <- tbl_beef_data %>%
+  group_by(Sire) %>%
+  summarise(`Number of Progeny Records` = n(), `Average Progeny Performance` = mean(`Weaning Weight`))
+knitr::kable(tbl_beef_pap, 
+             booktabs = TRUE, 
+             longtable = TRUE,
+             caption = "Intermediate Results To Predict Breeding Values")
+```
+
+
+### Compute Predicted Breeding Values and Reliabilities
+
+We are using the intermediate results to compute the predicted breeding values for each sire.
+
+```{r PbvPapBeefResult}
+tbl_beef_pap_res <- tbl_beef_pap  %>%
+  mutate( `Predicted Breeding Value` = 2 * `Number of Progeny Records` / (`Number of Progeny Records` + k) * (`Average Progeny Performance` - n_pop_mean) ) %>%
+  mutate( Reliability = `Number of Progeny Records` / (`Number of Progeny Records` + k) ) %>%
+  select( Sire, `Predicted Breeding Value`, Reliability)
+knitr::kable(tbl_beef_pap_res, 
+             booktabs = TRUE, 
+             longtable = TRUE,
+             caption = "Predicted Breeding Values and Reliabilities for all Sires")
+```
+
+
+```{r}
+### # compare rankings
+vec_order_pa <- order(tbl_beef_pap$`Average Progeny Performance`, decreasing = TRUE)
+vec_order_pbv <- order(tbl_beef_pap_res$`Predicted Breeding Value`, decreasing = TRUE)
+s_compare_result <- "not the same"
+if(all(vec_order_pa == vec_order_pbv))
+  s_compare_result <- "the same"
+
+### # compare reliabilities
+vec_order_rel <- order(tbl_beef_pap_res$`Reliability`, decreasing = TRUE)
+n_best_sire <- vec_order_rel[1]
+```
+
+The rankings of the sires according to the progeny averages and according to the predicted breeding values are `r s_compare_result`. The reliability for sire `r n_best_sire` is the highest. This is mainly due to the larger number of progeny of sire `r n_best_sire`. 
+

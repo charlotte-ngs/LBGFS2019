@@ -125,114 +125,33 @@ $$ \frac{r_{a,\bar{y}}^2}{r_{a,y}^2} = \frac{n}{1+(n-1)t} = \frac{`r nr_measure`
   = `r round(nr_measure/(1+(nr_measure-1)*rep), digits = 2)`$$
 
 
-## Problem 3: Predicted Breeding Value and Confidence Interval
-During the lecture, the concept of __reliability__ ($B$) was introduced as a measure for the accuracy of a breeding value. The reliability corresponds to the squared correlation coefficient of the true breeding value ($a$) and the selection criterion ($y$). Hence 
-
-$$B = r_{a,y}^2$$
-
-An alternative to the reliability, we can also use the standard deviation $\sqrt{var(\hat{a})}$ of the predicted breeding value to assess the accuracy of a predicted breeding value. This standard deviation of the predicted breeding values can be used to compute confidence intervals. These intervals indicate how accurate the predicted breeding value is. A narrow confidence interval means that the predicted breeding value has a high accuracy. Each confidence interval is associated with an error probability. A very common value of an error probability is $\alpha = 0.05$. This leads to a $95\%$-confidence interval.
-
-For a predicted breeding value $\hat{a}$ the following procedure can be used to compute the $95\%$-confidence interval. So far, we have used the regression method to predict breeding values. With that method the predicted breeding value is expressed as a function of the phenotypic observations ($y$). In our model that links the true breeding values to the phenotypic observations, we have seen that the phenotypes ($y$) are random variables which follow a certain distribution. The normal distribution is a reasonable assumption for the distribution of the phenotypic observations. As a consequence the predicted breeding values follow also a normal distribution. This distribution has its center at the predicted breeding value and the variance ($var(\hat{a})$) can be computed with the prediction equation for $a$. 
-
-```{r DefinePhenStd}
-phen_sd <- 20
+## Problem 3: Predict Breeding Values based on progeny records
+```{r prob3-def}
+n_nr_progeny <- 5
 ```
 
-In problem 1 where the breeding value was predicted based on an own performance records, the standard deviation $\sqrt{var(\hat{a})}$ of the predicted breeding value can be computed as follows. We assume the phenotypic standard deviation for weaning weight is `r phen_sd` kg.
+A few years later Elsa was the dam of `r n_nr_progeny` offspring. Each of the offspring has a record for birthweight. Predict the breeding value of Elsa for birthweight based on the offpsring records listed in the following table.
 
-```{r ResultHatAElSd}
-hat_a_el_sd <- h2*phen_sd
+```{r tab-prog-bw, echo=FALSE}
+vec_bw_prog <- round(geb_gew + rnorm(n_nr_progeny, mean = 0, sd = 2), digits = 0)
+tbl_prog_bw <- tibble::tibble(Offspring = c(1:n_nr_progeny),
+                              Birthweight = vec_bw_prog)
+knitr::kable(tbl_prog_bw)
 ```
+
+The mean and the heritability can be taken the same as in Problems 1 and 2 resulting in 
+
+$h^2 = $ and $\mu = $
+
+
+### Solution 
+The predicted breeding value based on progeny records is defined as
 
 \begin{equation}
-\sqrt{var(\hat{a})} = \sqrt{var(b(y-\mu))} = b \sqrt{var(y)} = h^2 \sqrt{var(y)}
-  = `r h2` * `r phen_sd` = `r hat_a_el_sd`\notag
-\label{eq:VarHatA}
+\hat{u_i} = b * (\bar{y_i} - \mu)
 \end{equation}
 
-Based on the properties of the normal distribution 95% of the probability mass are within $\pm 1.96$ standard deviations around the expected value. Therefore the lower ($ug$) and the upper ($og$) limits of the $95\%$-confidence interval are defined as 
+where $b$ is the regression coefficient which results in 
 
-```{r ConvIntHatAEl}
-conv_int_hat_a_el_ug <- hat_a_el - 1.96 * hat_a_el_sd
-conv_int_hat_a_el_og <- hat_a_el + 1.96 * hat_a_el_sd
-```
-
-$$ug = \hat{a} - 1.96 * \sqrt{var(\hat{a})} 
-     = `r hat_a_el`\ \text{kg} - 1.96 * `r hat_a_el_sd`\ \text{kg}
-     = `r conv_int_hat_a_el_ug`\ \text{kg}$$
-
-$$og = \hat{a} + 1.96 * \sqrt{var(\hat{a})} 
-     = `r hat_a_el`\ \text{kg} + 1.96 * `r hat_a_el_sd`\ \text{kg}
-     = `r conv_int_hat_a_el_og`\ \text{kg}$$
-     
-
-## Your Task
-Compute the $95\%$-confidence interval for the predicted breeding values in Problem 2.
-
-<!--    You can use the assigned variables from Problem 2.                                   --
-  --    First, you have to compute the standard deviation of the predicted breeding values.  --
-  --    The standard deviation determines the lower and the upper bounds of the confidence   --
-  --    interval.
-  -->
-  
-  
-### Solution 
-For the computation of the confidence interval, we need the standard deviation of the predicted breeding value. For the example with the repeated measure, this corresponds to
-
-```{r ResultHatARepMeasSd}
-hat_a_rep_meas_sd <- nr_measure * h2/(1+(nr_measure-1)*rep) *  
-    sqrt(rep + (1-rep)/nr_measure) * phen_sd
-hat_a_rep_meas_sd <- round(hat_a_rep_meas_sd, digits = 2)
-```
-
-\begin{align}
-\sqrt{var(\hat{a})} &= \sqrt{var(b(\bar{y}-\mu))} = b * \sqrt{var(\bar{y})} \notag\\
-  &= \frac{nh^2}{1+(n-1)t} * \sqrt{\left[ t + (1-t)/n \right]\ var(y)}\notag\\
-  &= \frac{`r nr_measure`*`r h2`}{1+(`r nr_measure-1`*`r rep`)} 
-    * \sqrt{\left[ `r rep` + (1-`r rep`)/`r nr_measure` \right]} * `r phen_sd` \notag\\
-  &= `r hat_a_rep_meas_sd`  \notag
-\end{align}
-
-The lower and the upper limits of the confidence interval are
-
-$$ug = \hat{a} - 1.96 * \sqrt{var(\hat{a})} = `r hat_a_rep_meas` - 1.96 * `r hat_a_rep_meas_sd`
-     = `r hat_a_rep_meas - 1.96 * hat_a_rep_meas_sd`$$
-
-$$og = \hat{a} + 1.96 * \sqrt{var(\hat{a})} = `r hat_a_rep_meas` + 1.96 * `r hat_a_rep_meas_sd`
-     = `r hat_a_rep_meas + 1.96 * hat_a_rep_meas_sd`$$
-
-
-## Problem 4: Response To Selection
-```{r problem4setup}
-sel_int <- 1.4
-sigma_tilde_y <- phen_sd * sqrt((1+(nr_measure-1)*rep)/nr_measure)
-rel_rep_rec <- (nr_measure * h2)/(1+(nr_measure - 1)*rep)
-sel_resp <- sel_int * rel_rep_rec * sigma_tilde_y
-```
-
-Assuming that we select for the predicted breeding value based on repeated measures, the response to that selection schema per generation can be computed as 
-
-\begin{align}
-R &= i * r_{a,\tilde{y}}^2 * \sigma_{\tilde{y}} \notag 
-\end{align}
-
-Compute the response to selection $R$ for the results that you found in Problem 2. The selection intensity $i$ can be assumed to be $`r sel_int`$ and the phenotypic standard deviation is taken to be the same value as in Problem 3, $\sigma_y = `r phen_sd`$.
-
-
-### Solution
-We insert the compute value into the equation for $R$. We have to remember that 
-
-\begin{align}
-var(\tilde{y}) &= t * \sigma_y^2 + {1\over n} (1-t) * \sigma_y^2 \notag \\
-               &= {1\over n}\left( n*t + (1-t) \right) \sigma_y^2 \notag \\
-               &= \frac{1 + (n-1)t}{n} \sigma_y^2 \notag
-\end{align}
-
-and $\sigma_{\tilde{y}} = \sqrt{var(\tilde{y})} = \sigma_y * \sqrt{\frac{1 + (n-1)t}{n}} = `r phen_sd` * \sqrt{\frac{1 + (`r nr_measure`-1)*`r rep`}{`r nr_measure`}} = `r round(sigma_tilde_y, digits = 2)`$
-
-\begin{align}
-R  &=  i * r_{a,\tilde{y}}^2 * \sigma_{\tilde{y}} \notag \\
-   &=  `r sel_int` * `r round(rel_rep_rec, digits=2)` * `r round(sigma_tilde_y, digits = 2)` \notag \\
-   &=  `r round(sel_resp, digits=2)` \notag
-\end{align}
+$$b = \frac{2n}{n + k}$$
 
