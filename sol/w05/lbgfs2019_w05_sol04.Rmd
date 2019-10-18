@@ -125,23 +125,23 @@ $$ \frac{r_{a,\bar{y}}^2}{r_{a,y}^2} = \frac{n}{1+(n-1)t} = \frac{`r nr_measure`
   = `r round(nr_measure/(1+(nr_measure-1)*rep), digits = 2)`$$
 
 
-## Problem 3: Predict Breeding Values based on progeny records
+## Problem 3: Predict Breeding Values Based on Progeny Records
 ```{r prob3-def}
 n_nr_progeny <- 5
 ```
 
-A few years later Elsa was the dam of `r n_nr_progeny` offspring. Each of the offspring has a record for birthweight. Predict the breeding value of Elsa for birthweight based on the offpsring records listed in the following table.
+A few years later Elsa was the dam of `r n_nr_progeny` offspring. Each of the offspring has a record for weaning weight. Predict the breeding value of Elsa for weaning weight based on the offpsring records listed in the following table.
 
 ```{r tab-prog-bw, echo=FALSE}
-vec_bw_prog <- round(geb_gew + rnorm(n_nr_progeny, mean = 0, sd = 2), digits = 0)
-tbl_prog_bw <- tibble::tibble(Offspring = c(1:n_nr_progeny),
-                              Birthweight = vec_bw_prog)
-knitr::kable(tbl_prog_bw)
+vec_ww_prog <- round(y + rnorm(n_nr_progeny, mean = 0, sd = 2), digits = 0)
+tbl_prog_ww <- tibble::tibble(Offspring = c(1:n_nr_progeny),
+                              `Weaning Weight` = vec_ww_prog)
+knitr::kable(tbl_prog_ww)
 ```
 
 The mean and the heritability can be taken the same as in Problems 1 and 2 resulting in 
 
-$h^2 = $ and $\mu = $
+$h^2 = `r h2`$ and $\mu = `r mu`$
 
 
 ### Solution 
@@ -151,7 +151,37 @@ The predicted breeding value based on progeny records is defined as
 \hat{u_i} = b * (\bar{y_i} - \mu)
 \end{equation}
 
-where $b$ is the regression coefficient which results in 
+where $\bar{y_i}$ corresponds to the mean of the progeny records for animal $i$, and $b$ is the regression coefficient which can be shown to be 
 
 $$b = \frac{2n}{n + k}$$
+
+where $n$ is the number of offspring and $k$ corresponds to 
+
+$$k = \frac{4-h^2}{h^2}$$
+
+Inserting the numbers given in the problem task results in
+```{r compute-k-prob3, echo=FALSE}
+k_prob3 <- (4-h2)/h2
+k_prob3_rounded <- round(k_prob3, digits = 2)
+```
+
+$$k = \frac{4 - `r h2`}{`r h2`} = `r k_prob3_rounded`$$
+
+Using the computed value of $k$ allows to get the regression coefficient $b$. 
+```{r compute-b-prob3, echo=FALSE}
+b_prob3 <- 2 * n_nr_progeny /(n_nr_progeny + k_prob3)
+b_prob3_rounded <- round(b_prob3, digits = 2)
+```
+
+$$b = \frac{2 * `r n_nr_progeny`}{`r n_nr_progeny` + `r k_prob3_rounded`} = `r b_prob3_rounded`$$
+
+The predicted breeding value based on progeny records corresponds to 
+```{r compute-hatui-prob3, echo=FALSE}
+baryi_prob3 <- mean(tbl_prog_ww$`Weaning Weight`)
+baryi_prob3_rounded <- round(baryi_prob3, digits = 2)
+hatui_prob3 <- b_prob3 * (baryi_prob3 - mu)
+hatui_prob3_rounded <- round(hatui_prob3, digits = 2)
+```
+
+$$\hat{u_i} = `r b_prob3_rounded` * (`r baryi_prob3_rounded` - `r mu`) = `r hatui_prob3_rounded`$$
 
