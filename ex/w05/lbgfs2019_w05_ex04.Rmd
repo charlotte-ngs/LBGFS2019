@@ -18,8 +18,8 @@ h2 <- 0.45
 
 Heifer Elsa has a weaning weight of $`r y`$ kg. The population mean of the same trait is at $`r mu`$ kg.The heritability ($h^2$) of the trait weaning weight is assumed to be $`r h2`$. 
 
-a) What is the predicted breeding value $\hat{a_i}$ for Elsa for weaning weight? 
-b) Compute the reliability of $\hat{a_i}$ from 1a) 
+a) What is the predicted breeding value $\hat{u_i}$ for Elsa for weaning weight? 
+b) Compute the reliability of $\hat{u_i}$ from 1a) 
 
 <!--   You can use the assigned variables from above for your computations.     --
   --   The meaning of the variables is listed below.                            --
@@ -41,8 +41,6 @@ hat_a_el <- h2*(y-mu)
 ```
   
   
-
-
 
 
 
@@ -82,7 +80,6 @@ c) Compare the reliability from 2b) with the reliability from Problem 1.
 
 
 
-
 ## Problem 3: Predict Breeding Values Based on Progeny Records
 ```{r prob3-def}
 n_nr_progeny <- 5
@@ -101,5 +98,3 @@ The mean and the heritability can be taken the same as in Problems 1 and 2 resul
 
 $h^2 = `r h2`$ and $\mu = `r mu`$
 
-
- 

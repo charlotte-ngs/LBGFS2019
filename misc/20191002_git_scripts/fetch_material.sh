@@ -1,7 +1,8 @@
 #!/bin/bash
 
 SCRIPTDIR=source/misctools/github
-DIRTOFETCH=ex/w04
+DIRTOFETCH=ex/w05
+# DIRTOFETCH=sol/w04
 
 #' fetch individual directory
 #' change to progdir
@@ -23,3 +24,10 @@ do
   sleep 2
 done
 
+# check content
+cat /home/quagadmin/user_admin/students-lbgfs2019/student-usernames-lbgfs2019 | while read s
+do 
+  echo " * Student: $s"
+  ls -l /home/$s/LBGFS2019/$DIRTOFETCH
+  sleep 2
+done

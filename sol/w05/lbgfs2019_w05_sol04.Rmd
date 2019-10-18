@@ -18,8 +18,8 @@ h2 <- 0.45
 
 Heifer Elsa has a weaning weight of $`r y`$ kg. The population mean of the same trait is at $`r mu`$ kg.The heritability ($h^2$) of the trait weaning weight is assumed to be $`r h2`$. 
 
-a) What is the predicted breeding value $\hat{a_i}$ for Elsa for weaning weight? 
-b) Compute the reliability of $\hat{a_i}$ from 1a) 
+a) What is the predicted breeding value $\hat{u_i}$ for Elsa for weaning weight? 
+b) Compute the reliability of $\hat{u_i}$ from 1a) 
 
 <!--   You can use the assigned variables from above for your computations.     --
   --   The meaning of the variables is listed below.                            --
@@ -46,7 +46,7 @@ hat_a_el <- h2*(y-mu)
 a) The predicted breeding value based on a single own performance record is
 
 \begin{equation}
-\hat{a} = h^2(y - \mu) \notag
+\hat{u} = h^2(y - \mu) \notag
 \end{equation}
 
 
@@ -54,13 +54,13 @@ a) The predicted breeding value based on a single own performance record is
 Plug-in the computed values into the equation.
 
 \begin{equation}
-\hat{a} = h^2(y - \mu) = `r h2` * (`r y`\ \text{kg} - `r mu`\ \text{kg}) = `r hat_a_el`\ \text{kg} \notag
+\hat{u} = h^2(y - \mu) = `r h2` * (`r y`\ \text{kg} - `r mu`\ \text{kg}) = `r hat_a_el`\ \text{kg} \notag
 \end{equation}
 
 b) The reliability corresponds to the squared correlation between the true breeding value and the selection criterion. 
 
 \begin{equation}
-B = r_{a,y}^2 = h^2 = `r h2`\notag
+B = r_{u,y}^2 = h^2 = `r h2`\notag
 \end{equation}
 
 
@@ -105,7 +105,7 @@ a) The predicted breeding value based on repeated records is
 ```{r ResultHatARepMeas}
 hat_a_rep_meas <- round((nr_measure * h2)/(1+(nr_measure - 1)*rep)*(mean_weight - mu2), digits = 2)
 ```
-$$\hat{a}_i = \frac{nh^2}{1+(n-1)t}(\bar{y}_i - \mu) 
+$$\hat{u}_i = \frac{nh^2}{1+(n-1)t}(\bar{y}_i - \mu) 
             = \frac{`r nr_measure`*`r h2`}{1+(`r nr_measure-1`*`r rep`)}(`r mean_weight` - `r mu2`)
             = `r hat_a_rep_meas`$$
 
@@ -115,13 +115,13 @@ rel_rep_rec <- (nr_measure * h2)/(1+(nr_measure - 1)*rep)
 ```
 
 
-$$B = r_{a,\bar{y}}^2  = b = \frac{nh^2}{1+(n-1)t} 
+$$B = r_{u,\bar{y}}^2  = b = \frac{nh^2}{1+(n-1)t} 
                  = \frac{`r nr_measure`*`r h2`}{1+(`r nr_measure-1`*`r rep`)}
                  = `r round(rel_rep_rec, digits = 2)`$$
                  
 c) The reliability of the predicted breeding values based on repeated records is larger than the reliability of the prediction based on one record. The relation between the two reliabilities is 
 
-$$ \frac{r_{a,\bar{y}}^2}{r_{a,y}^2} = \frac{n}{1+(n-1)t} = \frac{`r nr_measure`}{1+(`r nr_measure-1`*`r rep`)}
+$$ \frac{r_{u,\bar{y}}^2}{r_{u,y}^2} = \frac{n}{1+(n-1)t} = \frac{`r nr_measure`}{1+(`r nr_measure-1`*`r rep`)}
   = `r round(nr_measure/(1+(nr_measure-1)*rep), digits = 2)`$$
 
 
