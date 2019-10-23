@@ -154,3 +154,300 @@ n_best_sire <- vec_order_rel[1]
 
 The rankings of the sires according to the progeny averages and according to the predicted breeding values are `r s_compare_result`. The reliability for sire `r n_best_sire` is the highest. This is mainly due to the larger number of progeny of sire `r n_best_sire`. 
 
+
+
+## Problem 4: Sire Model
+```{r problem2datainput, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
+### # read tibble from file
+s_wwg_path <- 'https://charlotte-ngs.github.io/LBGFS2019/ex/w06/weaningweightbeef.csv'
+tbl_beef_data <- readr::read_csv(file = s_wwg_path)
+
+### # count number of observations
+n_nr_observation <- nrow(tbl_beef_data)
+
+### # number of sires and dams
+n_nr_sire <- nlevels(as.factor(tbl_beef_data$Sire))
+n_nr_dam <- nlevels(as.factor(tbl_beef_data$Dam))
+n_nr_parent <- n_nr_sire + n_nr_dam
+n_nr_offspring <- n_nr_observation
+n_nr_animals <- n_nr_parent + n_nr_offspring
+n_nr_herd <- nlevels(as.factor(tbl_beef_data$Herd))
+
+### # parameters
+h2 <- .25
+n_var_p <- round(var(tbl_beef_data$`Weaning Weight`), digits = 4)
+n_var_g <- round(h2 * n_var_p, digits = 4)
+n_var_e <- n_var_p - n_var_g
+n_pop_mean <- round(mean(tbl_beef_data$`Weaning Weight`), digits = 2)
+```
+
+We are using the following dataset shown in Table \@ref(tab:tablebeefdatasiremodel) to predict breeding values using a sire model.
+
+```{r tablebeefdatasiremodel, echo=FALSE, results='asis'}
+### # show the data frame
+knitr::kable( tbl_beef_data, 
+              format = "latex",
+              booktabs = TRUE, 
+              longtable = TRUE,
+              caption = "Example Data Set for Weaning Weight in Beef Cattle" )
+```
+
+
+### Your Tasks
+* Specify the sire model for the dataset given in Table \@ref(tab:tablebeefdatasiremodel). 
+* Besides the model indicate also the expected values and the variances for all the random components in the model. 
+* Set up the mixed model equations for the sire model and compute the estimates for the fixed effects (Herd) and the predicted breeding values for the sires. 
+
+
+### Assumptions
+We assume that the sires are unrelated and that the genetic additive variance $\sigma_a^2 = `r n_var_g`$. Hence the variance-covariance matrix $G$ of all sire effects corresponds to 
+
+$$var(s) = G = I * \sigma_s^2 = I * {\sigma_a^2 \over 4}$$
+
+Furthermore, the residuals $e$ are not correlated which means that the variance-covariance matrix $R$ is 
+
+$$var(e) = R = I * \sigma_e^2$$
+
+with $\sigma_e^2 = `r n_var_e`$. 
+
+
+### Solution
+
+#### The model
+The sire model for the data set given in Table \@ref(tab:tablebeefdatasiremodel) has the following structure
+
+$$y = X\beta + Zs + e$$
+
+\begin{tabular}{lll}
+where  &           &  \\
+       &  $y$      &  vector of length $`r n_nr_observation`$ of phenotypic observations                  \\
+       &  $\beta$  &  vector of length $`r n_nr_herd`$ of unknown fixed herd effects               \\
+       &  $X$      &  $`r n_nr_observation` \times `r n_nr_herd`$ design matrix linking observations to fixed effects \\
+       &  $s$      &  vector of length $`r n_nr_sire`$ of unknown random sire effects              \\
+       &  $Z$      &  $`r n_nr_observation` \times `r n_nr_sire`$ design matrix linking observations to sire effects  \\
+       &  $e$      &  vector of length $`r n_nr_observation`$ of unknown random residual effects
+\end{tabular}
+
+As in the lecture notes, we can put the information from the dataset into the model leaning to
+
+```{r siremodelbeefexample, echo=FALSE, results='asis'}
+mat_x_sire <- matrix(data = c(1, 0,
+                              1, 0,
+                              1, 0,
+                              1, 0,
+                              0, 1,
+                              0, 1,
+                              0, 1,
+                              0, 1,
+                              1, 0,
+                              1, 0,
+                              1, 0,
+                              1, 0,
+                              0, 1,
+                              0, 1,
+                              0, 1,
+                              0, 1), ncol = 2, byrow = TRUE)
+# vec_betahat_sire <- c("\\beta_1", "\\beta_2")
+vec_beta_sire <- rmddochelper::vecGetVecElem(psBaseElement = "\\beta", pnVecLen = n_nr_herd, psResult = "latex")
+mat_z_sire <- matrix(data = c(1, 0, 0,
+                              1, 0, 0,
+                              1, 0, 0,
+                              1, 0, 0,
+                              1, 0, 0,
+                              1, 0, 0,
+                              1, 0, 0,
+                              1, 0, 0,
+                              0, 1, 0,
+                              0, 1, 0,
+                              0, 1, 0,
+                              0, 1, 0,
+                              0, 1, 0,
+                              0, 1, 0,
+                              0, 0, 1,
+                              0, 0, 1), ncol = 3, byrow = TRUE)
+# vec_sirehat_sire <- c("s_1", "s_2", "s_3")
+vec_sire_sire <- rmddochelper::vecGetVecElem(psBaseElement = "s", pnVecLen = n_nr_sire, psResult = "latex")
+# vec_res_sire <- c("e_1", "e_2", "e_3", "e_4", "e_5", "e_6", "e_7", "e_8", "e_9", "e_{10}", "e_{11}", "e_{12}", "e_{13}", "e_{14}", "e_{15}", "e_{16}")
+vec_res_sire <- rmddochelper::vecGetVecElem(psBaseElement = "e", pnVecLen = n_nr_observation, psResult = "latex")
+cat("$$ \n")
+cat("\\left[ \n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = tbl_beef_data$`Weaning Weight`), sep = "\n"),"\n")
+cat("\\right] \n")
+cat("= \n")
+cat("\\left[ \n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_x_sire, pnDigits = 0), sep = "\n"), "\n")
+cat("\\right] \n")
+cat("\\left[ \n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_beta_sire), sep = "\n"), "\n")
+cat("\\right] \n")
+cat("+ \n")
+cat("\\left[ \n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_z_sire, pnDigits = 0), sep = "\n"), "\n")
+cat("\\right] \n")
+cat("\\left[ \n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_sire_sire), sep = "\n"), "\n")
+cat("\\right] \n")
+cat("+ \n")
+cat("\\left[ \n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_res_sire), sep = "\n"), "\n")
+cat("\\right] \n")
+cat("$$ \n")
+```
+
+
+
+#### Expected Values and Variances
+We fix the expected values $E(s)$ and $E(e)$ of the random components $s$ and $e$ to be
+
+$$E(s) = 0 \quad \text{and} \quad E(e) = 0$$
+
+From this we can compute $E(y) = X\beta$. 
+
+The variances $var(s)$ and $var(e)$ of the random components are defined as
+
+$$var(s) = G \quad \text{and} \quad var(e) = R$$
+
+The variance $var(y)$ can be computed as $var(y) = V = Z^TGZ + R$.
+
+Using the assumptions, we can further specify
+
+$$var(s) = G = I * \sigma_s^2 = I * {\sigma_a^2 \over 4} \quad \text{and} \quad var(e) = R = I * \sigma_e^2$$
+
+
+#### Mixed Model Equations
+The general form of the mixed model equations was presented in the lecture notes. We now use that form for the sire model which results in 
+
+\begin{equation}
+\left[
+  \begin{array}{lr}
+  X^T R^{-1} X  &  X^T R^{-1} Z \\
+  Z^T R^{-1} X  &  Z^T R^{-1} Z + G^{-1}
+  \end{array}
+\right]
+\left[
+  \begin{array}{c}
+  \hat{\beta} \\
+  \hat{s}
+  \end{array}
+\right]
+=
+\left[
+  \begin{array}{c}
+  X^T R^{-1} y \\
+  Z^T R^{-1} y
+  \end{array}
+\right] \notag
+\end{equation}
+
+
+Using the above specified assumptions regarding the variance-covariance matrices $G$ and $R$, the mixed model equations can be simplified to 
+
+\begin{equation}
+\left[
+  \begin{array}{lr}
+  X^T X  &  X^T Z \\
+  Z^T X  &  Z^T Z + I * 4 * \lambda
+  \end{array}
+\right]
+\left[
+  \begin{array}{c}
+  \hat{\beta} \\
+  \hat{s}
+  \end{array}
+\right]
+=
+\left[
+  \begin{array}{c}
+  X^T y \\
+  Z^T y
+  \end{array}
+\right] \notag
+\end{equation}
+
+where $\lambda = \frac{\sigma_e^2}{\sigma_a^2}$.
+
+Inserting the number leads to 
+
+```{r mmesetup, echo=FALSE, results='hide'}
+### # variance ratio
+lambda <- n_var_e/n_var_g
+### # components of coefficient matrix
+mat_xtx_sire <- crossprod(mat_x_sire)
+mat_xtz_sire <- crossprod(mat_x_sire, mat_z_sire)
+mat_ztx_sire <- t(mat_xtz_sire)
+mat_ztz_sire <- crossprod(mat_z_sire)
+mat_ztzginv_sire <- mat_ztz_sire + diag(1, nrow = nrow(mat_ztz_sire)) * 4 * lambda
+### # put together coefficient matrix
+mat_coeff_sire <- rbind(cbind(mat_xtx_sire, mat_xtz_sire), cbind(mat_ztx_sire, mat_ztzginv_sire))
+### # vector of estimates
+vec_betahat_sire <- rmddochelper::vecGetVecElem(psBaseElement = "\\hat{\\beta}", pnVecLen = n_nr_herd, psResult = "latex")
+vec_sirehat_sire <- rmddochelper::vecGetVecElem(psBaseElement = "\\hat{s}", pnVecLen = n_nr_sire, psResult = "latex")
+vec_estpred_sire <- c(vec_betahat_sire, vec_sirehat_sire)
+### # righthandside
+vec_weight_sire <- as.vector(tbl_beef_data$`Weaning Weight`)
+vec_xty_sire <- crossprod(mat_x_sire, vec_weight_sire)
+vec_zty_sire <- crossprod(mat_z_sire, vec_weight_sire)
+vec_rhs_sire <- c(vec_xty_sire, vec_zty_sire)
+### # solutions
+vec_sol <- solve(mat_coeff_sire, vec_rhs_sire)
+```
+
+```{r mmedisplay, echo=FALSE, results='asis'}
+cat("$$ \n")
+cat("\\left[ \n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_coeff_sire, pnDigits = 4), sep = "\n"), "\n")
+cat("\\right] \n")
+cat("\\left[ \n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_estpred_sire), sep = "\n"),"\n")
+cat("\\right] \n")
+cat("= \n")
+cat("\\left[ \n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_rhs_sire), sep = "\n"),"\n")
+cat("\\right] \n")
+cat("$$ \n")
+```
+
+
+#### The Solution
+The solution consists of the estimates for the fixed effects and the predictions of the sire breeding values. Because, we are working with a very small dataset, we can obtain the solutions by pre-multiplying both sides of the mixed model equations with the inverse of the coefficient matrix. Hence
+
+```{r soldisplay, echo=FALSE, results='asis'}
+cat("$$ \n")
+cat("\\left[ \n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_estpred_sire), sep = "\n"),"\n")
+cat("\\right] \n")
+cat("= \n")
+cat("\\left[ \n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_coeff_sire, pnDigits = 4), sep = "\n"), "\n")
+cat("\\right]^{-1} \n")
+cat("\\left[ \n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_rhs_sire), sep = "\n"),"\n")
+cat("\\right] \n")
+cat("= \n")
+cat("\\left[ \n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_sol, pnDigits = 4), sep = "\n"),"\n")
+cat("\\right] \n")
+cat("$$ \n")
+```
+
+
+#### Ranking the sires
+```{r sireranking, echo=FALSE, results='hide'}
+vec_sire_pbv <- vec_sol[(n_nr_herd+1):length(vec_sol)]
+vec_sire_rank <- order(vec_sire_pbv, decreasing = TRUE)
+```
+
+Now that we have predicted breeding values for all sire, we can rank the accordingly. For our example the ranking of the sires is
+
+```{r sireranktable, echo=FALSE, results='asis'}
+tbl_sire_rank <- tibble::data_frame(Sire = c(1:n_nr_sire),
+                                    `Predicted Breeding Value` = vec_sire_pbv,
+                                    Rank = vec_sire_rank)
+knitr::kable(tbl_sire_rank,
+             booktabs = TRUE,
+             longtable = TRUE, 
+             caption = "Ranking of Sires According To Predicted Breeding Values")
+```
+
+
+
