@@ -111,7 +111,7 @@ vecCnTopic[which(Date == format(as.Date("2019/10/11"), "%d.%m"))] <- paste0("[BL
 ### # w5 04-selection-index.pdf
 vecCnTopic[which(Date == format(as.Date("2019/10/18"), "%d.%m"))] <- paste0("[Genetic Covariance](", s_base_url_cn, "/07_gen_cov.pdf)", collapse = '')
 ### # w6 cn/05-blup.pdf
-# vecCnTopic[which(Date == format(as.Date("2019/10/25"), "%d.%m"))] <- "[]()"
+vecCnTopic[which(Date == format(as.Date("2019/10/25"), "%d.%m"))] <- paste0("[Additional Aspects of BLUP](", s_base_url_cn, "/08_add_asp_blup.pdf)", collapse = '')
 ### # w7 cn/06-gencov.pdf
 # vecCnTopic[which(Date == format(as.Date("2019/11/01"), "%d.%m"))] <- "[]()"
 ### # w8 cn/063-matainv.pdf
@@ -190,7 +190,7 @@ vecExTopic[which(Date == format(as.Date("2019/10/11"), "%d.%m"))] <- paste0("[Si
 # w5 ex/w05/lbg_fs_2019_w05_ex04.pdf
 vecExTopic[which(Date == format(as.Date("2019/10/18"), "%d.%m"))] <- paste0("[Own Performance and Repeated Records](", s_base_url_ex, "/w05/lbgfs2019_w05_ex04.pdf)", collapse = '')
 # w6 ex/w06/lbg_fs_2019_w06_ex05.pdf
-# vecExTopic[which(Date == format(as.Date("2019/10/25"), "%d.%m"))] <- "[]()"
+vecExTopic[which(Date == format(as.Date("2019/10/25"), "%d.%m"))] <- paste0("[Progeny Records and Sire Model](", s_base_url_ex, "/w06/lbgfs2019_w06_ex05.pdf)", collapse = '')
 # w7  w07/lbg_fs_2019_w07_ex06.pdf
 # vecExTopic[which(Date == format(as.Date("2019/11/01"), "%d.%m"))] <- "[]()"
 # w8 ex/w08/lbg_fs_2019_w08_ex07.pdf
@@ -226,9 +226,9 @@ vecSolTopic[which(Date == format(as.Date("2019/10/11"), "%d.%m"))] <- paste0("[M
 # w5 sol/w04/lbg_fs_2019_w04_sol3.pdf
 vecSolTopic[which(Date == format(as.Date("2019/10/18"), "%d.%m"))] <- paste0("[Single Locus Breeding Values](", s_base_url_sol, "/w04/lbgfs2019_w04_sol03.pdf)", collapse = '')
 # w6 sol/w05/lbg_fs_2019_w05_sol04.pdf
-# vecSolTopic[which(Date == format(as.Date("2019/10/25"), "%d.%m"))] <- paste0("[Own Performance and Repeated Records](", s_base_url_sol, "/w04/lbgfs2019_w05_sol04.pdf)", collapse = '')
+vecSolTopic[which(Date == format(as.Date("2019/10/25"), "%d.%m"))] <- paste0("[Own Performance and Repeated Records](", s_base_url_sol, "/w05/lbgfs2019_w05_sol04.pdf)", collapse = '')
 # w7 sol/w06/lbg_fs_2019_w06_sol05.pdf
-# vecSolTopic[which(Date == format(as.Date("2019/11/01"), "%d.%m"))] <- "[]()"
+# vecSolTopic[which(Date == format(as.Date("2019/11/01"), "%d.%m"))] <- paste0("[Progeny Records and Sire Model](", s_base_url_sol, "/w06/lbgfs2019_w06_sol05.pdf)", collapse = '')
 # w8 w07/lbg_fs_2019_w07_sol06.pdf
 # vecSolTopic[which(Date == format(as.Date("2019/11/08"), "%d.%m"))] <- "[]()"
 # w9 sol/w08/lbg_fs_2019_w08_sol07.pdf

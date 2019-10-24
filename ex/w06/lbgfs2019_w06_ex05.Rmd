@@ -1,0 +1,122 @@
+---
+title: Livestock Breeding and Genomics - Exercise 5
+author: Peter von Rohr
+date: 2019-10-25
+#output: pdf_document 
+output:
+  bookdown::pdf_document2:
+    toc: false
+    number_sections: false
+    includes:
+      in_header: header.tex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+```
+
+```{r PrepareBeefExample, results='hide'}
+n_nr_sire <- 3
+n_nr_dam <- 8
+n_nr_parents <- n_nr_sire + n_nr_dam
+n_nr_offspring <- 16
+n_nr_animals <- n_nr_parents + n_nr_offspring
+dam_id <- rep(4:11,2)
+
+tbl_beef_data <- tibble::tibble(Animal = (n_nr_parents + 1):n_nr_animals,
+                                   Sire = c(rep(1,8), rep(2,6), rep(3,2)),
+                                   # Dam = dam_id[order(dam_id)],
+                                   # Herd = c(rep(1,4), rep(2,4), rep(1,4), rep(2,4)),
+                                   `Weaning Weight`= c(2.61,2.31,2.44,2.41,2.51,2.55,2.14,2.61,2.34,1.99,3.1,2.81,2.14,2.41,2.54,3.16))
+# names(tbl_beef_data) <- c("Animal", "Sire", "Weaning Weight")
+n_nr_observation <- nrow(tbl_beef_data)
+
+### # parameters
+h2 <- .25
+n_var_p <- round(var(tbl_beef_data$`Weaning Weight`), digits = 4)
+n_var_g <- round(h2 * n_var_p, digits = 4)
+n_pop_mean <- round(mean(tbl_beef_data$`Weaning Weight`), digits = 2)
+```
+
+## Prediction of Breeding Values Using the Regression Method
+
+We are using the dataset shown in Table \@ref(tab:TabBeefExample) for this exercise. For the animals listed in Table \@ref(tab:TabBeefExample), the weaning weight  (in 100kg) was observed as phenotypic records. The following parameters are associated with the observed data
+
+* The population mean is assumed to be equal to the average of all observations: $\mu = `r n_pop_mean`$
+* The phenotypic variance is assumed to correspond to the empirical variance from the observations and corresponds to $\sigma_p^2 = `r n_var_p`$
+* The heritability is assumed to be $h^2 = `r h2`$
+* The genetic-additive variance can be computed as $\sigma_a^2 = h^2 * \sigma_p^2 = `r h2` * `r n_var_p` = `r n_var_g`$
+
+
+```{r TabBeefExample}
+knitr::kable(tbl_beef_data, 
+             booktabs = TRUE, 
+             longtable = TRUE,
+             caption = "Example Data Set To Predict Breeding Values")
+```
+
+
+## Problem 1: Own performance
+Compute the predicted breeding values and the reliabilities for the animals listed in Table \@ref(tab:TabBeefExample). Compare the ranking of the animals according to their phenotypic values and according to their predicted breeding values. Compare the reliabilities of the predicted breeding values.  
+
+
+## Problem 2: Predicted Breeding Values Based on Progeny Records
+Compute the predicted breeding values and the reliabilities for the sires based on the progeny records. We are assuming that all progeny for a given sire are half-sibbs. Compare the ranking of the sires according to the average progeny performance values and according to the predicted breeding values.
+
+
+
+## Problem 3: Sire Model
+```{r problem2datainput, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
+### # read tibble from file
+s_wwg_path <- 'https://charlotte-ngs.github.io/LBGFS2019/ex/w06/weaningweightbeef.csv'
+tbl_beef_data <- readr::read_csv(file = s_wwg_path)
+
+### # count number of observations
+n_nr_observation <- nrow(tbl_beef_data)
+
+### # number of sires and dams
+n_nr_sire <- nlevels(as.factor(tbl_beef_data$Sire))
+n_nr_dam <- nlevels(as.factor(tbl_beef_data$Dam))
+n_nr_parent <- n_nr_sire + n_nr_dam
+n_nr_offspring <- n_nr_observation
+n_nr_animals <- n_nr_parent + n_nr_offspring
+n_nr_herd <- nlevels(as.factor(tbl_beef_data$Herd))
+
+### # parameters
+h2 <- .25
+n_var_p <- round(var(tbl_beef_data$`Weaning Weight`), digits = 4)
+n_var_g <- round(h2 * n_var_p, digits = 4)
+n_var_e <- n_var_p - n_var_g
+n_pop_mean <- round(mean(tbl_beef_data$`Weaning Weight`), digits = 2)
+```
+
+We are using the following dataset shown in Table \@ref(tab:tablebeefdatasiremodel) to predict breeding values using a sire model.
+
+```{r tablebeefdatasiremodel, echo=FALSE, results='asis'}
+### # show the data frame
+knitr::kable( tbl_beef_data, 
+              format = "latex",
+              booktabs = TRUE, 
+              longtable = TRUE,
+              caption = "Example Data Set for Weaning Weight in Beef Cattle" )
+```
+
+
+### Your Tasks
+* Specify the sire model for the dataset given in Table \@ref(tab:tablebeefdatasiremodel). 
+* Besides the model indicate also the expected values and the variances for all the random components in the model. 
+* Set up the mixed model equations for the sire model and compute the estimates for the fixed effects (Herd) and the predicted breeding values for the sires. 
+
+
+### Assumptions
+We assume that the sires are unrelated and that the genetic additive variance $\sigma_u^2 = `r n_var_g`$. Hence the variance-covariance matrix $G$ of all sire effects corresponds to 
+
+$$var(s) = G = I * \sigma_s^2 = I * {\sigma_u^2 \over 4}$$
+
+Furthermore, the residuals $e$ are not correlated which means that the variance-covariance matrix $R$ is 
+
+$$var(e) = R = I * \sigma_e^2$$
+
+with $\sigma_e^2 = `r n_var_e`$. 
+
+

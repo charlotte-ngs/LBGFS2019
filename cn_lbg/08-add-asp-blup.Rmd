@@ -45,9 +45,9 @@ PEV(\hat{u}) = var(u - \hat{u}) = var(u) - var(\hat{u}) = C^{22}
 For a single animal $i$, the prediction error variance is $PEV(\hat{u}_i) = C_{ii}^{22}$ where $C_{ii}^{22}$ is the $i$-th diagonal element in the matrix $C^{22}$. The accuracy of $\hat{u}_i$ is measured by the squared correlation $r_{u,\hat{u}}^2$ between true and predicted breeding value. This correlation is defined as
 
 \begin{equation}
-r_{u,\hat{u}} = \frac{cov(u, \hat{u})}{\sqrt{var(u) * var(\hat{u})}} 
-              = \frac{var(\hat{u})}{\sqrt{var(u) * var(\hat{u})}} 
-              = \sqrt{\frac{var(\hat{u})}{var(u)}}
+r_{u,\hat{u}} = \frac{cov(u_i, \hat{u}_i)}{\sqrt{var(u_i) * var(\hat{u}_i)}} 
+              = \frac{var(\hat{u}_i)}{\sqrt{var(u_i) * var(\hat{u}_i)}} 
+              = \sqrt{\frac{var(\hat{u}_i)}{var(u_i)}}
 (\#eq:devruhatu)
 \end{equation}
 
@@ -132,13 +132,13 @@ where  &       &                      \\
        &  $r$  &  vector of right-hand sides
 \end{tabular}
 
-The vector $s$ of unknowns in the mixed model equations consists of the vector $\hat{\beta}$ of estimates of fixed effects and the vector $\hat{a}$ of predicted breeding values, which means
+The vector $s$ of unknowns in the mixed model equations consists of the vector $\hat{\beta}$ of estimates of fixed effects and the vector $\hat{u}$ of predicted breeding values, which means
 
 $$
 s = \left[
   \begin{array}{c}
   \hat{\beta} \\
-  \hat{a}
+  \hat{u}
   \end{array}
 \right]
 $$

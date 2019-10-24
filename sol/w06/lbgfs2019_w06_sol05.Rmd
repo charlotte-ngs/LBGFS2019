@@ -156,7 +156,7 @@ The rankings of the sires according to the progeny averages and according to the
 
 
 
-## Problem 4: Sire Model
+## Problem 3: Sire Model
 ```{r problem2datainput, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
 ### # read tibble from file
 s_wwg_path <- 'https://charlotte-ngs.github.io/LBGFS2019/ex/w06/weaningweightbeef.csv'
@@ -200,9 +200,9 @@ knitr::kable( tbl_beef_data,
 
 
 ### Assumptions
-We assume that the sires are unrelated and that the genetic additive variance $\sigma_a^2 = `r n_var_g`$. Hence the variance-covariance matrix $G$ of all sire effects corresponds to 
+We assume that the sires are unrelated and that the genetic additive variance $\sigma_u^2 = `r n_var_g`$. Hence the variance-covariance matrix $G$ of all sire effects corresponds to 
 
-$$var(s) = G = I * \sigma_s^2 = I * {\sigma_a^2 \over 4}$$
+$$var(s) = G = I * \sigma_s^2 = I * {\sigma_u^2 \over 4}$$
 
 Furthermore, the residuals $e$ are not correlated which means that the variance-covariance matrix $R$ is 
 
@@ -440,7 +440,7 @@ vec_sire_rank <- order(vec_sire_pbv, decreasing = TRUE)
 Now that we have predicted breeding values for all sire, we can rank the accordingly. For our example the ranking of the sires is
 
 ```{r sireranktable, echo=FALSE, results='asis'}
-tbl_sire_rank <- tibble::data_frame(Sire = c(1:n_nr_sire),
+tbl_sire_rank <- tibble::tibble(Sire = c(1:n_nr_sire),
                                     `Predicted Breeding Value` = vec_sire_pbv,
                                     Rank = vec_sire_rank)
 knitr::kable(tbl_sire_rank,
