@@ -1,0 +1,516 @@
+---
+title: Livestock Breeding and Genomics - Solution 6
+author: Peter von Rohr
+date: 2019-11-01
+#output: pdf_document 
+output:
+  bookdown::pdf_document2:
+    toc: false
+    number_sections: false
+    keep_tex: false
+header-includes:
+ \usepackage{longtable}
+ \usepackage{float}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis', fig.pos = 'H')
+knitr::knit_hooks$set(hook_convert_odg = rmddochelper::hook_convert_odg)
+```
+
+## Problem 1: Numerator Relationship Matrix
+Construct the numerator relationship matrix $A$ for the following pedigree and verify the result using the function `getA()` from package `pedigreemm`. 
+
+```{r ex8p1ped, echo=FALSE, results='asis'}
+tbl_ped_ex8p1 <- tibble::tibble(Animal = c(5, 6, 7, 8, 9, 10),
+                                    Sire   = c(1, 1, 4, 4, 4, 4),
+                                    Dam    = c(2, 3, 5, 5, 6, 6))
+knitr::kable(tbl_ped_ex8p1, 
+             booktabs = TRUE,
+             longtable = TRUE,
+             caption   = "Pedigree For Constructing Numerator Relationship Matrix")
+```
+
+
+### Solution
+The numerator relationship is constructed using the follownig step-wise procedure. The following rules are used to compute the single elements.
+
+* __Case 1__: If both parents $s$ and $d$ of animal $i$ are known then 
+    + the diagonal element $(A)_{ii}$ corresponds to:  $(A)_{ii} = 1 + F_i = 1 + {1\over 2} (A)_{sd}$ and
+    + the offdiagonal element $(A)_{ji}$ is computed as:  $(A)_{ji} = {1\over 2} ((A)_{js} + (A)_{jd})$
+    + because $A$ is symmetric $(A)_{ji} = (A)_{ij}$
+    
+* __Case 2__: If only one parent $s$ is known and assumed unrelated to the mate
+    + $(A)_{ii} = 1$
+    + $(A)_{ij} = (A)_{ji} = {1\over 2} ((A)_{js}$
+    
+* __Case 3__: If both parents are unknown    
+    + $(A)_{ii} = 1$
+    + $(A)_{ij} = (A)_{ji} = 0$
+
+
+#### Step 1
+First, we extend the pedigree given in Table \@ref(tab:ex8p1ped). All animals without parents are added at the top of the pedigree. This results in the matrix shown in Table \@ref(tab:ex8p1pedext). 
+
+```{r ex8p1pedext, echo=FALSE, results='asis'}
+n_nr_ani_ex8p1pedext <- max(tbl_ped_ex8p1$Animal)
+n_nr_founder_ex8p1pedext <- min(tbl_ped_ex8p1$Animal) - 1
+tbl_ped_exp8p1ext <- tibble::tibble(Animal = c(1:n_nr_ani_ex8p1pedext),
+                                        Sire   = c(rep(NA, n_nr_founder_ex8p1pedext), tbl_ped_ex8p1$Sire),
+                                        Dam    = c(rep(NA, n_nr_founder_ex8p1pedext), tbl_ped_ex8p1$Dam))
+knitr::kable(tbl_ped_exp8p1ext,
+             booktabs  = TRUE,
+             longtable = TRUE,
+             caption   = "Extended Pedigree")
+```
+
+Because the pedigree in Table \@ref(tab:ex8p1pedext) is already ordered such that parents are before offspring, we can directly go to the next step.
+
+
+#### Step 2
+We start with an empty numerator relationship matrix $A$. The matrix $A$ has dimensions $`r n_nr_ani_ex8p1pedext` \times `r n_nr_ani_ex8p1pedext`$ 
+
+```{r ex8p1mataempty, echo=FALSE, results='asis'}
+matA_empty_ex8p1 <- matrix(NA, nrow = n_nr_ani_ex8p1pedext, ncol = n_nr_ani_ex8p1pedext)
+### # display
+cat("$$\n")
+cat("A = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matA_empty_ex8p1), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+
+#### Step 3
+The single elements of $A$ are computed according to the rules listed above. 
+
+
+```{r ex8p1extractfirstanimal, echo=FALSE, results='hide'}
+n_ex8p1_first_animal <- tbl_ped_exp8p1ext$Animal[1]
+```
+
+The computation is started with animal $`r n_ex8p1_first_animal`$. The first element is always the diagonal-element that corresponds to animal that we are currently looking at. For animal $`r n_ex8p1_first_animal`$ the diagonal element is $(A)_{`r n_ex8p1_first_animal``r n_ex8p1_first_animal`}$. Because animal `r n_ex8p1_first_animal` has not parents, we are in case 3 for the diagonal element. If an animal has unknown parents, it also means that the animals's inbreeding coefficient $F_i$ is $0$. Hence
+
+$$(A)_{`r n_ex8p1_first_animal``r n_ex8p1_first_animal`} = 1$$
+
+Now we have the first element of our numerator relationship matrix.
+
+```{r ex8p1matafirstelement, echo=FALSE, results='asis'}
+matA_empty_ex8p1[n_ex8p1_first_animal,n_ex8p1_first_animal] <- 1
+### # display
+cat("$$\n")
+cat("A = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matA_empty_ex8p1), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+
+#### Step 4
+The next elements that need to be computed are the off-diagnoal element on row $1$. Elements $A_{12}$, $A_{13}$ and $A_{14}$ correspond to the additive genetic relationship between animal $1$ and animals $2$, $3$ and $4$. Because animals $2$, $3$ and $4$ all have unknown parents, we are for all three elements in case 3, hence we can state
+
+$$(A)_{12} = (A)_{13} = (A)_{14} = 0$$
+
+```{r ex8p1matafirstrowfounder, echo=FALSE, results='asis'}
+matA_empty_ex8p1[n_ex8p1_first_animal,2:4] <- 0
+```
+
+For the remaining elements of the first row of $A$, the elements correspond to the additive genetic relationship between animal $1$ and animals $5$ to $10$. Because animals $5$ to $10$ all have known parents, we have to use case 1 in the above formulated rules.
+
+
+```{r ex8p1matafirstrowanimal5, echo=FALSE, results='asis'}
+n_cur_ani <- 5
+n_cur_sire <- tbl_ped_exp8p1ext$Sire[n_cur_ani]
+n_cur_dam <- tbl_ped_exp8p1ext$Dam[n_cur_ani]
+matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_ani] <- 0.5 * (matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_sire] + matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_dam])
+```
+
+\begin{equation}
+(A)_{`r n_ex8p1_first_animal``r n_cur_ani`}  =  {1\over 2}\left( (A)_{`r n_ex8p1_first_animal``r n_cur_sire`} + (A)_{`r n_ex8p1_first_animal``r n_cur_dam`} \right)
+                                             =  {1\over 2}\left( `r matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_sire]` + `r matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_dam]`  \right)
+                                             =  `r matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_ani]` \notag
+\end{equation}
+
+
+```{r ex8p1matafirstrowanimal6, echo=FALSE, results='asis'}
+n_cur_ani <- 6
+n_cur_sire <- tbl_ped_exp8p1ext$Sire[n_cur_ani]
+n_cur_dam <- tbl_ped_exp8p1ext$Dam[n_cur_ani]
+matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_ani] <- 0.5 * (matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_sire] + matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_dam])
+```
+
+\begin{equation}
+(A)_{`r n_ex8p1_first_animal``r n_cur_ani`}  =  {1\over 2}\left( (A)_{`r n_ex8p1_first_animal``r n_cur_sire`} + (A)_{`r n_ex8p1_first_animal``r n_cur_dam`} \right)
+                                             =  {1\over 2}\left( `r matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_sire]` + `r matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_dam]`  \right)
+                                             =  `r matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_ani]` \notag
+\end{equation}
+
+
+
+```{r ex8p1matafirstrowanimal7, echo=FALSE, results='asis'}
+n_cur_ani <- 7
+n_cur_sire <- tbl_ped_exp8p1ext$Sire[n_cur_ani]
+n_cur_dam <- tbl_ped_exp8p1ext$Dam[n_cur_ani]
+matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_ani] <- 0.5 * (matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_sire] + matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_dam])
+```
+
+\begin{equation}
+(A)_{`r n_ex8p1_first_animal``r n_cur_ani`}  =  {1\over 2}\left( (A)_{`r n_ex8p1_first_animal``r n_cur_sire`} + (A)_{`r n_ex8p1_first_animal``r n_cur_dam`} \right)
+                                             =  {1\over 2}\left( `r matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_sire]` + `r matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_dam]`  \right)
+                                             =  `r matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_ani]` \notag
+\end{equation}
+
+
+
+```{r ex8p1matafirstrowanimal8, echo=FALSE, results='asis'}
+n_cur_ani <- 8
+n_cur_sire <- tbl_ped_exp8p1ext$Sire[n_cur_ani]
+n_cur_dam <- tbl_ped_exp8p1ext$Dam[n_cur_ani]
+matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_ani] <- 0.5 * (matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_sire] + matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_dam])
+```
+
+\begin{equation}
+(A)_{`r n_ex8p1_first_animal``r n_cur_ani`}  =  {1\over 2}\left( (A)_{`r n_ex8p1_first_animal``r n_cur_sire`} + (A)_{`r n_ex8p1_first_animal``r n_cur_dam`} \right)
+                                             =  {1\over 2}\left( `r matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_sire]` + `r matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_dam]`  \right)
+                                             =  `r matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_ani]` \notag
+\end{equation}
+
+
+
+```{r ex8p1matafirstrowanimal9, echo=FALSE, results='asis'}
+n_cur_ani <- 9
+n_cur_sire <- tbl_ped_exp8p1ext$Sire[n_cur_ani]
+n_cur_dam <- tbl_ped_exp8p1ext$Dam[n_cur_ani]
+matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_ani] <- 0.5 * (matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_sire] + matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_dam])
+```
+
+\begin{equation}
+(A)_{`r n_ex8p1_first_animal``r n_cur_ani`}  =  {1\over 2}\left( (A)_{`r n_ex8p1_first_animal``r n_cur_sire`} + (A)_{`r n_ex8p1_first_animal``r n_cur_dam`} \right)
+                                             =  {1\over 2}\left( `r matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_sire]` + `r matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_dam]`  \right)
+                                             =  `r matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_ani]` \notag
+\end{equation}
+
+
+```{r ex8p1matafirstrowanimal10, echo=FALSE, results='asis'}
+n_cur_ani <- 10
+n_cur_sire <- tbl_ped_exp8p1ext$Sire[n_cur_ani]
+n_cur_dam <- tbl_ped_exp8p1ext$Dam[n_cur_ani]
+matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_ani] <- 0.5 * (matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_sire] + matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_dam])
+```
+
+\begin{equation}
+(A)_{`r n_ex8p1_first_animal``r n_cur_ani`}  =  {1\over 2}\left( (A)_{`r n_ex8p1_first_animal``r n_cur_sire`} + (A)_{`r n_ex8p1_first_animal``r n_cur_dam`} \right)
+                                             =  {1\over 2}\left( `r matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_sire]` + `r matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_dam]`  \right)
+                                             =  `r matA_empty_ex8p1[n_ex8p1_first_animal,n_cur_ani]` \notag
+\end{equation}
+
+As a result, we have the first row of $A$
+
+```{r ex8p1matafirstrowresult, echo=FALSE, results='asis'}
+### # display
+cat("$$\n")
+cat("A = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matA_empty_ex8p1), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+
+#### Step 5
+Copy the first row to the first column
+
+```{r ex8p1matafirstcolresult, echo=FALSE, results='asis'}
+matA_empty_ex8p1[2:n_nr_ani_ex8p1pedext,1] <- matA_empty_ex8p1[1, 2:n_nr_ani_ex8p1pedext]
+### # display
+cat("$$\n")
+cat("A = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matA_empty_ex8p1), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+
+#### Step 6
+Continue the same way with rows $2$ to $10$
+
+
+#### Verification
+We first have to specify the pedigree, before being able to get the numerator relationship matrix
+
+```{r ex8p1mataverify, echo=TRUE, results='markup'}
+n_nr_animals <- 10
+suppressPackageStartupMessages( library(pedigreemm) )
+ped <- pedigree(sire = c(NA,NA,NA,NA,1,1,4,4,4,4), 
+                dam = c(NA,NA,NA,NA,2,3,5,5,6,6), 
+                label = as.character(1:n_nr_animals))
+mata_ex8p1_verify <- getA(ped = ped)
+mata_ex8p1_verify
+```
+
+In the above result all elements which are $0$ are represented by a dot.
+
+
+## Problem 2: BLUP Animal Model
+Use the following dataset to predict breeding values for all animals.
+
+```{r ex8p2data, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+n_sigmae2 <- 24
+n_sigmaa2 <- 8
+s_ex8p2_data <- "https://charlotte-ngs.github.io/LBGFS2019/ex/w07/data_ex06_p02.csv"
+tbl_ex8p2_data <- readr::read_csv(file = s_ex8p2_data)
+knitr::kable(tbl_ex8p2_data,
+             booktabs  = TRUE,
+             longtable = TRUE,
+             caption   = "Data for Animal Model")
+```
+
+
+### Assumptions
+
+* Random residuals are un-correlated and they all have equal variance $\sigma_e^2$ which is assumed to be `r n_sigmae2`.
+* The additive genetic variance $\sigma_a^2$ is assumed to be `r n_sigmaa2`.
+* The pedigree is the same as in Problem 1. You can use `solve()` in R or `pedigreemm::getAInv()` to invert $A$.
+
+
+### Your Tasks
+
+* Specify all components including expected values and variances of the animal model using the information from the dataset.
+* Set up mixed model equations
+* Solve mixed model equations for estimates of fixed effects and for predicted breeding values
+
+
+### Solution
+The animal model in general has the following form
+
+$$y = X \beta + Za + e$$
+
+\begin{tabular}{lll}
+where  &    &    \\
+       &  $y$  &  vector of length $n$ of observations  \\
+       &  $\beta$  &  vector of length $p$ of unknown fixed effects \\
+       &  $X$      &  $n\times p$ design matrix linking fixed effects to observations \\
+       &  $a$      &  vector of length $q$ of unkown random breeding values \\
+       &  $Z$      &  $n\times q$ design matrix linking breeding values to observations \\
+       &  $e$      &  vector of length $n$ of unknown random residuals \\
+\end{tabular}
+
+The expected values of the fixed effects $\beta$ are the fixed effects themselves, hence $E(\beta) = \beta$. The expected values of the random components are defined as
+
+\begin{align}
+E(a)  &=  0  \notag \\
+E(e)  &=  0  \notag \\
+E(y)  &=  X\beta \notag 
+\end{align}
+
+The variances of fixed effects are always $0$. Based on the assumption of uncorrelated residuals, we know that $var(e) = I\sigma_e^2$. Because, we have an animal model, we also know that $var(a) = A \sigma_a^2$ where $A$ corresponds to the numerator relationship matrix. In summary, the variances of the random effects are
+
+\begin{align}
+var(a)  &=  G  =  A \sigma_a^2  \notag \\
+var(e)  &=  R  =  I \sigma_e^2  \notag \\
+var(y)  &=  ZGZ^T + R \notag 
+\end{align}
+
+Inserting the information from the dataset into the model gives the following results. 
+
+* Vector of observations
+
+```{r ex8p2vecy, echo=FALSE, results='asis'}
+vec_y <- as.vector(tbl_ex8p2_data$Observation)
+cat("$$\n")
+cat("y = \\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_y), collapse = "\n"),"\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+* Herds as fixed effects. We have two herds, hence vector $\beta$ has length $p = 2$. Component $\beta_1$ will denote the effect of the first herd and component $\beta_2$ the effect of the second herd.
+
+```{r, echo=FALSE, results='asis'}
+n_nr_obs <- length(vec_y)
+mat_x <- matrix(c(1, 0,
+                  1, 0,
+                  1, 0,
+                  0, 1,
+                  0, 1,
+                  0, 1), nrow = n_nr_obs, byrow = TRUE)
+vec_beta <- rmddochelper::vecGetVecElem(psBaseElement = "\\beta", pnVecLen = ncol(mat_x), psResult = "latex")
+cat("$$\n")
+cat("X = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_x, pnDigits = 0), collapse = "\n"),"\n")
+cat("\\right]\n")
+cat(" \\text{, } \n")
+cat("\\beta = \\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_beta), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+```{r, echo=FALSE, results='hide'}
+n_nr_animals <- 10
+```
+
+* Breeding values as random effects. In total, there are `r n_nr_animals` animals in the pedigree and hence the length of the vector $a$ is $q = `r n_nr_animals`$. 
+
+```{r, echo=FALSE, results='asis'}
+mat_z <- cbind(matrix(0, nrow = n_nr_obs, ncol = n_nr_founder_ex8p1pedext), diag(1, nrow = n_nr_obs, ncol = n_nr_obs))
+vec_a <- rmddochelper::vecGetVecElem(psBaseElement = "a", pnVecLen = n_nr_animals, psResult = "latex")
+cat("$$\n")
+cat("Z = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_z, pnDigits = 0), collapse = "\n"),"\n")
+cat("\\right]\n")
+cat(" \\text{, } \n")
+cat("a = \\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_a), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+* The vector of random residuals is just
+
+```{r, echo=FALSE, results='asis'}
+vec_e <- rmddochelper::vecGetVecElem(psBaseElement = "e", pnVecLen = n_nr_obs, psResult = "latex")
+cat("$$\n")
+cat("e = \\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_e), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+The solutions for $\hat{\beta}$ and $\hat{a}$ are obtained by solving the mixed model equations. The mixed model equations for the animal model and under the assumptions specified above are defined as
+
+$$
+\left[
+\begin{array}{lr}
+X^TX  &  X^TZ  \\
+Z^TX  &  Z^TZ + \lambda * A^{-1}
+\end{array}
+\right]
+\left[
+\begin{array}{c}
+\hat{\beta}  \\
+\hat{a}
+\end{array}
+\right]
+=
+\left[
+\begin{array}{c}
+X^Ty  \\
+Z^Ty
+\end{array}
+\right]
+$$
+
+The single components are computed as
+
+```{r, echo=FALSE, results='asis'}
+### # design matrices
+mat_xtx <- crossprod(mat_x)
+mat_xtz <- crossprod(mat_x, mat_z)
+mat_ztz <- crossprod(mat_z)
+### # variance ratio
+lambda <- n_sigmae2 / n_sigmaa2
+### # pedigree
+suppressPackageStartupMessages( library(pedigreemm) )
+ped <- pedigree(sire  = c(rep(NA, (n_nr_animals-n_nr_obs)), tbl_ex8p2_data$Sire),
+                dam   =  c(rep(NA, (n_nr_animals-n_nr_obs)), tbl_ex8p2_data$Dam),
+                label = as.character(1:n_nr_animals))
+mat_ainv = as.matrix(getAInv(ped = ped))
+mat_ztzlainv = mat_ztz + lambda * mat_ainv
+### # coefficient matrix
+mat_coef <- rbind(cbind(mat_xtx, mat_xtz),cbind(t(mat_xtz), mat_ztzlainv))
+### # unknows
+vec_unknowns <- c("\\hat{\\beta}", "\\hat{a}")
+### # right hand side
+mat_xty <- crossprod(mat_x, vec_y)
+mat_zty <- crossprod(mat_z, vec_y)
+mat_rhs <- rbind(mat_xty, mat_zty)
+### # solution
+mat_sol <- solve(mat_coef, mat_rhs)
+
+### # show the components
+### # X^TX
+cat("$$\n")
+cat("X^TX = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_xtx, pnDigits = 0), collapse = "\n"),"\n")
+cat("\\right]\n")
+cat(" \\text{, } \n")
+### # X^TZ
+cat("X^TZ = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix =  mat_xtz, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n\n")
+cat("$$\n")
+### # Z^TZ
+cat("Z^TZ = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_ztz, pnDigits = 0), collapse = "\n"),"\n")
+cat("\\right]\n")
+cat("$$\n")
+cat("$$\n")
+### # A^{-1}
+cat("A^{-1}= \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_ainv, pnDigits = 1), collapse = "\n"),"\n")
+cat("\\right]\n")
+cat("$$\n")
+### # right hand side
+cat("$$\n")
+cat("X^Ty = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_xty, pnDigits = 2), collapse = "\n"),"\n")
+cat("\\right]\n")
+cat(" \\text{, } \n")
+cat("Z^Ty = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_zty, pnDigits = 2), collapse = "\n"),"\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+Putting everything together into the mixed model equations leads to the following results
+
+```{r, echo=FALSE, results='asis'}
+cat("$$\n")
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_coef, pnDigits = 1), collapse = "\n"),"\n")
+cat("\\right]\n")
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_unknowns), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat(" = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_rhs, pnDigits = 2), collapse = "\n"),"\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+The solutions are computed as
+
+```{r, echo=FALSE, results='asis'}
+cat("$$\n")
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_unknowns), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat(" = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_coef, pnDigits = 1), collapse = "\n"),"\n")
+cat("\\right]^{-1}\n")
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_rhs, pnDigits = 2), collapse = "\n"),"\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+\pagebreak
+
+The solutions are
+
+```{r, echo=FALSE, results='asis'}
+vec_beta_hat <- rmddochelper::vecGetVecElem(psBaseElement = "\\hat{\\beta}", pnVecLen = ncol(mat_x), psResult = "latex")
+vec_a_hat <- rmddochelper::vecGetVecElem(psBaseElement = "\\hat{a}", pnVecLen = n_nr_animals, psResult = "latex")
+cat("$$\n")
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = c(vec_beta_hat, vec_a_hat)), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat(" = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_sol, pnDigits = 4), collapse = "\n"),"\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+
+

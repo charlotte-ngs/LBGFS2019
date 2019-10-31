@@ -1,0 +1,67 @@
+---
+title: Livestock Breeding and Genomics - Exercise 6
+author: Peter von Rohr
+date: 2019-11-01
+#output: pdf_document 
+output:
+  bookdown::pdf_document2:
+    toc: false
+    number_sections: false
+    keep_tex: false
+header-includes:
+ \usepackage{longtable}
+ \usepackage{float}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis', fig.pos = 'H')
+knitr::knit_hooks$set(hook_convert_odg = rmddochelper::hook_convert_odg)
+```
+
+## Problem 1: Numerator Relationship Matrix
+Construct the numerator relationship matrix $A$ for the following pedigree and verify the result using the function `getA()` from package `pedigreemm`. 
+
+```{r ex8p1ped, echo=FALSE, results='asis'}
+tbl_ped_ex8p1 <- tibble::tibble(Animal = c(5, 6, 7, 8, 9, 10),
+                                    Sire   = c(1, 1, 4, 4, 4, 4),
+                                    Dam    = c(2, 3, 5, 5, 6, 6))
+knitr::kable(tbl_ped_ex8p1, 
+             booktabs = TRUE,
+             longtable = TRUE,
+             caption   = "Pedigree For Constructing Numerator Relationship Matrix")
+```
+
+
+
+
+
+## Problem 2: BLUP Animal Model
+Use the following dataset to predict breeding values for all animals.
+
+```{r ex8p2data, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+n_sigmae2 <- 24
+n_sigmaa2 <- 8
+s_ex8p2_data <- "https://charlotte-ngs.github.io/LBGFS2019/ex/w07/data_ex06_p02.csv"
+tbl_ex8p2_data <- readr::read_csv(file = s_ex8p2_data)
+knitr::kable(tbl_ex8p2_data,
+             booktabs  = TRUE,
+             longtable = TRUE,
+             caption   = "Data for Animal Model")
+```
+
+
+### Assumptions
+
+* Random residuals are un-correlated and they all have equal variance $\sigma_e^2$ which is assumed to be `r n_sigmae2`.
+* The additive genetic variance $\sigma_a^2$ is assumed to be `r n_sigmaa2`.
+* The pedigree is the same as in Problem 1. You can use `solve()` in R or `pedigreemm::getAInv()` to invert $A$.
+
+
+### Your Tasks
+
+* Specify all components including expected values and variances of the animal model using the information from the dataset.
+* Set up mixed model equations
+* Solve mixed model equations for estimates of fixed effects and for predicted breeding values
+
+
+
