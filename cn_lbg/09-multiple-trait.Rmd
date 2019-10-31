@@ -1,0 +1,366 @@
+# Multiple Traits {#multipletraits}
+```{r mrmt-multipletraits-reset, echo=FALSE}
+s_this_rmd_file <- rmdhelp::get_this_rmd_file()
+mrmt$set_this_rmd_file(ps_this_rmd_file = s_this_rmd_file)
+```
+So far we have seen how to predict breeding values using the BLUP animal model. These breeding values were always only for one trait. From a statistical point of view, experts are calling such analyses __univariate__ evaluations. In reality, livestock breeders want to improve their animals in a population with respect to several traits simultaneously. If there are genetic relationships (measured by genetic correlations) between traits, univariate predictions of breeding values do not make optimal use of the available information. This effect is stronger, if certain traits can only be observed in animals of one sex. According to `r mrmt$add('Mrode2005')` who cites `r mrmt$add('Schaeffer1984')` and `r mrmt$add('TM1986')`, the increased accuracy of the evaluations is one of the main advantage of multivariate BLUP analyses. Predictions of breeding values for several traits in a single evaluation is called __multivariate__ prediction of breeding values. Such multivariate analyses can be implemented in different ways such as
+
+* combining different corrected information sources in a multivariate selection index. 
+* multivariate prediction of breeding values using BLUP animal model (method of choice).
+* combining predicted breeding values from univariate analyses. 
+
+Before the introduction of the BLUP animal model, breeding values were estimated using a method that is called **selection index theory**. While selection indices are no longer used to estimate breeding values, it is still used to predict the aggregate genotype, as will be shown later in this chapter. Before that, we start with an introduction to multivariate BLUP methods. 
+
+
+## Multivariate Predictions Of Breeding Values Using BLUP
+The prediction of breeding values using a multivariate BLUP model is the optimal prediction procedure. It has advantages, if 
+
+* some traits have lower heritability than others
+* environmental correlations exist between traits measured on the same animal
+* some traits are available only a subset of all animals 
+* some traits were used for a first round of selection
+
+In principle, a multivariate analysis can be thought of as several univariate analyses which are stacked one on top of the other. Let us assume that we have two traits. For the first trait, we define the model 
+
+$$y_1 = X_1 \beta_1 + Z_1u_1 + e_1$$
+
+Similarly for the second trait, we define the model
+
+$$y_2 = X_2 \beta_2 + Z_2u_2 + e_2$$
+
+If we group the data by traits, then we can write the multivariate model as
+
+$$\left[
+\begin{array}{c} 
+  y_1 \\
+  y_2
+\end{array} 
+\right] 
+=
+\left[ 
+\begin{array}{lr}
+X_1  &  0 \\
+0    &  X_2
+\end{array}
+\right]
+\left[ 
+\begin{array}{c}
+\beta_1 \\
+\beta_2
+\end{array}
+\right]
++
+\left[ 
+\begin{array}{lr}
+Z_1  &  0 \\
+0    &  Z_2
+\end{array}
+\right]
+\left[ 
+\begin{array}{c}
+u_1 \\
+u_2
+\end{array}
+\right]
++
+\left[ 
+\begin{array}{c}
+e_1 \\
+e_2
+\end{array}
+\right]
+$$
+
+The genetic variance-covariance matrix $G_0$ for the two traits has the following structure.
+
+$$G_0 = \left[ 
+\begin{array}{lr}
+\sigma_{g_{1}}^2  &  \sigma_{g1,g2}  \\
+\sigma_{g1,g2}    &  \sigma_{g_{2}}^2
+\end{array}
+\right] = \left[ 
+\begin{array}{lr}
+g_{11}  &  g_{12}  \\
+g_{21}  &  g_{22}
+\end{array}
+\right]
+$$
+
+The inverse $G_0^{-1}$ of $G_0$ can be formulated as
+
+$$G_0^{-1} = \left[ 
+\begin{array}{lr}
+g^{11}  &  g^{12}  \\
+g^{21}  &  g^{22}
+\end{array}
+\right]
+$$
+
+For the random residual effects, the variance-covariance matrix $R_0$ for the two traits can be written as
+
+$$R_0 = \left[ 
+\begin{array}{lr}
+r_{11}  &  r_{12}  \\
+r_{21}  &  r_{22}
+\end{array}
+\right]$$
+
+Also the inverse $R_0^{-1}$ can be written as
+
+$$R_0^{-1} = \left[ 
+\begin{array}{lr}
+r^{11}  &  r^{12}  \\
+r^{21}  &  r^{22}
+\end{array}
+\right]$$
+
+The variance-covariance matrix for the complete set of true breeding values and for all random residuals can be written as
+
+$$var(u) = var\left[\begin{array}{c} u_1 \\ u_2 \end{array} \right]
+=  
+\left[ 
+\begin{array}{lr}
+g_{11}A  &  g_{12}A \\
+g_{21}A  &  g_{22}A
+\end{array}
+\right]
+= G_0 \otimes A = G
+$$
+
+where $A$ is the numerator relationship matrix and $\otimes$ denotes the so-called __Kroneckerproduct__ of two matrices.  The variance-covariance matrix $R$ for the random residuals is given by
+
+$$
+R = var(e) = var\left[\begin{array}{c} e_1 \\ e_2 \end{array} \right]
+=  
+\left[ 
+\begin{array}{lr}
+r_{11}I_n  &  r_{12}I_n \\
+r_{21}I_n  &  r_{22}I_n
+\end{array}
+\right]
+= R_0 \otimes I_n
+$$
+
+where $n$ corresponds to the number of animals in the pedigree. The covariances between all elements of $a$ and $e$ are $0$. This is denoted by combining both random vectors into a single vector and writing down the variance-covariance matrix of the combined vector as
+
+$$
+var\left[\begin{array}{c} u \\ e \end{array} \right]
+=  
+\left[ 
+\begin{array}{lr}
+G  &  0 \\
+0  &  R
+\end{array}
+\right]
+=
+var\left[\begin{array}{c} u_1 \\ u_2 \\ e_1 \\ e_2 \end{array} \right]
+=  
+\left[ 
+\begin{array}{lccr}
+g_{11}A  &  g_{12}A &  0  &  0  \\
+g_{21}A  &  g_{22}A &  0  &  0  \\
+0        &  0       &  r_{11}I_n  &  r_{12}I_n \\
+0        &  0       &  r_{21}I_n  &  r_{22}I_n
+\end{array}
+\right]
+$$
+
+
+The solutions to get estimates of fixed effects and to get predictions for breeding values are obtained from the solutions of mixed model equations. These have exactly the same structure as in the univariate case. 
+
+$$
+\left[ 
+\begin{array}{lr}
+X^TR^{-1}X  &  Z^TR^{-1}X  \\
+Z^TR^{-1}X  &  Z^TR^{-1}Z + G^{-1}
+\end{array}
+\right]
+\left[ 
+\begin{array}{c}
+\hat{\beta} \\
+\hat{u}
+\end{array}
+\right]
+=
+\left[ 
+\begin{array}{c}
+X^TR^{-1}y \\
+Z^TR^{-1}y
+\end{array}
+\right]
+$$
+
+where 
+
+$$
+y = \left[
+\begin{array}{c} 
+  y_1 \\
+  y_2
+\end{array} 
+\right] 
+\text{, }
+X = \left[ 
+\begin{array}{lr}
+X_1  &  0 \\
+0    &  X_2
+\end{array}
+\right]
+\text{, }
+\hat{\beta} = \left[ 
+\begin{array}{c}
+\hat{\beta}_1 \\
+\hat{\beta}_2
+\end{array}
+\right]
+\text{, }
+Z = \left[ 
+\begin{array}{lr}
+Z_1  &  0 \\
+0    &  Z_2
+\end{array}
+\right]
+\text{, }
+\hat{u} = \left[ 
+\begin{array}{c}
+\hat{u}_1 \\
+\hat{u}_2
+\end{array}
+\right]
+$$
+
+
+Based on the specification of the variance-covariance matrices described earlier, we get $R^{-1} = R_0^{-1} \otimes I_n$ and $G^{-1} = G_0^{-1} \otimes A^{-1}$. 
+
+
+## Multitrait Selection {#multitrait-selection}
+Now that we have predicted breeding values for a collection of traits available, the question is how to integrate these predicted breeding values into a consistent selection criterion. Selection index theory provides a tool to optimally combine different sources of information in order to approximate the aggregate genotype $H$. In section \@ref(selindex-approx-agg-genotype), we will return to this topic once again. Although the selection index provides an ideal framework to combine estimated breeding values into an optimal selection criterion, we are going to describe to other selection procedures that are commonly used in practical livestock breeding. The two procedures are 
+
+1. Tandem-Selection and 
+2. Selection based on independent selection thresholds.
+
+The description of these procedures aims at showing the negative consequences that results from the use of these sub-optimal selection strategies. 
+
+
+### Tandem-Selection
+The term __Tandem-Selection__ stands for the strategy of always improving the population with respect to just one trait. Once the breeding goal for this trait is reached the population is improved with respect to a different trait. This sequence of single-trait improvements is continued until the breeding goal for all traits is reached. 
+
+The problem with Tandem-Selection is that while improving the population for a given trait, the population can only realize correlated selection responses for all other traits. These correlated selection responses might be very small or can even be negative which causes the time that it takes to reach the breeding goal for all relevant traits to be very long. 
+
+
+### Selection Based On Independent Selection Thresholds
+This method was used before the selection index was discovered. This selection procedure is very easy to apply. First selection thresholds are defined for all traits. In the next steps, all animals which are above the thresholds for all traits are selected as parents of the next generation. With this method, selection responses for all traits can be obtained in the early generations after the implementation of this selection strategy.
+
+We are using the following example to show how selection based on independent selection thresholds is used. For reasons of simplicity, we restrict ourselves on two traits. But the results can be generalized without any problems.
+
+
+#### Example: Selection On Independent Thresholds
+```{r milkproteinperformancedata, echo=FALSE, results='asis'}
+### # selection thresolods
+n_milk_sel_thr <- 6900
+n_prot_sel_thr <- 3.5
+### # mean and sd of traits
+n_nr_trait <- 2
+n_milk_mean <- 6800
+n_milk_sd <- 600
+n_prot_mean <- 3.4
+n_prot_sd <- .2
+n_corr <- -.4
+### # variance - covariance matrix
+n_cov <- n_corr * n_milk_sd * n_prot_sd
+mat_varcov <- matrix(c(n_milk_sd^2, n_cov,
+                       n_cov,       n_prot_sd^2), 
+                     nrow = n_nr_trait, 
+                     ncol = n_nr_trait, 
+                     byrow = TRUE)
+
+### # generate observations
+n_nr_obs <- 50
+### # cholesky decomposition of varcov
+mat_varcov_chol <- chol(mat_varcov)
+### # generate independent observations
+set.seed(5432)
+mat_unrel_obs <- matrix(c(rnorm(n_nr_obs),rnorm(n_nr_obs)), nrow = n_nr_trait, byrow = TRUE)
+mat_obs <- crossprod(mat_unrel_obs, mat_varcov_chol) + matrix(c(n_milk_mean, n_prot_mean), nrow=n_nr_obs, ncol=n_nr_trait, byrow = TRUE)
+### # some checks
+# head(mat_obs)
+# var(mat_obs)
+# sd(mat_obs[,1])
+# sd(mat_obs[,2])
+# cor(mat_obs)
+```
+
+In a dairy cattle population, breeders want to improve milk yield and protein content. We assume the following selection thresholds for the two traits of interest during first lactation
+
+* milk yield: `r n_milk_sel_thr` kg
+* protein content: `r n_prot_sel_thr` %
+
+
+
+```{r milkproteinperformanceplot, echo=FALSE, results='asis', fig.cap="Milk Yield and Protein Content For Dairy Cows", warning=FALSE}
+### # convert data matrix into a tibble that is later used for plotting
+tbl_milk_prot <- tibble::as_tibble(mat_obs)
+colnames(tbl_milk_prot) <- c("Milk", "Protein")
+### # define the colours of the threshold lines
+s_col_milk_thr <- "red"
+s_col_prot_thr <- "blue"
+### # use ggplot2 to do the plot
+library(ggplot2)
+milk_prot_plot <- qplot(Milk, Protein, data=tbl_milk_prot, geom="point", 
+                         xlab = "Milk Yield", ylab = "Protein Content")
+milk_prot_plot <- milk_prot_plot + 
+  geom_hline(yintercept = n_prot_sel_thr, colour = s_col_prot_thr) +
+  geom_vline(xintercept = n_milk_sel_thr, colour = s_col_milk_thr)
+print(milk_prot_plot)
+```
+
+Figure \@ref(fig:milkproteinperformanceplot) shows the performance data for a herd of dairy cows. The selection thresholds (`r s_col_milk_thr` line for milk yield and `r s_col_prot_thr` line for protein content) divide the diagram into four quadrants. None of the cows in the lower right quadrant does meet any of the selection criterion imposed by the thresholds. The cows in the upper left quadrant fulfill the requirements for protein content and the cows in the lower right quadrant fulfill the requirements for milk yield. Only the cows in the upper right quadrant fulfill the requirements for both traits. 
+
+The disadvantage of this selection strategy becomes apparent with the cows in the upper left and in the lower right quadrant. They are culled and thereby not considered as parents of the next generation even though, they have good performances in one of the traits. From a statistical genetics point of view there are three problems associated with a selection strategy that is based on independent selection thresholds
+
+1. livestock breeders tend to put the thresholds for all traits in the range of positive predicted breeding values. This leads to an exclusion of very many animals and a dramatic reduction in genetic variability
+2. genetic relationships between traits are completely ignored. These relationships must be considered when defining selection thresholds. Otherwise the expected genetic gain will not be as expected.
+3. differences in the economic relevance of the different traits are completely ignored. Putting the threshold in all traits into the range of positive predicted breeding values leads to a high emphasis on traits with a high heritability. Traits with lower heritability will have only very small selection responses.
+
+
+### Selection Index {#selindex-approx-agg-genotype}
+In section \@ref(multitrait-selection), we have already briefly described how we can use selection index theory to approximate the aggregate genotype $H$ in an optimal way. Just as a reminder, the aggregate genotype $H$ combines all economically relevant traits into a single value using a linear function of the true breeding values $u$ and taking the economic values $w$ as weighting factors. Given that $H$ corresponds to the linear function 
+
+$$H = w^Tu$$
+
+and we want to approximate $H$ by an Index $I$ which is a linear function of all predicted breeding values $\hat{u}$, we can write
+
+$$I = b^T\hat{u}$$
+
+where $b$ is a vector of unknown index weights. The vector $b$ is determined using the optimality condition of minimum prediction error variance which results in 
+
+\begin{equation}
+b = P^{-1}Gw
+(\#eq:vectorindexweight)
+\end{equation}
+
+where $P$ is the variance-covariance matrix between all information sources and $G$ is the covariance matrix between the information sources and the traits in the aggregate genotype. In case where the traits in the aggregate genotype $H$ and in the index $I$ are the same, the matrices $P$ and $G$ are defined as 
+
+$$P = var(\hat{u})$$
+
+and 
+
+$$G = cov(u, \hat{u})$$
+
+For predicted breeding values using BLUP, it can be shown that $cov(u, \hat{u}) = var(\hat{u})$ and therefore $P=G$. Using that equality in equation \@ref(eq:vectorindexweight), we get
+
+$$b = w$$
+which means that the vector $b$ of index weights corresponds to the vector of economic values $w$. 
+
+The use of the selection index theory to combine predicted breeding values as information sources to approximate the aggregate genotype has the following advantages
+
+* genetic relationships (correlations) between traits in the aggregate genotype are considered correctly
+* relationships between information sources in the index are considered correctly
+* information from auxiliary traits can be used
+* differences in economic relevance of different traits are considered correctly
+* expected selection responses can be estimated and thereby quantified
+
+Despite all these advantages, index selection alone is very rarely used in practical livestock breeding. The reason for this is that every population has a few traits that are difficult to associate with an economic value or for some traits it is difficult to come up with genetic parameters. As a consequence of that, in practical livestock breeding we will always find a mix of index selection and a variety of independent selection thresholds. 
+
+
+
