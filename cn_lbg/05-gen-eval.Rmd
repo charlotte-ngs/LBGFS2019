@@ -273,6 +273,11 @@ var(\bar{y}) = (t + (1-t)/n) \sigma_y^2
 
 assuming there is no environmental covariance between half-sib records and the intra-class correlation $t$ is $\frac{1/4 \sigma_u^2}{\sigma_y^2}$. Then we can compute the regression coefficient as 
 
+<!-- ---------------------------------------------------- --
+  -- TODO: Explain how $var(\bar{y})$ is derived          --
+  --                                                      --
+  -- ---------------------------------------------------- -->
+
 \begin{align}
 b &= \frac{1/2 \sigma_u^2}{(t + (1-t)/n) \sigma_y^2} \notag \\
   &= \frac{1/2 h^2 \sigma_y^2}{({1\over 4}h^2 + (1 - {1\over 4}h^2)/n) \sigma_y^2} \notag \\

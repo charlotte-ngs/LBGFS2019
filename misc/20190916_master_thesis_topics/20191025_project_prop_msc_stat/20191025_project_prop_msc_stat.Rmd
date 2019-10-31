@@ -1,0 +1,24 @@
+---
+title: "Master Thesis Projects"
+author: "Peter von Rohr"
+date: "10/25/2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Disclaimer
+New master thesis projects that are targetted towards a masters student in Statistics are proposed. The background of the projects are current research questions that did arise during projects at Qualitas AG.
+
+
+## Statistical Properties of Predicted Breeding Values
+
+
+## Classification of Cow Behaviour Based on Sensor Data
+This topic is only possible, if LKV Baden-Würtenberg aggrees to share the data from the small pilot of the SESAM project.
+
+
+## Statistical Classification of Carcasses Based on Videos from Slaughterhouses
+This project can only be done, if Proviande aggrees to share the data from their trial project on video based carcass classification. 

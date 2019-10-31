@@ -1,0 +1,25 @@
+---
+title: "Variance of Means"
+author: "Peter von Rohr"
+date: "10/25/2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Disclaimer
+The computation of the variance ($var(\bar{y})$) of an empirical mean ($\bar{y}$) of some realisations of a random variable $y$ is explained. We use repeated records and progeny performance records from the same parent as examples. In the progeny example, the individuals that yield the observations are half-sibs, hence they share one common parent.
+
+
+## Terminology
+Realisations of a random variable $y$ are just numbers that we happen to measure or to observe. Such observations can be grouped according to some common factors. For repeated records can be grouped according to the individual they were observed or measured from. For progeny performance records, the observations can be grouped according to the common parent. In any case, the observed data can be organised in a matrix where all observations belonging to the same grouping factor are contained in one row of the matrix. Hence in a dataset with $n$ grouping factors each having $m$ observations, the data matrix has dimensions $n \times m$.
+
+For some evaluations, it can be useful to compute the mean observation per grouping factor. This results in a vector ($\bar{y}$) of mean observations, one per grouping factor. The vector ($\bar{y}$) has length $n$. 
+
+
+
+
+## Example Datasets
+
