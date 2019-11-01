@@ -1,0 +1,199 @@
+---
+title: "Inverse Numerator Relationship Matrix with Inbreeding"
+author: "Peter von Rohr"
+date: "2019-11-08"
+output:
+  beamer_presentation:
+header-includes:
+ \usepackage{longtable}
+ \usepackage{float}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = "asis")
+knitr::knit_hooks$set(hook_convert_odg = rmddochelper::hook_convert_odg)
+```
+
+
+
+## Inbreeding
+
+* Elements in matrix $D$ depend on coefficients of inbreeding
+* Recap: From the simple decomposition of $a$, we derived 
+
+\begin{align}
+var(m_i)  &=  \left({1\over 2} - {1\over 4}(F_s + F_d)\right) \sigma_a^2  \notag \\
+          &=  \left({1\over 2} - {1\over 4}(A_{ss} - 1 + A_{dd} - 1)\right) \sigma_a^2  \notag \\
+          &=  \left(1 - {1\over 4}(A_{ss} + A_{dd}) \right) \sigma_a^2  \notag \\
+          &=  (D)_{ii} \sigma_a^2 \notag
+\end{align}
+
+$$\rightarrow  (D)_{ii}  = \left({1\over 2} - {1\over 4}(F_s + F_d)\right) = \left(1 - {1\over 4}(A_{ss} + A_{dd}) \right)$$ 
+
+
+## Computation of Coefficients of Inbreeding
+
+* Observation: Coefficients of inbreeding $F_s$ and $F_d$ can be read from $(A)_{ss}$ and $(A)_{dd}$ of $A$
+* Cannot setup $A$ to just get inbreeding coefficients
+* More efficient method required
+* __Cholesky__ decomposition of $A$
+
+$$A = R\cdot R^T$$
+
+where $R$ is a lower triangular matrix
+
+__Hint__: Function `chol(A)` in R gives matrix $R^T$
+
+
+## Cholesky Decomposition
+
+* Diagonal elements $(A)_{ii}$ of $A$ are the sum of the squared elements of one row of $R$
+
+\begin{equation}
+(A)_{ii} = \sum_{j=1}^i (R)_{ij}^2 \notag
+\end{equation}
+
+* Example
+
+```{r SmallExCholA, eval=TRUE, echo=FALSE, results='asis'}
+nAnzAni <- 3
+matA <- rmddochelper::matGetMatElem(psBaseElement = "(A)", pnNrRow = nAnzAni, pnNrCol = nAnzAni)
+matR <- rmddochelper::matLowerTri(psBaseElement = "(R)", pnNrRow = nAnzAni, pnNrCol = nAnzAni)
+cat("\\tiny \n $$\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matA), collapse = "\n"))
+cat("\\right] \n")
+cat(" = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matR), collapse = "\n"))
+cat("\\right] \n")
+cat(" \\cdot \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = t(matR)), collapse = "\n"))
+cat("\\right] \n")
+cat("$$\n \\normalsize \\")
+```
+
+
+## Recursive Computation of $R$
+
+* Let us write the matrix $R$ as a product of two matrices $L$ and $S$:
+
+$$R = L \cdot S$$
+where $L$ is the same matrix as in the `LDL`-decompositon and $S$ is a diagonal matrix.
+
+* Compute $A$ as
+
+$$A = R \cdot R^T = L \cdot S \cdot S \cdot L^T = L \cdot D \cdot L^T$$
+
+* Hence
+
+$$D = S \cdot S \quad \rightarrow \quad (S)_{ii} = \sqrt{(D)_{ii}}$$
+
+## Example
+
+```{r RlsDecompEx, eval=TRUE, echo=FALSE, results='asis'}
+matL <- rmddochelper::matLowerTri(psBaseElement = "(L)", pnNrRow = nAnzAni, pnNrCol = nAnzAni, pvecDiag = 1)
+matS <- rmddochelper::matDiag(psBaseElement = "(S)", pnNrRow = nAnzAni, pnNrCol = nAnzAni)
+cat("\\tiny \n $$ \n \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matR), collapse = "\n"))
+cat("\\right]  = \n")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matL), collapse = "\n"))
+cat("\\right]  \\cdot \n")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matS), collapse = "\n"))
+cat("\\right]\n $$ \n \\normalsize \\")
+```
+
+
+* Diagnoal elements $(R)_{ii} = (S)_{ii}$
+
+* Because $(S)_{ii} = \sqrt{(D)_{ii}}$, if parents $s$ and $d$ are known diagonal elements $(R)_{ii}$ of matrix $R$ can be computed as 
+
+$$(R)_{ii} =  (S)_{ii} = \sqrt{(D)_{ii}} = \sqrt{\left(1 - {1\over 4}(A_{ss} + A_{dd}) \right)}$$
+
+* $A_{ss}$ and $A_{dd}$ are
+    + $0$ if $s$ and $d$ are unknown (NA) or
+    + have been computed before
+
+
+## Recap matrix $D$
+
+* Both parents $s$ and $d$ of animal $i$ are known
+
+$$(D)_{ii} = {1\over 2} - {1\over 4}(F_s + F_d) = {1\over 2} - {1\over 4}((A)_{ss} - 1 + (A)_{dd} - 1) = 1 - {1\over 4}((A)_{ss}+ (A)_{dd})$$
+
+* Parent $s$ of animal $i$ is known
+
+$$ (D)_{ii} = {3\over 4} - {1\over 4}F_s = {3\over 4} - {1\over 4}((A)_{ss} - 1) = 1 - {1\over 4} (A)_{ss}$$
+
+* Both parents unknown
+
+$$(D)_{ii} = 1$$
+
+## Offdiagonal Elements of $R$
+
+* Offdiagnoal elements $(R)_{ij}$ of $R$ are computed as 
+
+$$(R)_{ij} = (L)_{ij} * (S)_{jj}$$
+
+* Use property of $L$: $L_{ij} = {1\over 2}((L)_{sj} + (L)_{dj})$ if $s$ and $d$ are parents of $i$
+
+\begin{align}
+(R)_{ij}  &=  (L)_{ij} * (S)_{jj} \notag \\
+          &=  {1\over 2} \left[ (L)_{sj} + (L)_{dj} \right] * (S)_{jj} \notag \\
+          &=  {1\over 2} \left[ (L)_{sj} * (S)_{jj} + (L)_{dj} * (S)_{jj} \right]  \notag \\
+          &=  {1\over 2} \left[ (R)_{sj} + (R)_{dj} \right] \notag
+\end{align}
+
+
+## Example Pedigree
+
+```{r showextpedigree, echo=FALSE, results='asis'}
+n_nr_ani_ped <- 6
+n_nr_parent <- 3
+tbl_ped_ext <- dplyr::data_frame(Calf = c(1:n_nr_ani_ped),
+                             Sire = c(NA, NA, NA, 1, 3, 4),
+                             Dam  = c(NA, NA, NA, 2, 2, 5))
+### # pedigreemm
+ped_ext <- pedigree(sire = tbl_ped_ext$Sire, dam = tbl_ped_ext$Dam, label = as.character(1:n_nr_ani_ped))
+matA_ext <- as.matrix(getA(ped = ped_ext))
+matAinv_ext <- as.matrix(getAInv(ped = ped_ext))
+### # LDL decomposition based on cholesky
+matR_ext <- t(chol(matA_ext))
+### # matS = sqrt(matD)
+matD_ext <- diag(Dmat(ped = ped_ext), n_nr_ani_ped)
+matS_ext <- sqrt(matD_ext)
+matL_ext <- matR_ext %*% solve(matS_ext)
+### # show table
+knitr::kable(tbl_ped_ext, 
+             booktabs  = TRUE,
+             longtab   = TRUE)
+```
+
+
+## Computations
+
+* Compute diagonal elements $(A)_{ii}$ of $A$ to get $F_i$
+* Prerequisite: Pedigree sorted such that parents before progeny
+* Start with $(A)_{11}$
+
+\begin{align}
+(A)_{11}  &= (R)_{11}^2 = (D)_{11}  = 1 \notag 
+\end{align}
+
+* $(A)_{22}  = (R)_{21}^2 + (R)_{22}^2 = 0 + 1 = 1$
+
+* $(A)_{33}  = (R)_{31}^2 + (R)_{32}^2 + (R)_{33}^2 = 0 + 0 + 1 = 1$
+
+
+## Animals With Known Parents
+
+\begin{align}
+(A)_{44}  &=  (R)_{41}^2 + (R)_{42}^2 + (R)_{43}^2 + (R)_{44}^2 \notag \\
+          &=  ({1\over 2}(R_{11} + R_{21}))^2 + ({1\over 2}(R_{12} + R_{22}))^2 + ({1\over 2}(R_{13} + R_{23}))^2 \notag \\
+          & + \left(1 - {1\over 4}(A_{11} + A_{22}) \right) \notag \\
+          &=  {1\over 4} + {1\over 4} + {1\over 2} = 1\notag
+\end{align}
+
+* $(A)_{55}$
+
+* $(A)_{66}$
