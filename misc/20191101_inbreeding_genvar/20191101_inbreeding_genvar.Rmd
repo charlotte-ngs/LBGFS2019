@@ -1,0 +1,41 @@
+---
+title: "Influence of Inbreeding On Genetic Variance"
+date:  "2019-11-01"
+output: bookdown::tufte_handout2
+bibliography: "20191101_inbreeding_genvar.bib"
+---
+
+```{r mrtminit, include=FALSE}
+mrmt <- rmdhelp::MendeleyExportToolR6$new()
+mrmt$set_local_bib_file(ps_local_bib_file = '20191101_inbreeding_genvar.bib')
+mrmt$set_this_rmd_file(ps_this_rmd_file = rmdhelp::get_this_rmd_file())
+```
+
+# Purpose
+Diagnoal elements ($(A)_{ii}$) of the numerator relation ship matrix $A$ are computed as 
+
+$$(A)_{ii} = 1 + F_i$$
+
+where $F_i$ corresponds to the inbreeding coefficient of animal $i$. The source of this relationship is that the variance ($var(u_i)$) of breeding value $u_i$ is computed as 
+
+\begin{equation}
+var(u_i) = (1 + F_i) * \sigma_u^2
+(\#eq:varui)
+\end{equation}
+
+## Goal
+The topic of this notebook is to find a genetic explanation for the relation given in \@ref(eq:varui). 
+
+
+## Material
+The focus will be on the material presented in `r mrmt$add('Falconer1996')`. 
+
+
+# Summary
+This chapter summarises a few important points about inbreeding. 
+
+
+## Chpt 3 Small Populations: 
+
+
+# References

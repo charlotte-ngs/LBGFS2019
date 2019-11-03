@@ -1,0 +1,18 @@
+---
+title: "Problems Viewing CN PDFs in Acroread"
+date:  "2019-11-01"
+output: html_notebook
+---
+
+## Problem
+Student(s) reported that viewing course note pdfs locally using Acrobat Reader produces an error and shows only an empty document. The report was produced on a Mac. 
+
+
+## ToDo
+
+1. Try to reproduce
+2. Veryfy on Windows
+
+
+## Solutions
+1. Easy solution: Use Preview on the Mac

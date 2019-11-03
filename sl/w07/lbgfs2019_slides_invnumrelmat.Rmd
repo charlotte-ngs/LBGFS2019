@@ -134,20 +134,20 @@ u_5  &=  {1\over 2} u_3 + {1\over 2} u_2 + m_5 \notag
 
 ## Matrix Vector Notation
 
-* Define vectors $a$ and $m$ as
+* Define vectors $u$ and $m$ as
 * Coefficients of $u_s$ and $u_d$ into matrix $P$
 
 ```{r, echo=FALSE, results='asis'}
 ### # definition of vectors a and m
-vec_a <- rmddochelper::vecGetVecElem(psBaseElement = "a", pnVecLen = n_nr_ani_ped, psResult = "latex")
+vec_u <- rmddochelper::vecGetVecElem(psBaseElement = "u", pnVecLen = n_nr_ani_ped, psResult = "latex")
 vec_m <- rmddochelper::vecGetVecElem(psBaseElement = "m", pnVecLen = n_nr_ani_ped, psResult = "latex")
 ### # define matrix P
 matP <- matrix(0, nrow = n_nr_ani_ped, ncol = n_nr_ani_ped)
 matP[4,1] <- matP[4,2] <- matP[5,3] <- matP[5,2] <- 0.5
 ### # show both vectors
 cat("$$\n")
-cat("a = \\left[\n")
-cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_a), collapse = "\n"), "\n")
+cat("u = \\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_u), collapse = "\n"), "\n")
 cat("\\right] \\text{, }\n")
 cat("m = \\left[\n")
 cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_m), collapse = "\n"), "\n")
@@ -160,7 +160,7 @@ cat("$$\n")
 
 * Result: Decomposition of true breeding values
 
-$$a = P \cdot a + m$$
+$$u = P \cdot u + m$$
 
 
 ## Decomposition of Variance
@@ -315,16 +315,16 @@ u_6  &=   {1\over 4} m_1 + {1\over 2} m_2 + {1\over 4} m_3 + {1\over 2} m_4 + {1
 
 ## Matrix-Vector Notation
 
-* Use vectors $a$ and $m$ again
+* Use vectors $u$ and $m$ again
 
 ```{r, echo=FALSE, results='asis'}
 ### # definition of vectors a and m
-vec_a_ext <- rmddochelper::vecGetVecElem(psBaseElement = "a", pnVecLen = n_nr_ani_ped, psResult = "latex")
+vec_u_ext <- rmddochelper::vecGetVecElem(psBaseElement = "u", pnVecLen = n_nr_ani_ped, psResult = "latex")
 vec_m_ext <- rmddochelper::vecGetVecElem(psBaseElement = "m", pnVecLen = n_nr_ani_ped, psResult = "latex")
 ### # show both vectors
 cat("\\small \n $$\n")
-cat("a = \\left[\n")
-cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_a_ext), collapse = "\n"), "\n")
+cat("u = \\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_u_ext), collapse = "\n"), "\n")
 cat("\\right] \\text{, }\n")
 cat("m = \\left[\n")
 cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_m_ext), collapse = "\n"), "\n")
@@ -337,7 +337,7 @@ cat("$$\n \\normalsize \n")
 
 * Result of recursive decomposition of $u_i$
 
-$$a = L \cdot m$$
+$$u = L \cdot m$$
 
 ## Variance From Recursive Decomposition
 
