@@ -1,5 +1,5 @@
 ---
-title: "Statistical Classification Of Cow Behavior Based On Position Data"
+title: "Statistical Classification Of Cow Behavior Based On Sensor Data"
 author: "Peter von Rohr"
 date: "11/5/2019"
 output: 
@@ -19,14 +19,26 @@ mrmt$set_this_rmd_file(ps_this_rmd_file = rmdhelp::get_this_rmd_file())
 ```
 
 ## Background {-}
-Changes in cow health is associated with behavior traits of dairy cows. `r mrmt$add('Williams2016')` gave an interesting review about different papers on how cow behavior was linked to the health status of the respective animals. Some of the cited studies found that changes in behavior traits could be observed well before the actual health problem such as lameness of the cow could be diagnosed. Hence, detecting the changes in cow behavior traits as early as possible could be an important information for the farmer in the prevention of cow illnesses. Especially nowadays where time for herd management is becoming smaller, it is important to use this time as efficently as possible. This requires good tools to help the farmer to get the necessary information to take the right decisions as early as possible. 
+Changes in cow health is associated with behavior traits of dairy cows. `r mrmt$add('Williams2016')` gave an interesting review about different papers on how cow behavior was linked to the health status of the respective animals. Some of the cited studies found that changes in behavior traits could be observed well before the actual health problem such as lameness of the cow could be diagnosed. Hence, detecting the changes in cow behavior traits as early as possible could be an important information for the farmer in the prevention of cow illnesses. Especially nowadays where time for herd management is decreasing, it is important to use this time as efficiently as possible. This requires good tools to help the farmer to get the necessary information to take the right decisions as early as possible. 
 
-SESAM is an interreg project aiming at developing such tools based on the joint evaluation of performance records of cows and sensor data collected on the farm. 
+SESAM is an interreg project aiming at developing such tools based on the joint evaluation of performance records of cows and sensor data collected on the farm. In a first pilot study (Small Pilot), the relation between cow behavior and sensor recorded movement data was established.
 
 
 ## SESAM Small Pilot {-}
+On a small number of selected farms, cows were equipped with a first generation sensor and at the same time cows behavior was monitored using video recordings. The association between the sensor data and the behavior of each cow given by the video data, was established manually using a special software program provided by Hahn-Schickard. The result of this manual linking between behavior of cows and sensor recorded movements is a dataset of known associations between movement patterns and cow behavior. This association data can be used to build a statistical classification model that will allow us to automatically predict cow behavior based on new movement data.
+
 
 ## Master Thesis Project {-}
+The aim of this master thesis project is to use the association dataset from the small pilot study of the SESAM project to build the statistical classification model. The building process of such a classification model can be done using several methods. A few methods have been compared in the study published by `r mrmt$add('Smith2015')`. What method performs best is also dependent on the data and hence must be evaluated in every project separately. Besides the determination of the classification method, the relevant features that provide useful information to classify the response variable (cow behavior), must be selected. Each combination of relevant feature set and method is evaluated using a cross classification scheme. In cross classification, the complete dataset is randomly separated into a training set and into a test set where the latter set is only about $10-20\%$ in size compared to the former set. For a given method, the training data is used to select the relevant features and to estimate the effects of these features. These estimated quantities are then used to predict the outcomes in the test set. The number of correct predictions is then used as an evaluation criterion.
+
+The following milestones are defined for this master thesis project
+
+1. Review of the relevant literature in the area of statistical classification of cow behavior
+2. Data preparation consisting of consistency checks in the association dataset. 
+3. Descriptive statistics of the association dataset from the small pilot study
+4. Feature selection and method selection for the association dataset
+5. Collecting, documenting and discussing the results.
+6. Write the master thesis.
 
 
 ## References
