@@ -1,0 +1,32 @@
+---
+title: "Statistical Classification Of Cow Behavior Based On Position Data"
+author: "Peter von Rohr"
+date: "11/5/2019"
+output: 
+  bookdown::pdf_document2:
+    toc: false
+bibliography: "20191105_sesam_master_project_behavior_classification.bib"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r mrmt-setup, include=FALSE}
+mrmt <- rmdhelp::MendeleyExportToolR6$new()
+mrmt$set_local_bib_file(ps_local_bib_file = '20191105_sesam_master_project_behavior_classification.bib')
+mrmt$set_this_rmd_file(ps_this_rmd_file = rmdhelp::get_this_rmd_file())
+```
+
+## Background {-}
+Changes in cow health is associated with behavior traits of dairy cows. `r mrmt$add('Williams2016')` gave an interesting review about different papers on how cow behavior was linked to the health status of the respective animals. Some of the cited studies found that changes in behavior traits could be observed well before the actual health problem such as lameness of the cow could be diagnosed. Hence, detecting the changes in cow behavior traits as early as possible could be an important information for the farmer in the prevention of cow illnesses. Especially nowadays where time for herd management is becoming smaller, it is important to use this time as efficently as possible. This requires good tools to help the farmer to get the necessary information to take the right decisions as early as possible. 
+
+SESAM is an interreg project aiming at developing such tools based on the joint evaluation of performance records of cows and sensor data collected on the farm. 
+
+
+## SESAM Small Pilot {-}
+
+## Master Thesis Project {-}
+
+
+## References
