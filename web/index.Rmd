@@ -194,7 +194,7 @@ vecExTopic[which(Date == format(as.Date("2019/10/25"), "%d.%m"))] <- paste0("[Pr
 # w7  w07/lbg_fs_2019_w07_ex06.pdf
 vecExTopic[which(Date == format(as.Date("2019/11/01"), "%d.%m"))] <- paste0("[Numerator Relationship Matrix and Animal Model](", s_base_url_ex, "/w07/lbgfs2019_w07_ex06.pdf)", collapse = '')
 # w8 ex/w08/lbg_fs_2019_w08_ex07.pdf
-# vecExTopic[which(Date == format(as.Date("2019/11/08"), "%d.%m"))] <- "[]()"
+vecExTopic[which(Date == format(as.Date("2019/11/08"), "%d.%m"))] <- paste0("[Decomposition and Inverse Numerator Relationship Matrix](", s_base_url_ex, "/w08/lbgfs2019_w08_ex07.pdf)", collapse = '')
 # w9 ex/w09/lbg_fs_2019_w09_ex08.pdf
 # vecExTopic[which(Date == format(as.Date("2019/11/15"), "%d.%m"))] <- "[]()"
 # w10 w10/lbg_fs_2019_w10_ex09.pdf
@@ -230,9 +230,9 @@ vecSolTopic[which(Date == format(as.Date("2019/10/25"), "%d.%m"))] <- paste0("[O
 # w7 sol/w06/lbg_fs_2019_w06_sol05.pdf
 vecSolTopic[which(Date == format(as.Date("2019/11/01"), "%d.%m"))] <- paste0("[Progeny Records and Sire Model](", s_base_url_sol, "/w06/lbgfs2019_w06_sol05.pdf)", collapse = '')
 # w8 w07/lbg_fs_2019_w07_sol06.pdf
-# vecSolTopic[which(Date == format(as.Date("2019/11/08"), "%d.%m"))] <- paste0("[Numerator Relationship Matrix and Animal Model](", s_base_url_sol, "/w07/lbgfs2019_w07_sol06.pdf)", collapse = '')
+vecSolTopic[which(Date == format(as.Date("2019/11/08"), "%d.%m"))] <- paste0("[Numerator Relationship Matrix and Animal Model](", s_base_url_sol, "/w07/lbgfs2019_w07_sol06.pdf)", collapse = '')
 # w9 sol/w08/lbg_fs_2019_w08_sol07.pdf
-# vecSolTopic[which(Date == format(as.Date("2019/11/15"), "%d.%m"))] <- "[]()"
+# vecSolTopic[which(Date == format(as.Date("2019/11/15"), "%d.%m"))] <- paste0("[Decomposition and Inverse Numerator Relationship Matrix](", s_base_url_sol, "/w08/lbgfs2019_w08_sol07.pdf)", collapse = '')
 # w10 sol/w09/lbg_fs_2019_w09_sol08.pdf
 # vecSolTopic[which(Date == format(as.Date("2019/11/22"), "%d.%m"))] <- "[]()"
 # w11 w10/lbg_fs_2019_w10_sol09.pdf
