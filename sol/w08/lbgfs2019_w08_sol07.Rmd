@@ -1,0 +1,244 @@
+---
+title: Livestock Breeding and Genomics - Solution 7
+author: "Peter von Rohr"
+date: "2019-11-08"
+output:
+  bookdown::pdf_document2:
+    toc: false
+    number_sections: false
+    keep_tex: false
+header-includes:
+ \usepackage{longtable}
+ \usepackage{float}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis', fig.pos = 'H')
+knitr::knit_hooks$set(hook_convert_odg = rmdhelp::hook_convert_odg)
+```
+
+## Problem 1: Decompositions
+Given is the following pedigree. 
+
+```{r pedsol09p01, echo=FALSE, results='asis'}
+n_nr_pedsol09p01 <- 6
+tbl_pedsol09p01 <- tibble::tibble(Animal = 1:n_nr_pedsol09p01,
+                                      Sire   = c(NA, NA, 1, 1, 3, 5),
+                                      Dam    = c(NA, NA, 2, NA, 4, 4))
+knitr::kable(tbl_pedsol09p01,
+             booktabs = TRUE, 
+             longtable = TRUE)
+```
+
+### Your Tasks
+* Do the simple decomposition of the above pedigree
+* Do the recursive decomposition of the above pedigree until only $m_i$ terms appear on the right-hand side of the decomposition.
+ 
+### Solution
+
+* __Simple Decomposition__: For the simple decomposition, the true breeding values are decomposed into true breeding values of parents plus the respective mendelian sampling effect. For the pedigree given above this is
+
+\begin{align}
+a_1  &=  m_1  \notag \\
+a_2  &=  m_2  \notag \\
+a_3  &=  {1\over 2}a_1 + {1\over 2}a_2 + m_3 \notag \\
+a_4  &=  {1\over 2}a_1 + m_4 \notag \\
+a_5  &=  {1\over 2}a_3 + {1\over 2}a_4 + m_5 \notag \\
+a_6  &=  {1\over 2}a_5 + {1\over 2}a_4 + m_6 \notag
+\end{align}
+
+Converting the same decomposition into matrix-vector notation, we get
+
+$$a = P \cdot a + m$$
+
+Putting the information from the pedigree into the decomposition yields
+
+```{r simpledecomppedsol09p01, echo=FALSE, results='asis'}
+vec_a_sol09p01 <- rmddochelper::vecGetVecElem(psBaseElement = "a", pnVecLen = n_nr_pedsol09p01, psResult = "latex")
+vec_m_sol09p01 <- rmddochelper::vecGetVecElem(psBaseElement = "m", pnVecLen = n_nr_pedsol09p01, psResult = "latex")
+mat_p_sol09p01 <- matrix(c(rep(0, n_nr_pedsol09p01),
+                           rep(0, n_nr_pedsol09p01),
+                           0.5, 0.5, rep(0, (n_nr_pedsol09p01-2)),
+                           0.5, rep(0, (n_nr_pedsol09p01-1)),
+                           0, 0, 0.5, 0.5, 0, 0,
+                           0, 0, 0, 0.5, 0.5, 0), nrow = n_nr_pedsol09p01, byrow = TRUE)
+### # show matrix vector notation
+cat("$$\n")
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_a_sol09p01), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat(" = ")
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_p_sol09p01), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat(" \\cdot ")
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_a_sol09p01), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat(" + ")
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_m_sol09p01), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+
+* __Recursive Decomposition__: The recursive decomposition repeats simple decompositions of true breeding values of ancestors until the right-hand side of the decomposition consists only of mendelian sampling terms. In matrix-vector notation, the recursive decomposition can be written as
+
+$$a = L \cdot m$$
+
+The vectors $a$ and $m$ are defined as for the simple decomposition. The matrix $L$ has the following structure.
+
+```{r recdecomppedsol09p01, echo=FALSE, results='asis'}
+suppressPackageStartupMessages( library(pedigreemm) )
+ped_sol09p01 <- pedigree(sire = tbl_pedsol09p01$Sire, dam = tbl_pedsol09p01$Dam, label = as.character(tbl_pedsol09p01$Animal))
+mat_a_sol09p01 <- as.matrix(getA(ped = ped_sol09p01))
+mat_r_sol09p01 <- t(chol(mat_a_sol09p01))
+### # verify
+mat_d_sol09p01 <- diag(Dmat(ped = ped_sol09p01), nrow = n_nr_pedsol09p01)
+mat_s_sol09p01 <-  sqrt(mat_d_sol09p01)
+mat_l_sol09p01 <- mat_r_sol09p01 %*% solve(mat_s_sol09p01)
+ssq_dev <- sum(sum((mat_a_sol09p01 - mat_l_sol09p01 %*% mat_d_sol09p01 %*% t(mat_l_sol09p01))^2))
+if ( ssq_dev > .Machine$double.eps )
+  stop("Verification of LDL-Decomposition of A failed with a summed square deviation of: ", ssq_dev, "\n")
+
+### # show the decomposition equation
+cat("$$\n")
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_a_sol09p01), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat(" = ")
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_l_sol09p01, pnDigits = 3), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat(" \\cdot ")
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_m_sol09p01), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+
+
+## Problem 2: Henderson's Rules
+Compute $A^{-1}$ for the following pedigree using Henderson's rules. Verify your result with the function `pedigreemm::getAInv()`. 
+
+```{r ped_sol07p02, echo=FALSE}
+n_nr_pedsol09p02 <- 6
+tbl_pedsol09p02 <- tibble::tibble(Animal = 3:n_nr_pedsol09p02,
+                                      Sire   = c(1, NA, 3, 3),
+                                      Dam    = c(NA, 2, 4, 4))
+knitr::kable(tbl_pedsol09p02,
+             booktabs = TRUE, 
+             longtable = TRUE)
+```
+
+
+### Solution
+The first step is to extend the pedigree with the two founder animals $1$ and $2$ which results in
+
+```{r ped_sol07p02ext, echo=FALSE}
+tbl_pedsol09p02ext <- tibble::tibble(Animal = 1:n_nr_pedsol09p02,
+                                      Sire   = c(NA, NA, 1, NA, 3, 3),
+                                      Dam    = c(NA, NA, NA, 2, 4, 4))
+knitr::kable(tbl_pedsol09p02ext,
+             booktabs = TRUE, 
+             longtable = TRUE)
+```
+
+Just as a reminder, Henderson's rules are listed below
+
+* Both Parents Known
+    + add $2$ to the diagonal-element $(i,i)$
+    + add $-1$ to off-diagonal elements $(s,i)$, $(i,s)$, $(d,i)$ and $(i,d)$
+    + add ${1\over 2}$ to elements $(s,s)$, $(d,d)$, $(s,d)$, $(d,s)$
+
+* Only One Parent Known
+    + add ${4\over 3}$ to diagonal-element $(i,i)$
+    + add $-{2\over 3}$ to off-diagonal elements $(s,i)$, $(i,s)$
+    + add ${1\over 3}$ to element $(s,s)$
+
+* Both Parents Unknown
+    + add $1$ to diagonal-element $(i,i)$
+    
+Before applying these rules, we have to make sure that none of the animals in the pedigree are inbred. By looking at the parents, we can see that they are not related. Hence none of the animals are inbred.
+
+The construction of $A^{-1}$ starts with a Null-Matrix of dimension $`r n_nr_pedsol09p02` \times `r n_nr_pedsol09p02`$. 
+
+```{r mat_a_inv_init, echo=FALSE, results='asis'}
+mat_a_inv <- matrix(0, nrow = n_nr_pedsol09p02, ncol = n_nr_pedsol09p02)
+cat("$$\n")
+cat("A^{-1} = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_a_inv), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+* Animals $1$ and $2$ have both parents unknown, so the third of Henderson's rules should be applied and $1$ should be added to their diagonal elements in $A^{-1}$. 
+
+```{r, echo=FALSE, results='asis'}
+mat_a_inv[1,1] <- mat_a_inv[1,1] + 1
+mat_a_inv[2,2] <- mat_a_inv[2,2] + 1
+cat("$$\n")
+cat("A^{-1} = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_a_inv), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+* Animals $3$ and $4$ have both one parent known. Therefore the second of Henderson's rules has to be applied.
+
+```{r, echo=FALSE, results='asis'}
+mat_a_inv[3,3] <- mat_a_inv[3,3] + 4/3
+mat_a_inv[1,3] <- mat_a_inv[1,3] - 2/3
+mat_a_inv[3,1] <- mat_a_inv[3,1] - 2/3
+mat_a_inv[1,1] <- mat_a_inv[1,1] + 1/3
+mat_a_inv[4,4] <- mat_a_inv[4,4] + 4/3
+mat_a_inv[2,4] <- mat_a_inv[2,4] - 2/3
+mat_a_inv[4,2] <- mat_a_inv[4,2] - 2/3
+mat_a_inv[2,2] <- mat_a_inv[2,2] + 1/3
+cat("$$\n")
+cat("A^{-1} = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_a_inv), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+* Animals $5$ and $6$ have both parents known. Hence, the first of Henderson's rules is applied.
+
+```{r}
+mat_a_inv[5,5] <- mat_a_inv[5,5] + 2
+mat_a_inv[3,5] <- mat_a_inv[3,5] - 1
+mat_a_inv[5,3] <- mat_a_inv[5,3] - 1
+mat_a_inv[4,5] <- mat_a_inv[4,5] - 1
+mat_a_inv[5,4] <- mat_a_inv[5,4] - 1
+mat_a_inv[3,3] <- mat_a_inv[3,3] + 0.5
+mat_a_inv[4,4] <- mat_a_inv[4,4] + 0.5 
+mat_a_inv[3,4] <- mat_a_inv[3,4] + 0.5
+mat_a_inv[4,3] <- mat_a_inv[4,3] + 0.5
+mat_a_inv[6,6] <- mat_a_inv[6,6] + 2
+mat_a_inv[3,6] <- mat_a_inv[3,6] - 1
+mat_a_inv[6,3] <- mat_a_inv[6,3] - 1
+mat_a_inv[4,6] <- mat_a_inv[4,6] - 1
+mat_a_inv[6,4] <- mat_a_inv[6,4] - 1
+mat_a_inv[3,3] <- mat_a_inv[3,3] + 0.5
+mat_a_inv[4,4] <- mat_a_inv[4,4] + 0.5 
+mat_a_inv[3,4] <- mat_a_inv[3,4] + 0.5
+mat_a_inv[4,3] <- mat_a_inv[4,3] + 0.5
+cat("$$\n")
+cat("A^{-1} = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_a_inv), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+Verifying the result with `pedigreemm::getAInv()`
+
+```{r, echo=TRUE, results='markup'}
+ped <- pedigreemm::pedigree(sire = c(NA, NA, 1, NA, 3, 3),
+                            dam  = c(NA, NA, NA, 2, 4, 4),
+                            label = as.character(1:6))
+pedigreemm::getAInv(ped = ped)
+```
+
+

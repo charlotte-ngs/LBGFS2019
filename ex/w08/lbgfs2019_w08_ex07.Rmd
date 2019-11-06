@@ -1,0 +1,54 @@
+---
+title: Livestock Breeding and Genomics - Exercise 7
+author: "Peter von Rohr"
+date: "2019-11-08"
+output:
+  bookdown::pdf_document2:
+    toc: false
+    number_sections: false
+    keep_tex: false
+header-includes:
+ \usepackage{longtable}
+ \usepackage{float}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis', fig.pos = 'H')
+knitr::knit_hooks$set(hook_convert_odg = rmdhelp::hook_convert_odg)
+```
+
+## Problem 1: Decompositions
+Given is the following pedigree. 
+
+```{r pedsol09p01, echo=FALSE, results='asis'}
+n_nr_pedsol09p01 <- 6
+tbl_pedsol09p01 <- tibble::tibble(Animal = 1:n_nr_pedsol09p01,
+                                      Sire   = c(NA, NA, 1, 1, 3, 5),
+                                      Dam    = c(NA, NA, 2, NA, 4, 4))
+knitr::kable(tbl_pedsol09p01,
+             booktabs = TRUE, 
+             longtable = TRUE)
+```
+
+### Your Tasks
+* Do the simple decomposition of the above pedigree
+* Do the recursive decomposition of the above pedigree until only $m_i$ terms appear on the right-hand side of the decomposition.
+ 
+
+
+
+## Problem 2: Henderson's Rules
+Compute $A^{-1}$ for the following pedigree using Henderson's rules. Verify your result with the function `pedigreemm::getAInv()`. 
+
+```{r ped_sol07p02, echo=FALSE}
+n_nr_pedsol09p02 <- 6
+tbl_pedsol09p02 <- tibble::tibble(Animal = 3:n_nr_pedsol09p02,
+                                      Sire   = c(1, NA, 3, 3),
+                                      Dam    = c(NA, 2, 4, 4))
+knitr::kable(tbl_pedsol09p02,
+             booktabs = TRUE, 
+             longtable = TRUE)
+```
+
+
+
