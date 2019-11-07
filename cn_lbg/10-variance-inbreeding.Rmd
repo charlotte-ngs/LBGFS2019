@@ -1,0 +1,20 @@
+# Variance and Inbreeding {#variance-inbreeding}
+```{r mrmt-variance-inbreeding-reset, echo=FALSE}
+s_this_rmd_file <- rmdhelp::get_this_rmd_file()
+mrmt$set_this_rmd_file(ps_this_rmd_file = s_this_rmd_file)
+```
+
+Recalling from chapter \@ref(geneticcovariancesbetweenanimals) the variance ($var(u_i)$) of a breeding value $u_i$ of animal $i$ is given by
+
+\begin{equation}
+var(u_i) = (1+F_i) \sigma_u^2
+(\#eq:defvarui)
+\end{equation}
+
+where $F_i$ is the inbreeding coefficient of animal $i$ and $\sigma_u^2$ corresponds to the additive genetic variance. At first sight this seams difficult to understand why the inbreeding coefficient increases the variance of a breeding value. This chapter aims at explaining the relationship between inbreeding and the genetic variance. The material presented here is based on chapters 3 and 14 of `r mrmt$add('Falconer1996')`. 
+
+
+## Inbreeding {#var-inb-inbreeding}
+Inbreeding means mating related individuals. The degree of relationship between individuals in a population depends on the size of the population. In a population of bisexual organisms every individual has $2^t$ ancestors when looking $t$ generations back. Already for small $t$ the number of required individuals in a population becomes quite large in order to provide separate unrelated ancestors. As a consequence of that any pair of individuals must be related to some degree. Furthermore, pairs mating at random are expected to be more related in smaller populations compared to when individuals mate at random in large populations. Therefore properties of small populations can be treated as consequences of inbreeding. 
+
+An important consequence of two individuals having a common ancestor is that they may both carry replicates of one of the alleles present in the common ancestor. If the two individuals mate, they may pass on these replicates to their offspring.
