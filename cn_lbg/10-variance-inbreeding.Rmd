@@ -18,3 +18,106 @@ where $F_i$ is the inbreeding coefficient of animal $i$ and $\sigma_u^2$ corresp
 Inbreeding means mating related individuals. The degree of relationship between individuals in a population depends on the size of the population. In a population of bisexual organisms every individual has $2^t$ ancestors when looking $t$ generations back. Already for small $t$ the number of required individuals in a population becomes quite large in order to provide separate unrelated ancestors. As a consequence of that any pair of individuals must be related to some degree. Furthermore, pairs mating at random are expected to be more related in smaller populations compared to when individuals mate at random in large populations. Therefore properties of small populations can be treated as consequences of inbreeding. 
 
 An important consequence of two individuals having a common ancestor is that they may both carry replicates of one of the alleles present in the common ancestor. If the two individuals mate, they may pass on these replicates to their offspring.
+
+
+### Inbreeding in Idealised Population {#var-inb-ideal-pop}
+The coefficient of inbreeding is deduced assuming an idealised population. Starting with the base population and its progeny forming generation $1$ the development of the inbreeding coefficient is computed. What is meant by the term **idealised population** is shown in Figure \@ref(fig:ideal-pop).
+
+```{r ideal-pop, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg", fig.cap="Subdivision of a single large population into a number of subpopulations or lines"}
+#rmdhelp::use_odg_graphic(ps_path = "odg/ideal-pop.odg")
+knitr::include_graphics(path = "odg/ideal-pop.png")
+```
+ 
+ 
+ The computation of the inbreeding coefficient may be visualised by the following situation. Let us assume a hermaphrodite marine organism, capable of self-fertilization shedding eggs and sperm into the sea. There are $N$ individuals, each shedding equal numbers of gametes which mate at random. At a given locus, all the alleles in the base population have to be regarded as non-identical. For that single locus, among the gametes shed by the base population there are $2N$ different sorts in equal number. What is the probability that a pair of gametes taken at random carry identical alleles? This probability corresponds to the **inbreeding coefficient** ($F$). Any gamete has a chance of $1/(2N)$ to mate with a gamete carrying the same allele. Hence the inbreeding coefficient ($F_1$) in generation $1$ corresponds to 
+ 
+\begin{equation}
+F_1 = \frac{1}{2N}
+(\#eq:var-inb-f1)
+\end{equation}
+ 
+ In generation $2$ there are two ways in which identical homozygotes can arise, first from new replication of alleles and second from previous replications. The probability of newly replicated alleles coming together in a new zygote is again $1/(2N)$. The remaining proportion $1-(1/(2N))$ of zygotes carries alleles that are not identical, but may have been identical from the previous generation. The total probability of identical zygotes in generation $2$ is
+ 
+\begin{equation}
+F_2 = \frac{1}{2N} + (1-\frac{1}{2N})*F_1
+(\#eq:var-inb-f2)
+\end{equation}
+ 
+ The same argument leading to equation \@ref(eq:var-inb-f2) applies to any subsequent generations. We can therefore write the more general statement
+ 
+\begin{equation}
+F_t = \frac{1}{2N} + (1-\frac{1}{2N})*F_{t-1}
+(\#eq:var-inb-ft)
+\end{equation}
+ 
+ Thus the inbreeding coefficient given in \@ref(eq:var-inb-ft) consists of two parts: first an increment ($1/(2N)$) attributable to new inbreeding and a remainder that is caused by inbreeding of previous generations. The increment ($1/(2N)$) is assigned to a new variable $\Delta F$, so that
+ 
+\begin{equation}
+\Delta F = \frac{1}{2N}
+(\#eq:var-inb-DeltaF)
+\end{equation}
+
+With that equation \@ref(eq:var-inb-ft) can be re-written as
+
+\begin{equation}
+F_t = \Delta F + (1-\Delta F)*F_{t-1}
+(\#eq:var-inb-FtDeltaF)
+\end{equation}
+
+Solving \@ref(eq:var-inb-FtDeltaF) for $\Delta F$ results in
+
+\begin{equation}
+\Delta F = \frac{F_t - F_{t-1}}{1-F_{t-1}}
+(\#eq:var-inb-FtSolveDeltaF)
+\end{equation}
+
+The measure of the **rate of inbreeding** given in equation \@ref(eq:var-inb-FtSolveDeltaF) provides a convenient way of generalising the concept of inbreeding beyond the simplifications of the idealised population. This generalisation provides a means of comparing inbreeding effects of different breeding systems. When expressing inbreeding in terms of $\Delta F$, equation \@ref(eq:var-inb-ft) is valid for any breeding system and is not restricted to the idealised population where $\Delta F$ is set to $1/(2N)$. 
+So far, we have just related the inbreeding coefficient in one generation to the previous generation. It remains to express the inbreeding coefficient in terms of a set of properties of the base population. This is simplified by defining the symbol $P$ as the complement of the inbreeding coefficient $F$, hence 
+
+\begin{equation}
+P = 1-F
+(\#eq:var-inb-pan-idx)
+\end{equation}
+
+The quantity symbolised by $P$ is known as the **panmicitic index**. Using \@ref(eq:var-inb-pan-idx) and inserting it into \@ref(eq:var-inb-FtSolveDeltaF) leads to 
+
+\begin{equation}
+\frac{P_t}{P_{t-1}} = 1 - \Delta F
+(\#eq:var-inb-pan-incr-ratio)
+\end{equation}
+
+Hence the rate at which $P$ increases from one generation to the next is reduced to a constant $1 - \Delta F$. Going back $t$ generations to the base population leads to 
+
+\begin{equation}
+P_t = (1 - \Delta F)^t * P_0
+(\#eq:var-inb-pan-indx-func-P0)
+\end{equation}
+
+In the base population, we assumed no inbreeding, hence $F_0 = 0$ and $P_0=1$. Using the result of \@ref(eq:var-inb-pan-indx-func-P0) to compute $F_t$ leads to 
+
+\begin{equation}
+F_t = 1- (1 - \Delta F)^t
+(\#eq:var-inb-inb-coef-func-base-pop)
+\end{equation}
+
+
+### Variance of Gene Frequency {#var-inb-var-gene-freq}
+According the Hardy-Weinberg Equilibrium, gene frequencies are constant over generations. But this is only true, if the base population is not devided into subpopulations or lines. If the base population is split into separate lines as shown in Figure \@ref(fig:ideal-pop), the gene frequencies in the single lines start to show variation. The amount of the variation is quantified by the variance of the gene frequencies. 
+
+The variance ($\sigma_{\Delta q}^2$) of the change of gene frequncy in one generation is first of all the variance of a binomial random variable and can be expressed in terms of the rate of inbreeding, as shown below.
+
+\begin{equation}
+\sigma_{\Delta q}^2 = \frac{p_0q_0}{2N} = p_0q_0 \Delta F
+(\#eq:var-inv-sigma-Delta-q)
+\end{equation}
+
+An equivalent way of writing \@ref(eq:var-inv-sigma-Delta-q) is in terms of the inbreeding coefficient ($F_1$) and the variance ($\sigma_q^2$) of gene frequencies after one generation. It follows that the relationship is the same after any number of generations, so that after $t$ generations
+
+\begin{equation}
+\sigma_{q}^2 = p_0q_0  F_t
+(\#eq:var-inv-sigma-Delta-q)
+\end{equation}
+
+
+### Genotype Frequencies {#var-inb-genotype-freq}
+The genotype frequencies in the population as a whole (accross all generations) can be deduced from the knowledge of the variance of gene frequencies. 
