@@ -120,4 +120,34 @@ An equivalent way of writing \@ref(eq:var-inv-sigma-Delta-q) is in terms of the 
 
 
 ### Genotype Frequencies {#var-inb-genotype-freq}
-The genotype frequencies in the population as a whole (accross all generations) can be deduced from the knowledge of the variance of gene frequencies. 
+The genotype frequencies in the population as a whole (accross all generations) can be deduced from the knowledge of the variance of gene frequencies. If an allele has frequency $q$ in a particular line, homozygotes of that allele will have frequency $q^2$ in that line. The frequency of homozygotes in the complete population will be the mean value of $q^2$ over all lines. This mean frequency value of homozygotes accross all lines is called $\bar{q^2}$. The value of $\bar{q^2}$ can be found from the knowledge of the variance of gene frequencies among lines. From the general formula of obtaining the variance of a set of observations corresponding to 
+
+\begin{equation}
+\sigma_{q}^2 = ($\bar{q^2}$) - \bar{q}^2
+(\#eq:var-inv-sigma-Delta-q-def)
+\end{equation}
+
+the mean frequency of homozygotes $\bar{q^2}$ is obtained as
+
+\begin{equation}
+$\bar{q^2}$ = \sigma_{q}^2 + \bar{q}^2
+(\#eq:var-inv-mean-freq-homozygote)
+\end{equation}
+
+where $\bar{q}$ is the mean gene frequency which is the same as the original gene frequency $q_0$. Thus in the complete population, the frequency of the homozygotes of a particular allele increases and is always in excess of the original frequency by an amount equal to the variance of the gene frequency among the lines. In a two-allele system, the same applies to the other allele. The genotypic frequencies for a locus with two alleles can then be summarised as shown in Table \@ref(tab:var-inb-genofreq-tab).
+
+```{r var-inb-genofreq-tab, echo=FALSE}
+tbl_genofreq <- tibble::tibble(Genotype = c("$A_1A_1$", "$A_1A_2$", "$A_2A_2$"),
+                               Frequency = c("$p^2 + \\sigma_{q}^2$", "$2pq - 2\\sigma_{q}^2$", "$q^2 + \\sigma_{q}^2$"))
+knitr::kable(tbl_genofreq, booktabs = TRUE, longtable = TRUE, caption = "Genotype Frequencies in Population as a Whole")  
+```
+
+The genotype frequencies shown in Table \@ref(tab:var-inb-genofreq-tab) are no longer in Hardy-Weinberg equilibrium. This change in genotype frequencies is the result of a mechanism which is called the **dispersive process**. The dispersive process is active as soon as the idealised base population is subdivided into single lines. The increase of the frequency of the homozygous genotypes is the source of a phenomenon called **inbreeding depression**. This depression refers to the reduced fitness of individuals in populations with increasing levels of inbreeding. 
+
+Combining the formulas \@ref(eq:var-inv-sigma-Delta-q) and \@ref(eq:var-inv-mean-freq-homozygote) and furthermore dropping the subscript $t$ in $F_t$ leads to 
+
+\begin{equation}
+$\bar{q^2}$ = \bar{q_0}^2 + \sigma_{q}^2 = \bar{q_0}^2 + p_0q_0  F
+\end{equation}
+
+
