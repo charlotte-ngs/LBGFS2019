@@ -108,7 +108,7 @@ The variance ($\sigma_{\Delta q}^2$) of the change of gene frequncy in one gener
 
 \begin{equation}
 \sigma_{\Delta q}^2 = \frac{p_0q_0}{2N} = p_0q_0 \Delta F
-(\#eq:var-inv-sigma-Delta-q)
+(\#eq:var-inb-sigma-Delta-q)
 \end{equation}
 
 An equivalent way of writing \@ref(eq:var-inv-sigma-Delta-q) is in terms of the inbreeding coefficient ($F_1$) and the variance ($\sigma_q^2$) of gene frequencies after one generation. It follows that the relationship is the same after any number of generations, so that after $t$ generations
@@ -120,4 +120,23 @@ An equivalent way of writing \@ref(eq:var-inv-sigma-Delta-q) is in terms of the 
 
 
 ### Genotype Frequencies {#var-inb-genotype-freq}
-The genotype frequencies in the population as a whole (accross all generations) can be deduced from the knowledge of the variance of gene frequencies. 
+The genotype frequencies in the population as a whole (accross all generations) can be deduced from the knowledge of the variance of gene frequencies. If an allele has frequency $q$ in a given line, homozygotes of that allele have frequency $q^2$ in that line. The frequency of the homozygotes in the complete population over all lines will be the mean value of q^2 accross all lines. The mean frequency of homozygotes is written as $\bar{q^2}$. The value of $\bar{q^2}$ is obtained by the knowledge of the variance of gene frequencies. In general the variance of a series of observations is obtained by 
+
+\begin{align}
+\sigma_q^2 &= \bar{(q^2)} - \bar{q}^2 \notag \\
+\bar{(q^2)} &= \bar{q}^2 + \sigma_q^2 
+(\#eq:var-inb-bar-q2)
+\end{align}
+
+where  $\sigma_q^2$ the variance of gene frequencies among the lines and .$\bar{q}$ is the mean allele frequency. The mean allele frequency is equal to the orginal allele frequency $q_0$. Thus in a population as a whole, the frequency of homozygotes of a particular allele increases and is always in excess by the variance of the gene frequency among the lines. Noting that $\sigma_p^2 = \sigma_q^2$, the genotypic frequencies for a locus with two alleles corresponds to 
+
+```{r genofreq-complete-pop}
+tbl_geno_freq <- tibble::tibble(Genotype = c("$A_1A_1$", "$A_1A_2$", "$A_2_A_2"),
+                                Frequencies = c("$p_0^2 + \\sigma_q^2$", "$2p_0q_0 - 2\\sigma_q^2$","$q_0^2 + \\sigma_q^2$"))
+kntir::kable(tbl_geno_freq,
+             booktabs = TRUE,
+             longtable = TRUE)
+`
+
+``
+

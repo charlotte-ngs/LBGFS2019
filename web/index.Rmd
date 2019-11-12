@@ -154,8 +154,8 @@ vecSlTopic[which(Date == format(as.Date("2019/10/18"), "%d.%m"))] <- paste0("[Ge
 vecSlTopic[which(Date == format(as.Date("2019/10/25"), "%d.%m"))] <- paste0("[Numerator Relationship Matrix](", s_base_url_sl,"/w07/lbgfs2019_slides_numrelmat.pdf), [Inverse Numerator Relationship Matrix](", s_base_url_sl,"/w07/lbgfs2019_slides_invnumrelmat.pdf)", collapse = '')
 ### # w7 w07/lbg_fs_2019_slides_pbvsi.pdf w07/lbg_fs_2019_slides_gencov.pdf
 # vecSlTopic[which(Date == format(as.Date("2019/11/01"), "%d.%m"))] <- "[]()"
-### # w8 w08/lbg_fs_2019_slides_numrelmat.pdf
-# vecSlTopic[which(Date == format(as.Date("2019/11/08"), "%d.%m"))] <- "[]()"
+### # w8 w08/lbg_fs_2019_slides_numrelmat.pdf w08/lbgfs2019_slides_inbreeding.pdf
+vecSlTopic[which(Date == format(as.Date("2019/11/08"), "%d.%m"))] <- paste0("[Inbreeding](", s_base_url_sl,"/w08/lbgfs2019_slides_inbreeding.pdf)", collapse = '')
 ### # w9 w09/lbg_fs_2019_slides_invnumrelmat.pdf
 # vecSlTopic[which(Date == format(as.Date("2019/11/15"), "%d.%m"))] <- "[]()"
 ### # w10 /w10/lbg_fs_2019_slides_inbreeding.pdf
