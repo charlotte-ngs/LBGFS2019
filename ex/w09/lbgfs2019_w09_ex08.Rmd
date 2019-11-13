@@ -1,0 +1,43 @@
+---
+title: Livestock Breeding and Genomics - Exercise 8
+author: "Peter von Rohr"
+date: "2019-11-15"
+output:
+  bookdown::pdf_document2:
+    toc: false
+    number_sections: false
+    keep_tex: false
+header-includes:
+ \usepackage{longtable}
+ \usepackage{float}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis', fig.pos = 'H')
+knitr::knit_hooks$set(hook_convert_odg = rmddochelper::hook_convert_odg)
+```
+
+## Problem 1: Compute Inbreeding Coefficients
+Given the following pedigree.
+
+```{r}
+n_nr_ani_ped <- 6
+n_nr_parent <- 3
+tbl_ped_sol10p01 <- tibble::tibble(Animal = c(1:n_nr_ani_ped),
+                             Sire = c(NA, NA, 1, 3, 4, 4),
+                             Dam  = c(NA, NA, NA, 2, 2, 5))
+### # show the pedigree
+knitr::kable( tbl_ped_sol10p01,
+              booktabs = TRUE,
+              longtable = TRUE )
+```
+
+### Your Task
+Compute the inbreeding coefficients $F_i$ for all animals using the matrix $R$ that comes from the cholesky decomposition of the numerator relationship matrix $A$
+
+
+
+## Problem 2: Direct Construction of $A^{-1}$
+Use the pedigree from problem 1 and the computed inbreeding coefficients from problem 1 to set up the inverse numerator relationship matrix $A^{-1}$ using the general form of Henderson's rules for a pedigree with inbred animals. Compare your result using function `pedigreemm::getAInv()`.
+
+
