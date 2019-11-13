@@ -1,0 +1,616 @@
+---
+title: Livestock Breeding and Genomics - Solution 8
+author: "Peter von Rohr"
+date: "2019-11-15"
+output:
+  bookdown::pdf_document2:
+    toc: false
+    number_sections: false
+    keep_tex: false
+header-includes:
+ \usepackage{longtable}
+ \usepackage{float}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis', fig.pos = 'H')
+knitr::knit_hooks$set(hook_convert_odg = rmddochelper::hook_convert_odg)
+```
+
+## Problem 1: Compute Inbreeding Coefficients
+Given the following pedigree.
+
+```{r}
+n_nr_ani_ped <- 6
+n_nr_parent <- 3
+tbl_ped_sol10p01 <- tibble::tibble(Animal = c(1:n_nr_ani_ped),
+                             Sire = c(NA, NA, 1, 3, 4, 4),
+                             Dam  = c(NA, NA, NA, 2, 2, 5))
+### # show the pedigree
+knitr::kable( tbl_ped_sol10p01,
+              booktabs = TRUE,
+              longtable = TRUE )
+```
+
+### Your Task
+Compute the inbreeding coefficients $F_i$ for all animals using the matrix $R$ that comes from the cholesky decomposition of the numerator relationship matrix $A$
+
+
+### Solution
+The cholesky decomposition of $A$ corresponds to 
+
+$$A = R \cdot R^T$$
+
+where $R$ is a lower triangular matrix. The diagonal elements $(A)_{ii}$ of $A$ can be computed as the sum of the squared elements of all elements of Matrix $R$ on row $i$. 
+
+$$(A)_{ii} = \sum_{j=1}^i (R)_{ij}^2$$
+
+Therefore to get $(A)_{ii}$, we have to compute all elements of $R$ on row $i$. Due to the relation of the cholesky-decomposition to the `LDL`-decomposition, we can write the matrix $R$ as a product of the two matrices $L$ and $S$
+
+\begin{equation}
+R = L \cdot S
+(\#eq:decomprintols)
+\end{equation}
+
+where $L$ is the lower triangular matrix from the `LDL`-decomposition and $S$ is a diagonal matrix with diagonal elements $(S)_{ii}$ corresponding to 
+
+$$(S)_{ii} = \sqrt{(D)_{ii}}$$
+
+where $(D)_{ii}$ correspond to the diagonal elements of the matrix $D$ from the `LDL`-decomposition. From the `LDL`, we know that 
+
+$$(D)_{ii} = {1\over 2} - {1\over 4}(F_s + F_d) = 1 - {1\over 4}(A_{ss} + A_{dd})$$
+
+Based on the decomposition of $R$ into the product of $L$ and $S$ given in \@ref(eq:decomprintols) and based on the property of the matrix $L$ which is to be shown in the additional problem 3 of this exercise, we can derive the following rules for computing the elements of the matrix $R$
+
+* Diagnoal elements $(R)_{ii}$:
+
+$$(R)_{ii} = (S)_{ii} = \sqrt{(D)_{ii}} = \sqrt{1 - {1\over 4}(A_{ss} + A_{dd})}$$
+where $s$ and $d$ are parents of animal $i$ and $(A)_{ss}$ and $(A)_{dd}$ are diagonal elements of the numerator relationship matrix $A$.
+
+* Off-diagonal elements $(R)_{ij}$ ($i \ne j$):
+
+$$(R)_{ij} = {1\over 2}(R_{sj} + R_{dj})$$
+
+where $s$ and $d$ are parents of animal $i$. 
+
+```{r compsolprep, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+suppressPackageStartupMessages( library(pedigreemm) )
+ped_sol10p01 <- pedigree(sire = tbl_ped_sol10p01$Sire, dam = tbl_ped_sol10p01$Dam, label = as.character(tbl_ped_sol10p01$Animal))
+matA_sol10p01 <- as.matrix(getA(ped = ped_sol10p01))
+matR_sol10p01 <- t(chol(matA_sol10p01))
+n_matA_na <- 0
+n_matR_na <- 0
+vec_Aii <- vector("numeric", nrow(tbl_ped_sol10p01))
+```
+
+The solution of this exercise is to compute $(A)_{ii}$ for all animals in the pedigree using the above described rules.
+
+```{r compmatrfunc, echo=FALSE, results='hide'}
+#' @title Get elements of a given row of matrix R
+#'
+get_mat_r_row_element <- function(pn_ani_idx, ptbl_ped){
+  ### # get pedigree
+  ped <- pedigreemm::pedigree(sire = ptbl_ped$Sire, 
+                              dam = ptbl_ped$Dam, 
+                              label = as.character(ptbl_ped$Animal))
+  ### # compute matrix A from pedigree
+  matA <- as.matrix(getA(ped = ped))
+  matR <- t(chol(matA))
+  n_matA_na <- 0
+  n_matR_na <- 0
+  ### # find sire and dam idx
+  n_sire_idx <- ptbl_ped$Sire[pn_ani_idx]
+  n_dam_idx <- ptbl_ped$Dam[pn_ani_idx]
+  ### # diagonal element
+  n_matA_sire <- n_matA_na
+  if (!is.na(n_sire_idx))
+    n_matA_sire <- matA[n_sire_idx, n_sire_idx]
+  n_matA_dam <- n_matA_na
+  if (!is.na(n_dam_idx))
+    n_matA_dam <- matA[n_dam_idx, n_dam_idx]
+  n_matRii2 <- 1 - .25 * (n_matA_sire + n_matA_dam)
+  ### # check computed value of matRii with value from chol()
+  if (class(all.equal(matR[pn_ani_idx, pn_ani_idx]^2, n_matRii2)) == "character")
+    stop("[ERROR -- get_mat_r_row_element] Inconsistent diagonal element of R for animal: ", pn_ani_idx, "\n")
+  ### # offdiagnoal element
+  vec_matRij2 <- NULL
+  ### # column index to run through on row pn_ani_idx
+  vec_col_idx <- NULL
+  if (n_ani_idx > 1)
+    vec_col_idx <- c(1:(pn_ani_idx-1))
+  for (colidx in vec_col_idx) {
+    n_matR_sire <- n_matR_na
+    if (!is.na(n_sire_idx))
+      n_matR_sire <- matR[n_sire_idx, colidx]
+    n_matR_dam <- n_matR_na
+    if (!is.na(n_dam_idx))
+      n_matR_dam <- matR[n_dam_idx, colidx]
+    n_matR_ani <- 0.5 * (n_matR_sire + n_matR_dam)
+    ### # check with real matrix R
+    if (class(all.equal(matR[pn_ani_idx, colidx], n_matR_ani)) == "character")
+      stop("[ERROR -- get_mat_r_row_element] Inconsitent off-diagnoal of R on row: ", pn_ani_idx, " and col: ", colidx, "\n")
+    ### # aggregate results
+    if (is.null(vec_matRij2)){
+      vec_matRij2 <- n_matR_ani^2
+    } else {
+      vec_matRij2 <- c(vec_matRij2, n_matR_ani^2)
+    }
+  }
+  ### # return list of results
+  return(list(Rii2 = n_matRii2, Rij2 = vec_matRij2))
+}
+```
+
+
+```{r compsola11, echo=FALSE, results='hide'}
+n_ani_idx <- 1
+l_matr_elem <- get_mat_r_row_element(pn_ani_idx = n_ani_idx, ptbl_ped = tbl_ped_sol10p01)
+if (is.null(l_matr_elem$Rij2)){
+  vec_Aii[n_ani_idx] <- l_matr_elem$Rii2
+}else {
+   vec_Aii[n_ani_idx] <- sum(l_matr_elem$Rij2) + l_matr_elem$Rii2
+}
+```
+
+* $(A)_{`r n_ani_idx``r n_ani_idx`}$
+
+$$(A)_{`r n_ani_idx``r n_ani_idx`} = (R)_{`r n_ani_idx``r n_ani_idx`}^2  = `r vec_Aii[n_ani_idx]`$$
+
+```{r compsola22, echo=FALSE, results='hide'}
+n_ani_idx <- 2
+l_matr_elem <- get_mat_r_row_element(pn_ani_idx = n_ani_idx, ptbl_ped = tbl_ped_sol10p01)
+if (is.null(l_matr_elem$Rij2)){
+  vec_Aii[n_ani_idx] <- l_matr_elem$Rii2
+}else {
+   vec_Aii[n_ani_idx] <- sum(l_matr_elem$Rij2) + l_matr_elem$Rii2
+}
+```
+
+* $(A)_{`r n_ani_idx``r n_ani_idx`}$
+
+```{r showelema22, echo=FALSE, results='asis'}
+cat("$$\n")
+### # show A-element part
+cat("(A)_{", n_ani_idx, n_ani_idx, "} = ", sep = "")
+### # offdiagonals of R
+if (!is.null(l_matr_elem$Rij2)){
+  for (colidx in seq_along(l_matr_elem$Rij2)){
+    cat("(R)_{", n_ani_idx, colidx, "}^2 + ", sep = "")
+  }
+}
+cat("(R)_{", n_ani_idx, n_ani_idx, "}^2", sep = "")
+cat(" = ")
+if (!is.null(l_matr_elem$Rij2)){
+  for (colidx in seq_along(l_matr_elem$Rij2)){
+    cat(l_matr_elem$Rij2[colidx], " + ", sep = "")
+  }
+}
+cat(l_matr_elem$Rii2)
+cat(" = ")
+cat(vec_Aii[n_ani_idx], "\n")
+cat("$$\n")
+```
+
+```{r compsola33, echo=FALSE, results='hide'}
+n_ani_idx <- 3
+l_matr_elem <- get_mat_r_row_element(pn_ani_idx = n_ani_idx, ptbl_ped = tbl_ped_sol10p01)
+if (is.null(l_matr_elem$Rij2)){
+  vec_Aii[n_ani_idx] <- l_matr_elem$Rii2
+}else {
+   vec_Aii[n_ani_idx] <- sum(l_matr_elem$Rij2) + l_matr_elem$Rii2
+}
+```
+
+* $(A)_{`r n_ani_idx``r n_ani_idx`}$
+
+```{r showelema33, echo=FALSE, results='asis'}
+cat("$$\n")
+### # show A-element part
+cat("(A)_{", n_ani_idx, n_ani_idx, "} = ", sep = "")
+### # offdiagonals of R
+if (!is.null(l_matr_elem$Rij2)){
+  for (colidx in seq_along(l_matr_elem$Rij2)){
+    cat("(R)_{", n_ani_idx, colidx, "}^2 + ", sep = "")
+  }
+}
+cat("(R)_{", n_ani_idx, n_ani_idx, "}^2", sep = "")
+cat(" = ")
+if (!is.null(l_matr_elem$Rij2)){
+  for (colidx in seq_along(l_matr_elem$Rij2)){
+    cat(l_matr_elem$Rij2[colidx], " + ", sep = "")
+  }
+}
+cat(l_matr_elem$Rii2)
+cat(" = ")
+cat(vec_Aii[n_ani_idx])
+cat("$$\n")
+```
+
+```{r compsola44, echo=FALSE, results='hide'}
+n_ani_idx <- 4
+l_matr_elem <- get_mat_r_row_element(pn_ani_idx = n_ani_idx, ptbl_ped = tbl_ped_sol10p01)
+if (is.null(l_matr_elem$Rij2)){
+  vec_Aii[n_ani_idx] <- l_matr_elem$Rii2
+}else {
+   vec_Aii[n_ani_idx] <- sum(l_matr_elem$Rij2) + l_matr_elem$Rii2
+}
+```
+
+* $(A)_{`r n_ani_idx``r n_ani_idx`}$
+
+```{r showelema44, echo=FALSE, results='asis'}
+cat("$$\n")
+### # show A-element part
+cat("(A)_{", n_ani_idx, n_ani_idx, "} = ", sep = "")
+### # offdiagonals of R
+if (!is.null(l_matr_elem$Rij2)){
+  for (colidx in seq_along(l_matr_elem$Rij2)){
+    cat("(R)_{", n_ani_idx, colidx, "}^2 + ", sep = "")
+  }
+}
+cat("(R)_{", n_ani_idx, n_ani_idx, "}^2", sep = "")
+cat("$$\n")
+cat("$$\n")
+cat(" = ")
+if (!is.null(l_matr_elem$Rij2)){
+  for (colidx in seq_along(l_matr_elem$Rij2)){
+    cat(l_matr_elem$Rij2[colidx], " + ", sep = "")
+  }
+}
+cat(l_matr_elem$Rii2)
+cat(" = ")
+cat(vec_Aii[n_ani_idx])
+cat("$$\n")
+```
+
+
+```{r compsola55, echo=FALSE, results='hide'}
+n_ani_idx <- 5
+l_matr_elem <- get_mat_r_row_element(pn_ani_idx = n_ani_idx, ptbl_ped = tbl_ped_sol10p01)
+if (is.null(l_matr_elem$Rij2)){
+  vec_Aii[n_ani_idx] <- l_matr_elem$Rii2
+}else {
+   vec_Aii[n_ani_idx] <- sum(l_matr_elem$Rij2) + l_matr_elem$Rii2
+}
+```
+
+* $(A)_{`r n_ani_idx``r n_ani_idx`}$
+
+```{r showelema55, echo=FALSE, results='asis'}
+cat("$$\n")
+### # show A-element part
+cat("(A)_{", n_ani_idx, n_ani_idx, "} = ", sep = "")
+### # offdiagonals of R
+if (!is.null(l_matr_elem$Rij2)){
+  for (colidx in seq_along(l_matr_elem$Rij2)){
+    cat("(R)_{", n_ani_idx, colidx, "}^2 + ", sep = "")
+  }
+}
+cat("(R)_{", n_ani_idx, n_ani_idx, "}^2", sep = "")
+cat("$$\n")
+cat("$$\n")
+cat(" = ")
+if (!is.null(l_matr_elem$Rij2)){
+  for (colidx in seq_along(l_matr_elem$Rij2)){
+    cat(l_matr_elem$Rij2[colidx], " + ", sep = "")
+  }
+}
+cat(l_matr_elem$Rii2)
+cat(" = ")
+cat(vec_Aii[n_ani_idx])
+cat("$$\n")
+```
+
+```{r compsola66, echo=FALSE, results='hide'}
+n_ani_idx <- 6
+l_matr_elem <- get_mat_r_row_element(pn_ani_idx = n_ani_idx, ptbl_ped = tbl_ped_sol10p01)
+if (is.null(l_matr_elem$Rij2)){
+  vec_Aii[n_ani_idx] <- l_matr_elem$Rii2
+}else {
+   vec_Aii[n_ani_idx] <- sum(l_matr_elem$Rij2) + l_matr_elem$Rii2
+}
+```
+
+* $(A)_{`r n_ani_idx``r n_ani_idx`}$
+
+```{r showelema66, echo=FALSE, results='asis'}
+cat("$$\n")
+### # show A-element part
+cat("(A)_{", n_ani_idx, n_ani_idx, "} = ", sep = "")
+### # offdiagonals of R
+if (!is.null(l_matr_elem$Rij2)){
+  for (colidx in seq_along(l_matr_elem$Rij2)){
+    cat("(R)_{", n_ani_idx, colidx, "}^2 + ", sep = "")
+  }
+}
+cat("(R)_{", n_ani_idx, n_ani_idx, "}^2", sep = "")
+cat("$$\n")
+cat("$$\n")
+cat(" = ")
+if (!is.null(l_matr_elem$Rij2)){
+  for (colidx in seq_along(l_matr_elem$Rij2)){
+    cat(l_matr_elem$Rij2[colidx], " + ", sep = "")
+  }
+}
+cat(l_matr_elem$Rii2)
+cat(" = ")
+cat(vec_Aii[n_ani_idx])
+cat("$$\n")
+```
+
+As a check, we can compute the inbreeding coefficients using the function `pedigreemm::inbreeding()`
+
+```{r echo=TRUE, results='markup'}
+pedigreemm::inbreeding(ped = ped_sol10p01)
+```
+
+
+## Problem 2: Direct Construction of $A^{-1}$
+Use the pedigree from problem 1 and the computed inbreeding coefficients from problem 1 to set up the inverse numerator relationship matrix $A^{-1}$ using the general form of Henderson's rules for a pedigree with inbred animals. Compare your result using function `pedigreemm::getAInv()`.
+
+
+### Solution
+As a pre-requisite, we assume that the pedigree is sorted such that parents come before progeny. Henderson's rules contain the following steps
+
+* Start with a matrix $A^{-1}$ where all elements are set to $0$.
+* Let $d^i$ be the $i$-th diagonal element of $D^{-1}$ for animal $i$, assuming $i$ has parents $s$ and $d$.
+* Then add the following contributions to $A^{-1}$
+    + $d^i$ to the element $(i,i)$
+    + $-d^i/2$ to the elements $(s,i)$, $(i,s)$, $(d,i)$, $(i,d)$
+    + $d^i/4$ to the elements $(s,s)$, $(s,d)$, $(d,s)$, $(d,d)$
+
+Applying these rules to the pedigree given in problem 1 leads to the following sequence of computations.
+
+
+* Initialize the matrix $A^{-1}$ with all $0$
+
+```{r matainvinit}
+n_nr_ani <- nrow(tbl_ped_sol10p01)
+matAinv <- matrix(0, nrow = n_nr_ani, ncol = n_nr_ani)
+cat("$$\n")
+cat("A^{-1} = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matAinv, pnDigits = 0)))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+
+```{r hendersonrulfunctions}
+#' @title Get diagonal element from D inverse for animal pn_ani_idx
+get_diag_element_dinv <- function(pn_ani_idx, pn_sire_idx, pn_dam_idx, pvec_inbreeding){
+  ### # pn_ani_idx cannot be NA
+  if (is.na(pn_ani_idx))
+    stop("[ERROR -- get_diag_element_dinv] Animal ID pn_ani_idx cannot be NA")
+  ### # initialize inbreeding of parents to 0
+  n_f_sire <- 0
+  n_f_dam <- 0
+  ### # if parents are known, take their inbreeding from pvec_inbreeding
+  if (!is.na(pn_sire_idx)){
+    n_f_sire <- pvec_inbreeding[pn_sire_idx]
+  }
+  ### # dam
+  if (!is.na(pn_dam_idx)){
+    n_f_dam <- pvec_inbreeding[pn_dam_idx]
+  }
+  
+  ### # compute diagonal element of D
+  if (!is.na(pn_sire_idx)){
+    if (!is.na(pn_dam_idx)){
+      n_diag_d <- 0.5 - 0.25*(n_f_sire + n_f_dam)
+    } else {
+      n_diag_d <- 0.75 - 0.25 * n_f_sire
+    }
+  } else {
+    if (!is.na(pn_dam_idx)){
+      n_diag_d <- 0.75 - 0.25 * n_f_dam
+    } else {
+      n_diag_d <- 1
+    }
+  }
+  # return inverse of diagnoal element of D
+  return(1/n_diag_d)
+}
+
+#' @title Update A inverse for a given animal
+update_mat_ainv <- function(pn_ani_idx, pn_sire_idx, pn_dam_idx, pn_d, pmat_ainv){
+  ### # copy the current matrix
+  mat_inv_result <- pmat_ainv
+  ### # pn_ani_idx cannot be NA
+  if (is.na(pn_ani_idx))
+    stop("[ERROR -- update_mat_ainv] Animal ID pn_ani_idx cannot be NA")
+  ### # add pn_d to diagonal
+  mat_inv_result[pn_ani_idx, pn_ani_idx] <- mat_inv_result[pn_ani_idx, pn_ani_idx] + pn_d
+  ### # add contributions for sire, if sire is not NA
+  if (!is.na(pn_sire_idx)){
+    mat_inv_result[pn_ani_idx, pn_sire_idx] <- mat_inv_result[pn_ani_idx, pn_sire_idx] - pn_d/2
+    mat_inv_result[pn_sire_idx, pn_ani_idx] <- mat_inv_result[pn_sire_idx, pn_ani_idx] - pn_d/2
+    mat_inv_result[pn_sire_idx, pn_sire_idx] <- mat_inv_result[pn_sire_idx, pn_sire_idx] + pn_d/4
+  }
+  ### # add contributions for dam, if dam is not NA
+  if (!is.na(pn_dam_idx)){
+    mat_inv_result[pn_ani_idx, pn_dam_idx] <- mat_inv_result[pn_ani_idx, pn_dam_idx] - pn_d/2
+    mat_inv_result[pn_dam_idx, pn_ani_idx] <- mat_inv_result[pn_dam_idx, pn_ani_idx] - pn_d/2
+    mat_inv_result[pn_dam_idx, pn_dam_idx] <- mat_inv_result[pn_dam_idx, pn_dam_idx] + pn_d/4
+    ### # both parents known, add off-diagonal contributions
+    if (!is.na(pn_sire_idx)){
+      mat_inv_result[pn_dam_idx, pn_sire_idx] <- mat_inv_result[pn_dam_idx, pn_sire_idx] + pn_d/4
+      mat_inv_result[pn_sire_idx, pn_dam_idx] <- mat_inv_result[pn_sire_idx, pn_dam_idx] + pn_d/4
+    }  
+  }
+  ### # return updated matrix
+  return(mat_inv_result)
+}
+```
+
+```{r ainvpreparation}
+vec_inbreeding <- pedigreemm::inbreeding(ped = ped_sol10p01)
+```
+
+```{r animal1}
+n_ani_idx <- 1
+n_sire_idx <- tbl_ped_sol10p01$Sire[n_ani_idx]
+n_dam_idx <- tbl_ped_sol10p01$Dam[n_ani_idx]
+n_elem_dinv <- get_diag_element_dinv(pn_ani_idx = n_ani_idx, 
+                                     pn_sire_idx = n_sire_idx, 
+                                     pn_dam_idx = n_dam_idx, 
+                                     pvec_inbreeding = vec_inbreeding)
+matAinv <- update_mat_ainv(pn_ani_idx = n_ani_idx, 
+                           pn_sire_idx = n_sire_idx,
+                           pn_dam_idx = n_dam_idx,
+                           pn_d = n_elem_dinv,
+                           pmat_ainv = matAinv)
+```
+
+* Animal `r n_ani_idx`
+
+```{r matainvanimal1}
+cat("$$\n")
+cat("A^{-1} = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matAinv, pnDigits = 0)))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+```{r animal2}
+n_ani_idx <- 2
+n_sire_idx <- tbl_ped_sol10p01$Sire[n_ani_idx]
+n_dam_idx <- tbl_ped_sol10p01$Dam[n_ani_idx]
+n_elem_dinv <- get_diag_element_dinv(pn_ani_idx = n_ani_idx, 
+                                     pn_sire_idx = n_sire_idx, 
+                                     pn_dam_idx = n_dam_idx, 
+                                     pvec_inbreeding = vec_inbreeding)
+matAinv <- update_mat_ainv(pn_ani_idx = n_ani_idx, 
+                           pn_sire_idx = n_sire_idx,
+                           pn_dam_idx = n_dam_idx,
+                           pn_d = n_elem_dinv,
+                           pmat_ainv = matAinv)
+```
+
+* Animal `r n_ani_idx`
+
+```{r matainvanimal2}
+cat("$$\n")
+cat("A^{-1} = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matAinv, pnDigits = 0)))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+```{r animal3}
+n_ani_idx <- 3
+n_sire_idx <- tbl_ped_sol10p01$Sire[n_ani_idx]
+n_dam_idx <- tbl_ped_sol10p01$Dam[n_ani_idx]
+n_elem_dinv <- get_diag_element_dinv(pn_ani_idx = n_ani_idx, 
+                                     pn_sire_idx = n_sire_idx, 
+                                     pn_dam_idx = n_dam_idx, 
+                                     pvec_inbreeding = vec_inbreeding)
+matAinv <- update_mat_ainv(pn_ani_idx = n_ani_idx, 
+                           pn_sire_idx = n_sire_idx,
+                           pn_dam_idx = n_dam_idx,
+                           pn_d = n_elem_dinv,
+                           pmat_ainv = matAinv)
+```
+
+* Animal `r n_ani_idx`
+
+```{r matainvanimal3}
+cat("$$\n")
+cat("A^{-1} = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matAinv, pnDigits = 4)))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+```{r animal4}
+n_ani_idx <- 4
+n_sire_idx <- tbl_ped_sol10p01$Sire[n_ani_idx]
+n_dam_idx <- tbl_ped_sol10p01$Dam[n_ani_idx]
+n_elem_dinv <- get_diag_element_dinv(pn_ani_idx = n_ani_idx, 
+                                     pn_sire_idx = n_sire_idx, 
+                                     pn_dam_idx = n_dam_idx, 
+                                     pvec_inbreeding = vec_inbreeding)
+matAinv <- update_mat_ainv(pn_ani_idx = n_ani_idx, 
+                           pn_sire_idx = n_sire_idx,
+                           pn_dam_idx = n_dam_idx,
+                           pn_d = n_elem_dinv,
+                           pmat_ainv = matAinv)
+```
+
+* Animal `r n_ani_idx`
+
+```{r matainvanimal4}
+cat("$$\n")
+cat("A^{-1} = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matAinv, pnDigits = 4)))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+```{r animal5}
+n_ani_idx <- 5
+n_sire_idx <- tbl_ped_sol10p01$Sire[n_ani_idx]
+n_dam_idx <- tbl_ped_sol10p01$Dam[n_ani_idx]
+n_elem_dinv <- get_diag_element_dinv(pn_ani_idx = n_ani_idx, 
+                                     pn_sire_idx = n_sire_idx, 
+                                     pn_dam_idx = n_dam_idx, 
+                                     pvec_inbreeding = vec_inbreeding)
+matAinv <- update_mat_ainv(pn_ani_idx = n_ani_idx, 
+                           pn_sire_idx = n_sire_idx,
+                           pn_dam_idx = n_dam_idx,
+                           pn_d = n_elem_dinv,
+                           pmat_ainv = matAinv)
+```
+
+* Animal `r n_ani_idx`
+
+```{r matainvanimal5}
+cat("$$\n")
+cat("A^{-1} = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matAinv, pnDigits = 4)))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+```{r animal6}
+n_ani_idx <- 6
+n_sire_idx <- tbl_ped_sol10p01$Sire[n_ani_idx]
+n_dam_idx <- tbl_ped_sol10p01$Dam[n_ani_idx]
+n_elem_dinv <- get_diag_element_dinv(pn_ani_idx = n_ani_idx, 
+                                     pn_sire_idx = n_sire_idx, 
+                                     pn_dam_idx = n_dam_idx, 
+                                     pvec_inbreeding = vec_inbreeding)
+matAinv <- update_mat_ainv(pn_ani_idx = n_ani_idx, 
+                           pn_sire_idx = n_sire_idx,
+                           pn_dam_idx = n_dam_idx,
+                           pn_d = n_elem_dinv,
+                           pmat_ainv = matAinv)
+```
+
+* Animal `r n_ani_idx`
+
+```{r matainvanimal6}
+cat("$$\n")
+cat("A^{-1} = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matAinv, pnDigits = 4)))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+
+* Check with function `pedigreemm::getAinv()`
+
+```{r matainvcheck, echo=TRUE, results='markup'}
+pedigreemm::getAInv(ped = ped_sol10p01)
+```
+
+The difference between the computed matrix and the matrix from `pedigreemm::getAinv()`
+
+```{r matainvdiff}
+matAinv_check <- as.matrix(pedigreemm::getAInv(ped = ped_sol10p01))
+cat("$$\n")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matAinv_check-matAinv, pnDigits = 2)))
+cat("\\right]\n")
+cat("$$\n")
+```
+
