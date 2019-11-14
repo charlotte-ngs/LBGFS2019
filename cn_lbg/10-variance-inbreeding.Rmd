@@ -140,7 +140,7 @@ where $\bar{q}$ is the mean gene frequency which is the same as the original gen
 
 ```{r var-inb-genofreq-tab, echo=FALSE}
 tbl_genofreq <- tibble::tibble(Genotype = c("$A_1A_1$", "$A_1A_2$", "$A_2A_2$"),
-                               Frequency = c("$p^2 + \\sigma_{q}^2$", "$2pq - 2\\sigma_{q}^2$", "$q^2 + \\sigma_{q}^2$"))
+                               Frequency = c("$p_0^2 + \\sigma_{q}^2$", "$2p_0q_0 - 2\\sigma_{q}^2$", "$q_0^2 + \\sigma_{q}^2$"))
 knitr::kable(tbl_genofreq,
              booktabs = TRUE, 
              caption = "Genotype Frequencies in Population as a Whole",
@@ -153,6 +153,22 @@ Combining the formulas \@ref(eq:var-inb-sigma-Delta-q) and \@ref(eq:var-inb-mean
 
 \begin{equation}
 \bar{q^2} = \bar{q_0}^2 + \sigma_{q}^2 = \bar{q_0}^2 + p_0q_0  F
+(\#eq:var-inb-mean-freq-homozygote-inb)
 \end{equation}
 
+Based on \@ref(eq:var-inb-mean-freq-homozygote-inb) Table \@ref(tab:var-inb-genofreq-tab) with the genotype frequencies can be re-written as shown in Table \@ref(tab:var-inb-genofreq-inb-tab) where genotype frequencies are now expressed in terms of the inbreeding coefficient $F$. 
+
+```{r var-inb-genofreq-inb-tab, echo=FALSE}
+tbl_genofreq <- tibble::tibble(Genotype = c("$A_1A_1$", "$A_1A_2$", "$A_2A_2$"),
+                               `Original Frequencies` = c("$p_0^2$", "$2p_0q_0$", "$q_0^2$"),
+                               `Changes due to inbreeding` = c("$+p_0q_0 F$", "$-2p_0q_0 F$", "$+p_0q_0 F$"))
+knitr::kable(tbl_genofreq,
+             booktabs = TRUE, 
+             caption = "Genotype Frequencies for a bi-allelic locus, expressed in terms of inbreeding coefficient $F$",
+             escape = FALSE)  
+```
+
+
+## Changes of Mean Value {#var-inb-mean-value}
+So far, we have explained the consequences of inbreeding on the genotype frequences. In this section, we have a look at how inbreeding affects the mean values of metric characters. The most important consequence of inbreeding is the reduction of the mean phenotypic value of characters connected to reproduction and fitness. This phenomenon is known as **inbreeding depression**. 
 
