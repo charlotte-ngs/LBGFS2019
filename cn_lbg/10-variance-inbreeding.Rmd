@@ -20,8 +20,8 @@ Inbreeding means mating related individuals. The degree of relationship between 
 An important consequence of two individuals having a common ancestor is that they may both carry replicates of one of the alleles present in the common ancestor. If the two individuals mate, they may pass on these replicates to their offspring.
 
 
-### Inbreeding in Idealised Population {#var-inb-ideal-pop}
-The coefficient of inbreeding is deduced assuming an idealised population. Starting with the base population and its progeny forming generation $1$ the development of the inbreeding coefficient is computed. What is meant by the term **idealised population** is shown in Figure \@ref(fig:ideal-pop).
+### Inbreeding in Idealized Population {#var-inb-ideal-pop}
+The coefficient of inbreeding is deduced assuming an idealized population. Starting with the base population and its progeny forming generation $1$ the development of the inbreeding coefficient is computed. What is meant by the term **idealized population** is shown in Figure \@ref(fig:ideal-pop).
 
 ```{r ideal-pop, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg", fig.cap="Subdivision of a single large population into a number of subpopulations or lines"}
 #rmdhelp::use_odg_graphic(ps_path = "odg/ideal-pop.odg")
@@ -29,7 +29,7 @@ knitr::include_graphics(path = "odg/ideal-pop.png")
 ```
  
  
- The computation of the inbreeding coefficient may be visualised by the following situation. Let us assume a hermaphrodite marine organism, capable of self-fertilization shedding eggs and sperm into the sea. There are $N$ individuals, each shedding equal numbers of gametes which mate at random. At a given locus, all the alleles in the base population have to be regarded as non-identical. For that single locus, among the gametes shed by the base population there are $2N$ different sorts in equal number. What is the probability that a pair of gametes taken at random carry identical alleles? This probability corresponds to the **inbreeding coefficient** ($F$). Any gamete has a chance of $1/(2N)$ to mate with a gamete carrying the same allele. Hence the inbreeding coefficient ($F_1$) in generation $1$ corresponds to 
+ The computation of the inbreeding coefficient may be visualized by the following situation. Let us assume a hermaphrodite marine organism, capable of self-fertilization shedding eggs and sperm into the sea. There are $N$ individuals, each shedding equal numbers of gametes which mate at random. At a given locus, all the alleles in the base population have to be regarded as non-identical. For that single locus, among the gametes shed by the base population there are $2N$ different sorts in equal number. What is the probability that a pair of gametes taken at random carry identical alleles? This probability corresponds to the **inbreeding coefficient** ($F$). Any gamete has a chance of $1/(2N)$ to mate with a gamete carrying the same allele. Hence the inbreeding coefficient ($F_1$) in generation $1$ corresponds to 
  
 \begin{equation}
 F_1 = \frac{1}{2N}
@@ -71,7 +71,7 @@ Solving \@ref(eq:var-inb-FtDeltaF) for $\Delta F$ results in
 (\#eq:var-inb-FtSolveDeltaF)
 \end{equation}
 
-The measure of the **rate of inbreeding** given in equation \@ref(eq:var-inb-FtSolveDeltaF) provides a convenient way of generalising the concept of inbreeding beyond the simplifications of the idealised population. This generalisation provides a means of comparing inbreeding effects of different breeding systems. When expressing inbreeding in terms of $\Delta F$, equation \@ref(eq:var-inb-ft) is valid for any breeding system and is not restricted to the idealised population where $\Delta F$ is set to $1/(2N)$. 
+The measure of the **rate of inbreeding** given in equation \@ref(eq:var-inb-FtSolveDeltaF) provides a convenient way of generalising the concept of inbreeding beyond the simplifications of the idealized population. This generalization provides a means of comparing inbreeding effects of different breeding systems. When expressing inbreeding in terms of $\Delta F$, equation \@ref(eq:var-inb-ft) is valid for any breeding system and is not restricted to the idealized population where $\Delta F$ is set to $1/(2N)$. 
 So far, we have just related the inbreeding coefficient in one generation to the previous generation. It remains to express the inbreeding coefficient in terms of a set of properties of the base population. This is simplified by defining the symbol $P$ as the complement of the inbreeding coefficient $F$, hence 
 
 \begin{equation}
@@ -79,7 +79,7 @@ P = 1-F
 (\#eq:var-inb-pan-idx)
 \end{equation}
 
-The quantity symbolised by $P$ is known as the **panmicitic index**. Using \@ref(eq:var-inb-pan-idx) and inserting it into \@ref(eq:var-inb-FtSolveDeltaF) leads to 
+The quantity symbolized by $P$ is known as the **panmicitic index**. Using \@ref(eq:var-inb-pan-idx) and inserting it into \@ref(eq:var-inb-FtSolveDeltaF) leads to 
 
 \begin{equation}
 \frac{P_t}{P_{t-1}} = 1 - \Delta F
@@ -102,9 +102,9 @@ F_t = 1- (1 - \Delta F)^t
 
 
 ### Variance of Gene Frequency {#var-inb-var-gene-freq}
-According the Hardy-Weinberg Equilibrium, gene frequencies are constant over generations. But this is only true, if the base population is not devided into subpopulations or lines. If the base population is split into separate lines as shown in Figure \@ref(fig:ideal-pop), the gene frequencies in the single lines start to show variation. The amount of the variation is quantified by the variance of the gene frequencies. 
+According the Hardy-Weinberg Equilibrium, gene frequencies are constant over generations. But this is only true, if the base population is not divided into subpopulations or lines. If the base population is split into separate lines as shown in Figure \@ref(fig:ideal-pop), the gene frequencies in the single lines start to show variation. The amount of the variation is quantified by the variance of the gene frequencies. 
 
-The variance ($\sigma_{\Delta q}^2$) of the change of gene frequncy in one generation is first of all the variance of a binomial random variable and can be expressed in terms of the rate of inbreeding, as shown below.
+The variance ($\sigma_{\Delta q}^2$) of the change of gene frequency in one generation is first of all the variance of a binomial random variable and can be expressed in terms of the rate of inbreeding, as shown below.
 
 \begin{equation}
 \sigma_{\Delta q}^2 = \frac{p_0q_0}{2N} = p_0q_0 \Delta F
@@ -120,7 +120,7 @@ An equivalent way of writing \@ref(eq:var-inb-sigma-Delta-q) is in terms of the 
 
 
 ### Genotype Frequencies {#var-inb-genotype-freq}
-The genotype frequencies in the population as a whole (accross all generations) can be deduced from the knowledge of the variance of gene frequencies. If an allele has frequency $q$ in a given line, homozygotes of that allele have frequency $q^2$ in that line. The frequency of the homozygotes in the complete population over all lines will be the mean value of q^2 accross all lines. The mean frequency of homozygotes is written as $\bar{q^2}$. The value of $\bar{q^2}$ is obtained by the knowledge of the variance of gene frequencies. In general the variance of a series of observations is obtained by 
+The genotype frequencies in the population as a whole (across all generations) can be deduced from the knowledge of the variance of gene frequencies. If an allele has frequency $q$ in a given line, homozygotes of that allele have frequency $q^2$ in that line. The frequency of the homozygotes in the complete population over all lines will be the mean value of q^2 across all lines. The mean frequency of homozygotes is written as $\bar{q^2}$. The value of $\bar{q^2}$ is obtained by the knowledge of the variance of gene frequencies. In general the variance of a series of observations is obtained by 
 
 From the general formula of obtaining the variance of a set of observations corresponding to 
 
@@ -136,7 +136,7 @@ the mean frequency of homozygotes $\bar{q^2}$ is obtained as
 (\#eq:var-inb-mean-freq-homozygote)
 \end{equation}
 
-where $\bar{q}$ is the mean gene frequency which is the same as the original gene frequency $q_0$. Thus in the complete population, the frequency of the homozygotes of a particular allele increases and is always in excess of the original frequency by an amount equal to the variance of the gene frequency among the lines. In a two-allele system, the same applies to the other allele. The genotypic frequencies for a locus with two alleles can then be summarised as shown in Table \@ref(tab:var-inb-genofreq-tab).
+where $\bar{q}$ is the mean gene frequency which is the same as the original gene frequency $q_0$. Thus in the complete population, the frequency of the homozygotes of a particular allele increases and is always in excess of the original frequency by an amount equal to the variance of the gene frequency among the lines. In a two-allele system, the same applies to the other allele. The genotypic frequencies for a locus with two alleles can then be summarized as shown in Table \@ref(tab:var-inb-genofreq-tab).
 
 ```{r var-inb-genofreq-tab, echo=FALSE}
 tbl_genofreq <- tibble::tibble(Genotype = c("$A_1A_1$", "$A_1A_2$", "$A_2A_2$"),
@@ -147,7 +147,7 @@ knitr::kable(tbl_genofreq,
              escape = FALSE)  
 ```
 
-The genotype frequencies shown in Table \@ref(tab:var-inb-genofreq-tab) are no longer in Hardy-Weinberg equilibrium. This change in genotype frequencies is the result of a mechanism which is called the **dispersive process**. The dispersive process is active as soon as the idealised base population is subdivided into single lines. The increase of the frequency of the homozygous genotypes is the source of a phenomenon called **inbreeding depression**. This depression refers to the reduced fitness of individuals in populations with increasing levels of inbreeding. 
+The genotype frequencies shown in Table \@ref(tab:var-inb-genofreq-tab) are no longer in Hardy-Weinberg equilibrium. This change in genotype frequencies is the result of a mechanism which is called the **dispersive process**. The dispersive process is active as soon as the idealized base population is subdivided into single lines. The increase of the frequency of the homozygous genotypes is the source of a phenomenon called **inbreeding depression**. This depression refers to the reduced fitness of individuals in populations with increasing levels of inbreeding. 
 
 Combining the formulas \@ref(eq:var-inb-sigma-Delta-q) and \@ref(eq:var-inb-mean-freq-homozygote) and furthermore dropping the subscript $t$ in $F_t$ leads to 
 
@@ -170,15 +170,15 @@ knitr::kable(tbl_genofreq,
 
 
 ## Changes of Mean Value {#var-inb-mean-value}
-So far, we have explained the consequences of inbreeding on the genotype frequences. In this section, we have a look at how inbreeding affects the mean values of metric characters. The most important consequence of inbreeding is the reduction of the mean phenotypic value of characters connected to reproduction and fitness. This phenomenon is known as **inbreeding depression**. In saying that a certain trait shows inbreeding depression, we refer to the average change of mean value in a number of lines. The separate lines are commonly found to differ to a greater or lesser extent in the change they show, as indeed, we should expect in consequence of random drift of gene frequencies. The change of mean value that we discuss now refers to changes of the mean value of a number of lines derived from a common base population. 
+So far, we have explained the consequences of inbreeding on the genotype frequencies. In this section, we have a look at how inbreeding affects the mean values of metric characters. The most important consequence of inbreeding is the reduction of the mean phenotypic value of characters connected to reproduction and fitness. This phenomenon is known as **inbreeding depression**. In saying that a certain trait shows inbreeding depression, we refer to the average change of mean value in a number of lines. The separate lines are commonly found to differ to a greater or lesser extent in the change they show, as indeed, we should expect in consequence of random drift of gene frequencies. The change of mean value that we discuss now refers to changes of the mean value of a number of lines derived from a common base population. 
 
 Consider a population, subdivided into a number of lines, with a  coefficient of inbreeding $F$. Table \@ref(tab:var-inb-genotypic-value) shows the genotype frequencies derived earlier, the values of the single genotypes and the contribution to the population mean for each genotype. The allele frequencies $\bar{p}$ and $\bar{q}$ correspond to the frequencies in the whole population.
 
 ```{r var-inb-genotypic-value, echo=FALSE}
 tbl_genovalue <- tibble::tibble(Genotype = c("$A_1A_1$", "$A_1A_2$", "$A_2A_2$"),
-                                Frequency = c("$\bar{p}^2 + \bar{p}\bar{q}F$", "$2\bar{p}\bar{q} - 2\bar{p}\bar{q}F$","$\bar{q}^2 + \bar{p}\bar{q}F$"),
+                                Frequency = c("$\\bar{p}^2 + \\bar{p}\\bar{q}F$", "$2\\bar{p}\\bar{q} - 2\\bar{p}\\bar{q}F$","$\\bar{q}^2 + \\bar{p}\\bar{q}F$"),
                                 Value = c("$a$", "$d$", "$-a$"),
-                                Product = c("$(\bar{p}^2 + \bar{p}\bar{q}F)a$","$(2\bar{p}\bar{q} - 2\bar{p}\bar{q}F)d$","$-(\bar{q}^2 + \bar{p}\bar{q}F)a$"))
+                                Product = c("$(\\bar{p}^2 + \\bar{p}\\bar{q}F)a$","$(2\\bar{p}\\bar{q} - 2\\bar{p}\\bar{q}F)d$","$-(\\bar{q}^2 + \\bar{p}\\bar{q}F)a$"))
 knitr::kable(tbl_genovalue,
              booktabs = TRUE, 
              caption = "Derivation of Inbreeding Depression",
@@ -198,4 +198,61 @@ where $M_0$ is the population mean before inbreeding. The change of mean resulti
 
 
 ## Changes of Variance {#var-inb-change-variance}
-The effect of inbreeding on the genetic variance becomes apparent when again imagining the change of gene frequencies in different lines that emerge from a homogenous base population. Within the different lines, the gene frequencies change to the dispersive process of random drift. This makes that over time some allele frequencies will tend towards $0$ and frequencies of other alleles will tend towards $1$. 
+The effect of inbreeding on the genetic variance becomes apparent when again imagining the change of gene frequencies in different lines that emerge from a homogeneous base population. Within the different lines, the gene frequencies change to the dispersive process of random drift. This makes that over time some allele frequencies will tend towards $0$ and frequencies of other alleles will tend towards $1$. This tendency towards the extremes is different in the different lines. As a result in the populations, the similarity within lines increases, but between the lines the differences get bigger. 
+
+The subdivision of a population into lines introduces an additional component of variance, the between-line variance component. This means that the total genetic variance is re-distributed into the within-line component and the between line component. 
+
+
+### Redistribution of Genetic Variance {#var-inb-redist-genetic-variance}
+For reasons of simplicity, we are currently just looking at genetic loci with purely additive effects. That means the dominance term $d$ for such additive loci is $0$. Strictly speaking, the results shown here apply only to traits with no non-additive variance. But still, these results serve as a good approximation to the effect of inbreeding on the genetic variance. 
+
+Consider first a single locus. When there is not dominance the genotypic variance in the base population is given by
+
+\begin{equation}
+V_G = V_A = 2p_0q_0a^2
+(\#eq:var-inb-gen-var-base-pop)
+\end{equation}
+
+The variance within one given line is $V_G = 2pqa^2$, where $p$ and $q$ are the allele frequencies in that given line. The mean genetic variance ($V_{\bar{G}}$) within the lines is 
+
+\begin{equation}
+V_{\bar{G}} = 2(\bar{pq})a^2
+(\#eq:var-inb-mean-gen-var-lines)
+\end{equation}
+
+where $(\bar{pq})$ is the mean value of $pq$ over all lines. The term $2(\bar{pq})$ is the overall frequency of heterozygotes in the whole population, which, by Table \@ref(tab:var-inb-genofreq-inb-tab), is equal to $2p_0q_0(1-F)$ where $F$ is the inbreeding coefficient. Therefore
+
+\begin{align}
+V_{\bar{G}}  &=  2(\bar{pq})a^2 \notag \\
+             &=  2p_0q_0(1-F) \notag \\
+             &=  V_G(1-F)
+(\#eq:var-inb-mean-gen-var-lines-result)
+\end{align}
+
+This remains true when summing the variances over all loci that affect a given trait. The within-line variance corresponds to the original variance times $(1-F)$. As $F$ approaches $1$, the within-line variance tends toward $0$.
+
+Now consider the between-line variance. This is the variance of the true means of lines, and would be estimated from an analysis of variance as the between-line component. For a single locus with no dominance, the mean genotypic value of a line with allele frequencies $p$ and $q$ is obtained as 
+
+\begin{equation}
+M = a(p-q) = a(1-2q)
+\end{equation}
+
+Now we have to find the variance of $M$. The term $a$ is a constant, meaning that it is the same in all the lines. Hence the only random term in $M$ is the allele frequency $q$. Therefore 
+
+\begin{equation}
+var(M) = \sigma_M^2 =  4a^2 \sigma_q^2 = 4a^2p_0q_0F
+(\#eq:var-inb-gen-var-between-lines)
+\end{equation}
+
+Comparing the results of \@ref(eq:var-inb-gen-var-between-lines) and \@ref(eq:var-inb-mean-gen-var-lines-result) shows that $\sigma_M^2 = 2FV_G$. Putting the two components together leads to the total genetic variance as shown in Table \@ref(tag:tab-genvar-anova).
+
+```{r tab-genvar-anova}
+tbl_gen_anova <- tibble::tibble(Source = c("Between lines", "Within lines","Total"),
+                                Variance = c("$2FV_G$", "$(1-F)V_G$", "$(1+F)V_G$"))
+knitr::kable(tbl_gen_anova,
+             booktabs = TRUE, 
+             caption = "Partitioning of the variance in a population with inbreeding coefficient $F$",
+             escape = FALSE) 
+```
+
+From the last row of Table \@ref(tag:tab-genvar-anova), we can see that the total additive genetic variance in a population with inbreeding corresponds to $(1+F)V_G$ which is exactly what we wanted to show at the beginning of this chapter in equation \@ref(eq:defvarui).
