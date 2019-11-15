@@ -170,5 +170,32 @@ knitr::kable(tbl_genofreq,
 
 
 ## Changes of Mean Value {#var-inb-mean-value}
-So far, we have explained the consequences of inbreeding on the genotype frequences. In this section, we have a look at how inbreeding affects the mean values of metric characters. The most important consequence of inbreeding is the reduction of the mean phenotypic value of characters connected to reproduction and fitness. This phenomenon is known as **inbreeding depression**. 
+So far, we have explained the consequences of inbreeding on the genotype frequences. In this section, we have a look at how inbreeding affects the mean values of metric characters. The most important consequence of inbreeding is the reduction of the mean phenotypic value of characters connected to reproduction and fitness. This phenomenon is known as **inbreeding depression**. In saying that a certain trait shows inbreeding depression, we refer to the average change of mean value in a number of lines. The separate lines are commonly found to differ to a greater or lesser extent in the change they show, as indeed, we should expect in consequence of random drift of gene frequencies. The change of mean value that we discuss now refers to changes of the mean value of a number of lines derived from a common base population. 
 
+Consider a population, subdivided into a number of lines, with a  coefficient of inbreeding $F$. Table \@ref(tab:var-inb-genotypic-value) shows the genotype frequencies derived earlier, the values of the single genotypes and the contribution to the population mean for each genotype. The allele frequencies $\bar{p}$ and $\bar{q}$ correspond to the frequencies in the whole population.
+
+```{r var-inb-genotypic-value, echo=FALSE}
+tbl_genovalue <- tibble::tibble(Genotype = c("$A_1A_1$", "$A_1A_2$", "$A_2A_2$"),
+                                Frequency = c("$\bar{p}^2 + \bar{p}\bar{q}F$", "$2\bar{p}\bar{q} - 2\bar{p}\bar{q}F$","$\bar{q}^2 + \bar{p}\bar{q}F$"),
+                                Value = c("$a$", "$d$", "$-a$"),
+                                Product = c("$(\bar{p}^2 + \bar{p}\bar{q}F)a$","$(2\bar{p}\bar{q} - 2\bar{p}\bar{q}F)d$","$-(\bar{q}^2 + \bar{p}\bar{q}F)a$"))
+knitr::kable(tbl_genovalue,
+             booktabs = TRUE, 
+             caption = "Derivation of Inbreeding Depression",
+             escape = FALSE) 
+```
+
+Summing over the last column in Table \@ref(tab:var-inb-genotypic-value) results in the population mean for the given trait. 
+
+\begin{align}
+M_F &= (\bar{p}^2 + \bar{p}\bar{q}F)a + (2\bar{p}\bar{q} - 2\bar{p}\bar{q}F)d - (\bar{q}^2 + \bar{p}\bar{q}F)a \notag \\
+    &= a(\bar{p} - \bar{q}) + 2d\bar{p}\bar{q} - 2d\bar{p}\bar{q}F \notag \\
+    &= a(\bar{p} - \bar{q}) + 2d\bar{p}\bar{q}(1-F) \notag \\
+    &= M_0 - 2d\bar{p}\bar{q}F
+\end{align}
+
+where $M_0$ is the population mean before inbreeding. The change of mean resulting from inbreeding is $2d\bar{p}\bar{q}F$. 
+
+
+## Changes of Variance {#var-inb-change-variance}
+The effect of inbreeding on the genetic variance becomes apparent when again imagining the change of gene frequencies in different lines that emerge from a homogenous base population. Within the different lines, the gene frequencies change to the dispersive process of random drift. This makes that over time some allele frequencies will tend towards $0$ and frequencies of other alleles will tend towards $1$. 
