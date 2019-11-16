@@ -117,7 +117,7 @@ vecCnTopic[which(Date == format(as.Date("2019/11/01"), "%d.%m"))] <- paste0("[Mu
 ### # w8 cn/063-matainv.pdf
 # vecCnTopic[which(Date == format(as.Date("2019/11/08"), "%d.%m"))] <- "[]()"
 ### # w9 cn/07-add-asp-blup.pdf
-# vecCnTopic[which(Date == format(as.Date("2019/11/15"), "%d.%m"))] <- "[]()"
+vecCnTopic[which(Date == format(as.Date("2019/11/15"), "%d.%m"))] <- paste0("[Variance and Inbreeding](", s_base_url_cn, "/10_var_inb.pdf)", collapse = '')
 ### # w10 08-multiple-traits.pdf
 # vecCnTopic[which(Date == format(as.Date("2019/11/22"), "%d.%m"))] <- "[]()"
 ### # w11 09-genomic-selection.pdf
@@ -157,7 +157,7 @@ vecSlTopic[which(Date == format(as.Date("2019/10/25"), "%d.%m"))] <- paste0("[Nu
 ### # w8 w08/lbg_fs_2019_slides_numrelmat.pdf w08/lbgfs2019_slides_inbreeding.pdf
 vecSlTopic[which(Date == format(as.Date("2019/11/08"), "%d.%m"))] <- paste0("[Inbreeding](", s_base_url_sl,"/w08/lbgfs2019_slides_inbreeding.pdf)", collapse = '')
 ### # w9 w09/lbg_fs_2019_slides_invnumrelmat.pdf
-# vecSlTopic[which(Date == format(as.Date("2019/11/15"), "%d.%m"))] <- "[]()"
+vecSlTopic[which(Date == format(as.Date("2019/11/15"), "%d.%m"))] <- paste0("[Variance and Inbreeding](", s_base_url_sl,"/w09/lbgfs2019_slides_var_inb.pdf)", collapse = '')
 ### # w10 /w10/lbg_fs_2019_slides_inbreeding.pdf
 # vecSlTopic[which(Date == format(as.Date("2019/11/22"), "%d.%m"))] <- "[]()"
 ### # w11 w11/lbg_fs_2019_slides_additional_aspects.pdf

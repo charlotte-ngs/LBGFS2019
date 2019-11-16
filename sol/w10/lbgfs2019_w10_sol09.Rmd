@@ -1,0 +1,35 @@
+---
+title: Livestock Breeding and Genomics - Solution 9
+author: "Peter von Rohr"
+date: "2019-11-22"
+output:
+  bookdown::pdf_document2:
+    toc: false
+    number_sections: false
+    keep_tex: false
+header-includes:
+ \usepackage{longtable}
+ \usepackage{float}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis', fig.pos = 'H')
+knitr::knit_hooks$set(hook_convert_odg = rmdhelp::hook_convert_odg)
+```
+
+## Problem 1: Inbreeding Depression
+```{r prob1-setup, echo=FALSE}
+n_pop_size <- 200
+n_line <- 4
+```
+
+Because of very low amounts of harvested corn and grains at the end of the $18^{th}$ century in central Europe, many farmers were forced to leave their contry and find a new home in the USA. In 1810 a group of farmers took a population of about 200 animals and moved to the US.  After the arrival, the group formed four subgroups and settled in the states of Wisconsin, Virginia, Texas and Calefornia. The animals were equally partitioned to the subgroups. After the partion into the subpopulations, the animals were bred independently in the four different lines.
+
+
+### Solution
+
+
+## Problem 2:
+
+
+### Solution

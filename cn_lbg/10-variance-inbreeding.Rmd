@@ -246,13 +246,14 @@ var(M) = \sigma_M^2 =  4a^2 \sigma_q^2 = 4a^2p_0q_0F
 
 Comparing the results of \@ref(eq:var-inb-gen-var-between-lines) and \@ref(eq:var-inb-mean-gen-var-lines-result) shows that $\sigma_M^2 = 2FV_G$. Putting the two components together leads to the total genetic variance as shown in Table \@ref(tag:tab-genvar-anova).
 
-```{r tab-genvar-anova}
+```{r tab-genvar-anova, echo=FALSE}
 tbl_gen_anova <- tibble::tibble(Source = c("Between lines", "Within lines","Total"),
                                 Variance = c("$2FV_G$", "$(1-F)V_G$", "$(1+F)V_G$"))
+
 knitr::kable(tbl_gen_anova,
              booktabs = TRUE, 
-             caption = "Partitioning of the variance in a population with inbreeding coefficient $F$",
+             caption = "Partitioning of the variance in a population with inbreeding coefficient F",
              escape = FALSE) 
 ```
 
-From the last row of Table \@ref(tag:tab-genvar-anova), we can see that the total additive genetic variance in a population with inbreeding corresponds to $(1+F)V_G$ which is exactly what we wanted to show at the beginning of this chapter in equation \@ref(eq:defvarui).
+From the last row of Table \@ref(tab:tab-genvar-anova), we can see that the total additive genetic variance in a population with inbreeding corresponds to $(1+F)V_G$ which is exactly what we wanted to show at the beginning of this chapter in equation \@ref(eq:defvarui).
