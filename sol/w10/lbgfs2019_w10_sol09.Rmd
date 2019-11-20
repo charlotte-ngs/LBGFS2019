@@ -59,17 +59,78 @@ F_t = 1 - (1 - \Delta F)^t
 with $\Delta F$ corresponding to $1/2N$ where $N$ is the number of female animals in any of the subpopulations. The variable $t$ corresponds to the number of generations.  Inserting all the quantities in 
 
 \begin{equation}
-F_t = 1 - (1 - `r round(n_delta_F, ndigits = 4)`)^{`r n_generations`} = `r round(n_inbreeding_coefficient, digits = 4)`
+F_t = 1 - (1 - `r round(n_delta_F, digits = 4)`)^{`r n_generations`} = `r round(n_inbreeding_coefficient, digits = 4)`
 (\#eq:inbreeding-coefficient)
 \end{equation}
 
 
 
 ## Problem 2: Inbreeding Depression
-Use the same assumptions as in Problem 1 and compute the inbreeding depression at two different genetic loci.
+```{r ex09p02-setup, echo=FALSE}
+n_hom_value <- 25
+n_maf_locus_a <- .1
+n_diff_het <- 10
+n_maf <- .05
+```
 
-a. Locus $A$ is purely additive, hence the genotypic value of the heterozygous genotype is in the middle between the values of the two homozygous genotypes. In other words, the quantity $d = 0$. The minor allele frequency (MAF) of the positive allele of locus $A$ is $0.1$
-b. 
+Use the same assumptions as in Problem 1 and compute the inbreeding depression caused by the inbreeding coefficient computed in Problem 1 at two different genetic loci.
+
+a. Locus $A$ is purely additive with a genotypic value of $a=`r n_hom_value`$. Hence the genotypic value of the heterozygous genotype is in the middle between the values of the two homozygous genotypes. In other words, the quantity $d = 0$. The minor allele frequency (MAF) of the positive allele of locus $A$ is $p = `r n_maf_locus_a`$
+b. Locus $B$ where the valud of the heterozygous genotypes $B_1B_2$ is $10$ units above the mean of the homozygous genotypes, hence you can set the quantity $d=10$. The minor allele frequency of the positive allele of locus $B$ is $p = `r n_maf`$. 
 
 
 ### Solution
+```{r ex09p02-sol, echo=FALSE}
+n_inb_depr <- 2 * n_diff_het * n_maf * (1-n_maf) * n_inbreeding_coefficient
+```
+
+In the general the inbreeding depression is computed as 
+
+$$M_0 - M_F = 2d\bar{p}\bar{q}F$$
+
+a. For an additive locus, $d=0$ and hence the inbreeding depression for that locus is $0$. 
+b. For locus $B$, the inbreeding depression is
+
+$$M_0 - M_F = 2 * `r n_diff_het` * `r n_maf` * (1 - `r n_maf`) * `r n_inbreeding_coefficient` = `r round(n_inb_depr, digits = 4)`$$
+
+
+## Problem 3: Genetic additive Variance
+Compute the between-line, the within-line and the total genetic variance for the population described in Problem 1 and the locus $A$ of Problem 2a. 
+
+
+### Solution
+The different variance components can be computed as shown by the following ANOVA (analysis of variance) table.
+
+```{r tab-genvar-anova, echo=FALSE, message=FALSE}
+library(dplyr)
+tbl_gen_anova <- tibble::tibble(Source = c("Between lines", "Within lines","Total"),
+                                Variance = c("$2FV_G$", "$(1-F)V_G$", "$(1+F)V_G$"))
+
+knitr::kable(tbl_gen_anova,
+             booktabs = TRUE, 
+             escape = FALSE) %>%
+  kableExtra::kable_styling(position = 'center')
+```
+
+The variance $V_G$ corresponds to the genetic additive variance in the base population and is computed as 
+
+```{r add-gen-var-base-pop, echo=FALSE}
+n_add_gen_var_base_pop <- 2 * n_maf_locus_a * (1 - n_maf_locus_a) * n_hom_value^2
+```
+
+$$V_G = 2p_0q_0a^2 = 2 * `r n_maf_locus_a` * (1 - `r n_maf_locus_a`) * `r n_hom_value`^2 = `r n_add_gen_var_base_pop`$$
+
+The three variance components are computed using the inbreeding coefficient and $V_G$
+
+```{r tab-genvar-anova-sol, echo=FALSE}
+tbl_gen_anova_sol <- tibble::tibble(Source = c("Between lines", "Within lines","Total"),
+                                    Variance = c("$2FV_G$", "$(1-F)V_G$", "$(1+F)V_G$"),
+                                    Values   = c(2*n_inbreeding_coefficient * n_add_gen_var_base_pop,
+                                                 (1-n_inbreeding_coefficient) * n_add_gen_var_base_pop,
+                                                 (1+n_inbreeding_coefficient) * n_add_gen_var_base_pop))
+
+knitr::kable(tbl_gen_anova_sol,
+             booktabs = TRUE, 
+             escape = FALSE)  %>%
+  kableExtra::kable_styling(position = 'center')
+```
