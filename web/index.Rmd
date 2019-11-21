@@ -119,7 +119,7 @@ vecCnTopic[which(Date == format(as.Date("2019/11/01"), "%d.%m"))] <- paste0("[Mu
 ### # w9 cn/07-add-asp-blup.pdf
 vecCnTopic[which(Date == format(as.Date("2019/11/15"), "%d.%m"))] <- paste0("[Variance and Inbreeding](", s_base_url_cn, "/10_var_inb.pdf)", collapse = '')
 ### # w10 08-multiple-traits.pdf
-# vecCnTopic[which(Date == format(as.Date("2019/11/22"), "%d.%m"))] <- "[]()"
+vecCnTopic[which(Date == format(as.Date("2019/11/22"), "%d.%m"))] <- paste0("[Genomic Selection](", s_base_url_cn, "/11_geno_sel.pdf)", collapse = '')
 ### # w11 09-genomic-selection.pdf
 # vecCnTopic[which(Date == format(as.Date("2019/11/29"), "%d.%m"))] <- "[]()"
 ### # w12 10-var-comp.pdf
