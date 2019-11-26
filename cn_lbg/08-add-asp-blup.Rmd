@@ -175,7 +175,7 @@ y_i  &= \hat{\mu} + \left[1 + \alpha \delta^{(i)} + {\alpha\over 4} \sum_{j=1}^n
 
 \begin{tabular}{lll}
 where    &  $\alpha$  &  ration between variance components $\sigma_e^2 / \sigma_u^2$  \\
-         &  $\delta^(j)$  &  contribution for animal $j$ to $A^{-1}$
+         &  $\delta^{(j)}$  &  contribution for animal $j$ to $A^{-1}$
 \end{tabular}
 
 
