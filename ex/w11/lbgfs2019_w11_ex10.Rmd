@@ -1,0 +1,92 @@
+---
+title: Livestock Breeding and Genomics - Exercise 10
+author: "Peter von Rohr"
+date: "2019-11-29"
+output:
+  bookdown::pdf_document2:
+    toc: false
+    number_sections: false
+    keep_tex: false
+header-includes:
+ \usepackage{longtable}
+ \usepackage{float}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis', fig.pos = 'H')
+knitr::knit_hooks$set(hook_convert_odg = rmdhelp::hook_convert_odg)
+```
+
+
+```{r sol11prob01setup, echo=FALSE, results='hide'}
+n_sel_int <- 1.4
+n_sigma_a <- 16
+```
+
+## Problem 1: Importance of Accuracy
+The importance of the accuracy of predicted breeding values is different between livestock species and even between farmers within the same breeding organisation. When considering the selection response per year as a relevant criterion for comparing different selection strategies, there is a clear trade-off between accuracy of predicted breeding values and length of the generation interval. The selection response per year is defined as 
+
+$$\Delta_G = \frac{i * r_{u, \hat{u}} * \sigma_u}{L}$$
+
+where $i$ is the selection intensity, $r_{u, \hat{u}}$, $\sigma_u$ is the genetic additive variance and $L$ denotes the generation interval. Assume the values for $i$ to be $`r n_sel_int`$ and for $\sigma$ to be $`r n_sigma_a`$. Compute the selection response $\Delta_G$ for the accuracies and the generation intervals given in the following table.
+
+```{r exselresponsetable, echo=FALSE, results='asis'}
+n_nr_row <- (.9 - .45)/.05
+tbl_sel_int <- tibble::tibble(Accuracy = c(0.45+(0:n_nr_row)*0.05),
+                                  `Generation Interval` = c(2+(0:n_nr_row)*.5),
+                                  `Selection Response` = rep("", n_nr_row+1))
+knitr::kable(tbl_sel_int,
+             booktabs = TRUE, 
+             longtable = TRUE)
+```
+
+
+### Your Solution
+
+
+## Problem 2: Decomposition of Predicted Breeding Values
+```{r ex11prob02dataset, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+### # animal of interest
+n_ani_interest <- 4
+
+### # variance components
+n_sigmaa2 <- 8
+n_sigmae2 <- 24
+n_sigmas2 <- n_sigmaa2 / 4
+
+### # specify name of file with data, generated in 20181204_generate_data_ex11_p02
+s_data_file <- "https://charlotte-ngs.github.io/LBGFS2019/ex/w11/data_ex11_p02.csv"
+tbl_data_ex11prob02 <- readr::read_csv(file = s_data_file)
+
+### # constants
+nNrObsSmd <- nrow(tbl_data_ex11prob02)
+```
+
+Given is the following dataset. 
+
+```{r showdataex11prob02, echo=FALSE, results='asis'}
+knitr::kable(tbl_data_ex11prob02,
+             booktabs = TRUE,
+             longtable = TRUE)
+```
+
+Predict the breeding value for animal $`r n_ani_interest`$ once with the sire model and then with the animal model and see what is the difference between the two predicted breeding values based on the decomposition of the respective mixed model equation. The variances are given in the following table
+
+```{r varcompex11prob02, echo=FALSE, results='asis'}
+tbl_var_comp <- tibble::tibble(Component = c("Residual",
+                                                 "Additive Genetic",
+                                                 "Sire"),
+                                   Variance = c(n_sigmae2,
+                                                n_sigmaa2,
+                                                n_sigmas2))
+knitr::kable(tbl_var_comp,
+             booktabs = TRUE,
+             longtable = TRUE)
+```
+
+The residual variance-covariance matrix $R$ is assumed to have a simple structure, meaning that we can write
+
+$$R = I * \sigma_e^2$$
+
+
+### Your Solution
