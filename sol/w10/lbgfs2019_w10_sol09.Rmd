@@ -52,15 +52,13 @@ n_inbreeding_coefficient <- 1 - (1 - n_delta_F)^n_generations
 From the lecture the inbreeding coefficient ($F_t$) can be computed as 
 
 \begin{equation}
-F_t = 1 - (1 - \Delta F)^t
-(\#eq:inbreeding-coefficient)
+F_t = 1 - (1 - \Delta F)^t \notag
 \end{equation}
 
 with $\Delta F$ corresponding to $1/2N$ where $N$ is the number of female animals in any of the subpopulations. The variable $t$ corresponds to the number of generations.  Inserting all the quantities in 
 
 \begin{equation}
-F_t = 1 - (1 - `r round(n_delta_F, digits = 4)`)^{`r n_generations`} = `r round(n_inbreeding_coefficient, digits = 4)`
-(\#eq:inbreeding-coefficient)
+F_t = 1 - (1 - `r round(n_delta_F, digits = 4)`)^{`r n_generations`} = `r round(n_inbreeding_coefficient, digits = 4)` \notag
 \end{equation}
 
 
