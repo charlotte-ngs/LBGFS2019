@@ -26,15 +26,15 @@ n_sigma_a <- 16
 ## Problem 1: Importance of Accuracy
 The importance of the accuracy of predicted breeding values is different between livestock species and even between farmers within the same breeding organisation. When considering the selection response per year as a relevant criterion for comparing different selection strategies, there is a clear trade-off between accuracy of predicted breeding values and length of the generation interval. The selection response per year is defined as 
 
-$$R = \frac{i * r_{a, \hat{a}} * \sigma_a}{L}$$
+$$\Delta_G = \frac{i * r_{u, \hat{u}} * \sigma_u}{L}$$
 
-where $i$ is the selection intensity, $r_{a, \hat{a}}$, $\sigma_a$ is the genetic additive variance and $L$ denotes the generation interval. Assume the values for $i$ to be $`r n_sel_int`$ and for $\sigma$ to be $`r n_sigma_a`$. Compute the selection response $R$ for the accuracies and the generation intervals given in the following table.
+where $i$ is the selection intensity, $r_{u, \hat{u}}$, $\sigma_u$ is the genetic additive variance and $L$ denotes the generation interval. Assume the values for $i$ to be $`r n_sel_int`$ and for $\sigma$ to be $`r n_sigma_a`$. Compute the selection response $\Delta_G$ for the accuracies and the generation intervals given in the following table.
 
 ```{r exselresponsetable, echo=FALSE, results='asis'}
 n_nr_row <- (.9 - .45)/.05
 tbl_sel_int <- tibble::tibble(Accuracy = c(0.45+(0:n_nr_row)*0.05),
                                   `Generation Interval` = c(2+(0:n_nr_row)*.5),
-                                  `Selection Response (R)` = rep("", n_nr_row+1))
+                                  `Selection Response` = rep("", n_nr_row+1))
 knitr::kable(tbl_sel_int,
              booktabs = TRUE, 
              longtable = TRUE)
@@ -42,13 +42,13 @@ knitr::kable(tbl_sel_int,
 
 
 ### Solution
-We use the above given forumla to compute $R$ and fill out the table
+We use the above given forumla to compute $\Delta_G$ and fill out the table
 
 ```{r solselresponsetable, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
 library(dplyr)
 tbl_sel_int_sol <- tbl_sel_int %>%
   select(Accuracy, `Generation Interval`) %>%
-  mutate(`Selection Response (R)` = round((n_sel_int * Accuracy * n_sigma_a) / `Generation Interval`, digits = 2))
+  mutate(`Selection Response` = round((n_sel_int * Accuracy * n_sigma_a) / `Generation Interval`, digits = 2))
 
 knitr::kable(tbl_sel_int_sol,
              booktabs = TRUE, 
