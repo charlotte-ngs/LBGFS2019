@@ -121,7 +121,7 @@ vecCnTopic[which(Date == format(as.Date("2019/11/15"), "%d.%m"))] <- paste0("[Va
 ### # w10 08-multiple-traits.pdf
 vecCnTopic[which(Date == format(as.Date("2019/11/22"), "%d.%m"))] <- paste0("[Genomic Selection](", s_base_url_cn, "/11_geno_sel.pdf)", collapse = '')
 ### # w11 09-genomic-selection.pdf
-# vecCnTopic[which(Date == format(as.Date("2019/11/29"), "%d.%m"))] <- "[]()"
+vecCnTopic[which(Date == format(as.Date("2019/11/29"), "%d.%m"))] <- paste0("[Review on Selection Index Theory](", s_base_url_cn, "/093_sel_ind.pdf)", collapse = '')
 ### # w12 10-var-comp.pdf
 # vecCnTopic[which(Date == format(as.Date("2019/12/06"), "%d.%m"))] <- "[]()"
 
