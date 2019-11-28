@@ -5,11 +5,11 @@ mrmt$set_this_rmd_file(ps_this_rmd_file = s_this_rmd_file)
 ```
 So far we have seen how to predict breeding values using the BLUP animal model. These breeding values were always only for one trait. From a statistical point of view, experts are calling such analyses __univariate__ evaluations. In reality, livestock breeders want to improve their animals in a population with respect to several traits simultaneously. If there are genetic relationships (measured by genetic correlations) between traits, univariate predictions of breeding values do not make optimal use of the available information. This effect is stronger, if certain traits can only be observed in animals of one sex. According to `r mrmt$add('Mrode2005')` who cites `r mrmt$add('Schaeffer1984')` and `r mrmt$add('TM1986')`, the increased accuracy of the evaluations is one of the main advantage of multivariate BLUP analyses. Predictions of breeding values for several traits in a single evaluation is called __multivariate__ prediction of breeding values. Such multivariate analyses can be implemented in different ways such as
 
-* combining different corrected information sources in a multivariate selection index. 
+* combining different corrected information sources in a multivariate selection index (no longer used). 
 * multivariate prediction of breeding values using BLUP animal model (method of choice).
 * combining predicted breeding values from univariate analyses. 
 
-Before the introduction of the BLUP animal model, breeding values were estimated using a method that is called **selection index theory**. While selection indices are no longer used to estimate breeding values, it is still used to predict the aggregate genotype, as will be shown later in this chapter. Before that, we start with an introduction to multivariate BLUP methods. 
+Before the introduction of the BLUP animal model, breeding values were estimated using a method that is called **selection index** method. A brief review about selection index theory is given in section \@ref(review-selection-index-theory). While selection indices are no longer used to estimate breeding values, selection index theory is still used to predict the aggregate genotype, as will be shown later in this chapter. Before that, we start with an introduction to multivariate BLUP methods. 
 
 
 ## Multivariate Predictions Of Breeding Values Using BLUP
@@ -363,4 +363,357 @@ The use of the selection index theory to combine predicted breeding values as in
 Despite all these advantages, index selection alone is very rarely used in practical livestock breeding. The reason for this is that every population has a few traits that are difficult to associate with an economic value or for some traits it is difficult to come up with genetic parameters. As a consequence of that, in practical livestock breeding we will always find a mix of index selection and a variety of independent selection thresholds. 
 
 
+<!-- ---------------------------------------------------------- --
+  --  TODO: Integrate the following review into the text        --
+  --                                                            --
+  -- ---------------------------------------------------------- -->
+  
+## Review On Selection Index Theory {#review-selection-index-theory}
+Before the introduction of the BLUP animal model (`r mrmt$add('Henderson1973')` and `r mrmt$add('Henderson1975')`), breeding values were estimated using **Selection Index Theory** (`r mrmt$add('Hazel1943')` and `r mrmt$add('HL1942')`). Both methods are based on the same genetic model. The main difference between the two methods consists in the way how they correct for identifiable systematic environmental effects. We start with a treatment of selection index theory.
 
+<!-- Continue here -->
+
+### Introduction {#sel-index-intro}
+In principle, prediction of breeding values aims at assessing the genetic potential of a selection candidate that is due to additive gene effects based on all available information, such that the correlation between true and predicted breeding value is maximal. Because, we want to do this for a large number of selection candidates, we can formulate our aim in a more general way. For a given population, we want to predict breeding values for all animals in the population using all available information, such that the correlation between true and predicted breeding values are maximized. An alternative objective for the prediction to the maximization of the correlation between true and predicted breeding values is the minimization of the mean squared error of the prediction. The description of the aims of our procedure to predict breeding values shows that we are dealing with two different concepts of breeding value. 
+
+1. __True breeding value__ which corresponds to the sum of all additive gene-effects
+2. __Predicted breeding value__ which is a function of the phenotypic observations ($y$) that is determined by statistical methods. As a prediction it is always associated with a certain error which we want to be minimal.
+
+The prediction of breeding values has three different objectives.
+
+1. Selection candidates are ranked according to the predicted breeding values. Hence, it provides a criterion for selecting parents out of a pool of selection candidates
+2. Predicted breeding values are used to assess the response to selection and is important for planning a breeding program
+3. Predicted breeding values are one criterion that affect the price of breeding animals and the price of seamen.
+
+The definition \@ref(def:defbreedingvalue) of the term breeding value has several problems when it comes to its potential usefulness for predicting breeding values. 
+
+* It is impossible to generate an infinite number of progeny before having a reliable prediction of the breeding value
+* Due to the above mentioned objectives, we want to have a prediction of the breeding value available as early as possible.
+* The predicted breeding value should be as accurate as possible
+
+To address these issues, the above mentioned methods were developed. We start with the method of the selection index.
+
+
+### Selection Index Method {#sel-ind-method}
+The selection index is a method to predict the breeding value of an animal ($i$) by using all available information on the animal and on its relatives. The result of the selection index method is an assignment of a numerical value ($I$) to each animal. All animals in the population can then be ranked according to their index value. The ranking according to the index value can be used as selection criterion. In principle the index $I$ is defined as linear combination of all available information. This can be written as 
+
+\begin{equation}
+I = \hat{a_i} = b_1 y_1 + b_2 y_2 + \cdots + b_n y_n = b^Ty
+(\#eq:selindexdef)
+\end{equation}
+
+where $b$ is a vector of index weights and $y$ is a vector of information sources. Here we assume that all values in $y$ are corrected for appropriate mean levels. The resulting index value $I$ in \@ref(eq:selindexdef) is used as the predicted breeding value $\hat{a_i}$. From a statistical point of view equation  \@ref(eq:selindexdef) corresponds to a multiple linear regression. The vector of index weights $b$ are understood as partial regression coefficients.
+
+
+### Aggregate Genotype {#aggregate-genotype}
+In most practical livestock breeding scenarios, we want to improve a population at the genetic level with respect to more than one trait or characteristic, simultaneously. This requires a procedure that enables us to combine the breeding values of several trait into one selection criterion. This criterion is called the __aggregate genotype__ $H$. It is defined as 
+
+\begin{equation}
+H = w_1 a_1 + w_2 a_2 + \cdots + w_m a_m = w^T a
+(\#eq:defaggregategenotype)
+\end{equation}
+
+where $a$ corresponds to the vector of true breeding values and $w$ is a vector of economic values. The economic value $w_k$ for a given trait $k$ is defined as the marginal change in profit caused by a small change in the population mean ($\mu_k$) of the trait $k$. At this point, we are not describing how the economic values $w_k$ are derived, but we consider them to be known. For the construction of the selection index, we are using the general form of the aggregate genotype $H$. Once the selection index is constructed, we can go back to the simple scenario of considering just one trait which reduces the aggregate genotype $H$ to the true breeding value $a$ of the single trait. 
+
+
+### Theory of Index Construction {#theory-index-construction}
+The term _index construction_ stands for the computation of the vector of index weights $b$ for a given set of information sources and a given aggregate genotype. Independently from the available information sources, the following parameters must be known
+
+* heritabilities and phenotypic standard deviations for the traits in the aggregate genotype and for the traits in the index.
+* phenotypic correlations between the traits in the index
+* genetic correlations between the traits in the index and the traits in the aggregate genotype
+* genetic correlations between the traits in the aggregate genotype
+* economic values for the traits in the aggregate genotype
+
+The objective of the index construction is to maximize the correlation $r_{HI}$ between the index $I$ and the aggregate genotype $H$. Because the index $I$ corresponds to a multiple linear regression, the mean squared error between aggregate genotype and index is to be minimized. From this it follows that 
+
+\begin{equation}
+E(H-I)^2 \rightarrow \text{ min} 
+(\#eq:indexconstructionobjective)
+\end{equation}
+
+The solution to the index construction objective in equation \@ref(eq:indexconstructionobjective) leads to the so-called index normal equations which have the following form.
+
+\begin{equation}
+Pb = Gw
+(\#eq:indexnormalequation)
+\end{equation}
+
+where $P$ is the phenotypic variance-covariance matrix between all traits in the index, $G$ is the genetic variance-covariance matrix between the traits in the aggregate genotype and in the index and $w$ is a vector of known economic values. Solving for the vector of unknown index weights $b$ leads to 
+
+\begin{equation}
+b = P^{-1}Gw
+(\#eq:indexweight)
+\end{equation}
+
+The accuracy of the index is assessed by the correlation $r_{HI}$ between the index $I$ and the aggregate genotype $H$. The higher this correlation, the better the approximation of $H$ by $I$. The correlation $r_{HI}$ can be computed as shown in \@ref(eq:indexaccuracy). The terms for $cov(H,I)$, $\sigma_H$ and $\sigma_I$ are taken from \@ref(eq:appvarHcovHIvarI) and for $b$ we insert the solution taken from \@ref(eq:indexweight).
+
+\begin{align}
+r_{HI} &= \frac{cov(H,I)}{\sigma_H \sigma_I} \notag \\
+       &= \frac{w^T * G^T * b}{\sqrt{(w^T * C * w) * (b^T * P * b)}} \notag \\
+       &= \frac{w^T * G^T * P^{-1}*G*w}{\sqrt{(w^T * C * w) * ((P^{-1}*G*w)^T * P * P^{-1}*G*w)}} \notag \\
+       &= \frac{w^T * G^T * P^{-1}*G*w}{\sqrt{(w^T * C * w) * (w^T * G^T * P^{-1} * P * P^{-1}*G*w)}} \notag \\ 
+       &= \frac{w^T * G^T * P^{-1}*G*w}{\sqrt{(w^T * C * w) * (w^T * G^T * P^{-1}*G*w)}} \notag \\ 
+       &= \sqrt{\frac{w^T * G^T * P^{-1}*G*w}{w^T * C * w}} \notag \\ 
+       &= \frac{\sigma_I}{\sigma_H}
+(\#eq:indexaccuracy)
+\end{align}
+
+The response to selection $R$ which results from applying a selection scheme according to the index $I$ per generation is computed as  
+
+\begin{align}
+R  &=  i * r_{HI} * \sigma_H \notag \\
+   &=  i * \frac{\sigma_I}{\sigma_H}* \sigma_H \notag \\
+   &=  i * \sigma_I
+\end{align}
+
+where $i$ is the selection intensity.
+
+
+### Example of Index with Own Performance
+The simplest case of an index $I$ is the one where the aggregate genotype $H$ consists of one trait and the index $I$ contains a single own performance record of the same trait. This is equivalent to using the index $I$ to predicting the breeding value $a$ of an animal based on own phenotypic own performance record $y$. Hence we can set
+
+$$H = a \qquad \text{ and } \qquad I = by^*$$
+
+During the index construction, we have assumed the information in the index to be corrected for the appropriate population mean $\mu$. For our example here, we can set $y^* = y-\mu$. To determine the unknown index weight $b$ which is on our example just a single number, we have to specify $P$, $G$ and $w$. Because, we are looking at just one trait, the vector of economic values $w$ is set to one. The matrix $P$ was defined to be the variance-covariance matrix between the traits in the index. As the index $I$ contains just one phenotypic record, then $P$ corresponds to the phenotypic variance $\sigma_y^2$ of our trait of interest. The matrix $G$ was defined to be the genetic variance-covariance matrix between the traits in the aggregate genotype and the traits in the index. In our example we have just one trait which is the same in $H$ and in $I$, hence $G$ corresponds to the additive genetic variance $\sigma_a^2$. In summary, we have found that 
+
+\begin{align}
+P  &=  \sigma_y^2 \notag \\
+G  &=  \sigma_a^2 \notag \\
+w  &=  1
+(\#eq:inputindexownperformance)
+\end{align}
+
+Inserting the terms of \@ref(eq:inputindexownperformance) into equation \@ref(eq:indexweight) to compute the index weight $b$ results in
+
+\begin{align}
+b  &=  P^{-1} * G * w \notag \\
+   &=  \sigma_y^{-2} * \sigma_a^2 * 1 \notag \\
+   &=  \frac{\sigma_a^2}{\sigma_y^2} = h^2
+(\#eq:resultindexownperformance)
+\end{align}
+
+Using the index weight $b$ found in \@ref(eq:resultindexownperformance) to compute the index $I$, we get
+
+\begin{align}
+I  &=  by^* \notag \\
+   &=  h^2(y - \mu) \notag \\
+   &= \hat{a_i}
+(\#eq:predictedbreedingvalueownperformanceindex)
+\end{align}
+
+The index value $I$ that we obtained in \@ref(eq:predictedbreedingvalueownperformanceindex) corresponds to the predicted breeding value for a given trait of an animal $i$ based on an own performance phenotypic record of animal $i$ in the respective trait. Comparing the predicted breeding value obtained in \@ref(eq:predictedbreedingvalueownperformanceindex) using selection index theory to the result obtained from the regression approach in \@ref(eq:predbreedvalueownsinglerecord) shows that they are identical. 
+
+The accuracy $r_{HI}$ of the predicted breeding value ($\hat{a_i}$) using selection index theory is computed as shown in \@ref(eq:indexaccuracy)
+
+\begin{align}
+r_{HI}  &=  \frac{\sigma_I}{\sigma_H} \notag \\
+        &=  \frac{b \sigma_y}{\sigma_a} \notag \\
+        &=  \frac{h^2 \sigma_y}{\sigma_a} \notag \\
+        &=  h
+(\#eq:accuracyvalueownperformanceindex)        
+\end{align}
+
+Similarly to the predicted breeding value, the accuracy $r_{HI}$ that results from selection index theory is identical to what was found using the regression approach. 
+
+
+### Example with Progeny Records {#example-progeny-record}
+The prediction of breeding values for a given animal $i$ based on progeny records is very common in livestock breeding. Examples are dairy cattle where bulls are evaluated based on lactation records of daughters. Similarly for beef cattle or pigs where sires are evaluated based on carcass performance of their progeny. For a very long time this has been the standard method to predict breeding values to select parents in a breeding program. First we assume that the progeny of animal $i$ are all half-sibs. Before, we can use the performance records of the progeny to predict breeding values for the parents, we have to correct them with the appropriate mean performance. After the correction the progeny performance values are averaged for a given parent. These mean performance values for a given parent $i$ are called $\bar{y_i}$ and are used to predict the breeding values. Hence our index $I$ for a given animal $i$ is defined as 
+
+\begin{equation}
+I = b \bar{y_i}
+(\#eq:indexbary)
+\end{equation}
+
+Because, we are only looking at a single trait, the aggregate genotype $H$ corresponds to the single true breeding value $a$ of this trait and the economic weight $w$ is $1$. Now we are ready to set up the index normal equations. In general these equations have the form 
+
+\begin{equation}
+Pb = Gw
+(\#eq:generalindexnormalequation)
+\end{equation}
+
+where $P$ corresponds to the variance-covariance matrix of the information sources in the index. Our index $I$ as defined in \@ref(eq:indexbary) contains just one source of information, namely the average $\bar{y_i}$ of the progeny performance values of animal $i$. In general the phenotypic variance of the mean $\bar{y}$ of $n$ progeny performance values corresponds to 
+
+\begin{equation}
+\sigma_{\bar{y}}^2 = \frac{1 + (n-1)t}{n} \sigma_y^2
+(\#eq:phenotypicvariancemean)
+\end{equation}
+
+For our case with the progeny records, $t$ takes the value of ${1\over 4}h^2$. For more details on how to compute $\sigma_{\bar{y}}^2$, see section \@ref(app-deriv-variance-mean-progeny-performance). Hence the matrix $P$ reduces to a single number
+
+\begin{equation}
+P = \sigma_{\bar{y}}^2 =  \frac{1 + (n-1)h^2/4}{n} \sigma_y^2
+(\#eq:matrixpprogeny)
+\end{equation}
+
+The matrix $G$ in \@ref(eq:generalindexnormalequation) is the genetic covariance matrix between the traits in $H$ and the information sources in $I$. In our current example $G = cov(a_i, \bar{y_i}) = {1\over 2} \sigma_a^2$. For more details on how to compute $G$, see section \@ref(cov-breedingvalue-meanprogeny). Now that we have all the components of \@ref(eq:generalindexnormalequation), we can insert them and solve for $b$. 
+
+\begin{align}
+\frac{1 + (n-1)h^2/4}{n} \sigma_y^2 * b  &=  {1\over 2} \sigma_a^2 \notag \\
+                                      b  &=  \frac{2nh^2}{4 + (n-1)h^2} \notag \\
+                                         &=  \frac{2n}{n + k}
+(\#eq:indexweightprogenyaverage)                                         
+\end{align}
+
+where $k = \frac{4-h^2}{h^2}$. 
+
+With this the predicted breeding value $\hat{a_i}$ for animal $i$ based on the average progeny performance values using the index approach corresponds to
+
+\begin{equation}
+\hat{a_i} = I = b * (\bar{y_i} - \mu) = \frac{2n}{n + k} * (\bar{y_i} - \mu)
+(\#eq:predbreedingvalueindexprogenyaverage)
+\end{equation}
+
+The accuracy for the predicted breeding value in \@ref(eq:predbreedingvalueindexprogenyaverage) is 
+
+\begin{equation}
+r_{HI} = \sqrt{\frac{n}{n+k}}
+(\#eq:accuracyindexprogenyaverage)
+\end{equation}
+
+
+
+<!-- Start of Appendix here -->
+### Appendix: Derivation of Index Normal Equations {#derivation-index-normal-equation}
+In this section we want to show how to derive the index normal equations from the objective criterion in the index construction procedure. The objective criterion was formulated in equation \@ref(eq:indexconstructionobjective) as 
+
+\begin{equation}
+\Psi = E(H-I)^2 \rightarrow \text{ min} 
+(\#eq:appindexconstructionobjective)
+\end{equation}
+
+The derivation starts by inserting the definitions of $H$ and $I$ into \@ref(eq:appindexconstructionobjective).
+
+\begin{align}
+\Psi = E(H-I)^2 &= E(H^2 - 2*H*I + I^2) \notag \\
+         &= E(H^2) - 2 * E(H*I) + E(I^2)
+(\#eq:appexpectedsquarederror)         
+\end{align}
+
+Both the expected value $E(H)$ of the aggregate genotype $H$ and the expected value $E(I)$ of the index are both $0$. This can be seen by the following expansion
+
+\begin{equation}
+E(H) = E(w^Ta) = w^T * E(a) = w^T * 0 = 0
+\end{equation}
+
+because the breeding values $a$ are defined as deviations, there expected value $E(a)$ is always $0$. Similarly for the index $I$, we mentioned that the components in the vector $y$ denoting the information sources that enter the index $I$ are corrected by suitable population means. Due to this correction, we can state that $E(y) = 0$ and thereby $E(I) = 0$. Using these results on the expected values of $H$ and $I$, we can further develop \@ref(eq:appexpectedsquarederror)
+
+\begin{align}
+\Psi  &=  var(H) - 2 * cov(H,I) + var(I) \notag \\
+      &= var(w^Ta) - 2 * cov(w^Ta, b^Ty) + var(b^Ty) \notag \\
+      &= w^T var(a) w - 2 * w^T cov(a,y^T) b + b^T var(y) b \notag \\
+      &= w^T C w - 2 * w^T G^T b + b^T P b
+(\#eq:appvarianceerror)         
+\end{align}
+
+where $C$ is the variance-covariance matrix of the true breeding values of the traits in the aggregated genotype, $G^T$ is the genetic variance-covariance matrix between the traits in the aggregate genotype and the traits in the index and $P$ is the phenotypic variance-covariance matrix between the traits in the index. Hence we can state
+
+\begin{align}
+var(H)    &=  w^T * C * w \notag \\
+cov(H,I)  &=  w^T * G^T * b \notag \\
+var(I)    &=  b^T * P * b
+(\#eq:appvarHcovHIvarI)
+\end{align}
+
+In the objective criterion in \@ref(eq:appindexconstructionobjective), we stated that $\Psi$ should be minimized. This is done by computing the derivative of $\Psi$ with respect to the vector $b$. The solution vector $b$ that sets that derivative to $0$ corresponds to the solution that we are looking for. The derivative of $\Psi$ with respect to the vector $b$ is also called the gradient and can be computed as 
+
+\begin{align}
+\frac{\partial \Psi}{\partial b}  &=  0 - 2 * w^T * G^T + 2 b^T P
+(\#eq:appgradientpsi)
+\end{align}
+
+Setting \@ref(eq:appgradientpsi) to $0$ leads to 
+
+\begin{align}
+0        &=  - 2 * w^T * G^T + 2 b^T P \notag \\
+w^T G^T  &=  b^T P \notag \\
+Pb       &=  Gw
+(\#eq:appminsystemeq)
+\end{align}
+
+The last line in \@ref(eq:appminsystemeq) follows by transposing both sides of the second last line and because $P$ is symmetric, $P^T = P$. As a result we obtain the index normal equations which can be solved for the unknown vector $b$ by pre-multiplying both sides with the inversion matrix $P^{-1}$ of $P$. 
+
+\begin{equation}
+b = P^{-1}Gw 
+(\#eq:appindexweight)
+\end{equation}
+
+Because $P$ is a variance-covariance matrix, it is guaranteed to be positive definite and its inverse $P^{-1}$ does exist.
+
+
+### Appendix: Derivation of the Index Components for the Example of the Mean Progeny Performance {#app-deriv-variance-mean-progeny-performance}
+#### Variance of Mean Progeny Performance 
+The mean performance values of a group of progeny for a given parent has the following structure
+
+\begin{equation}
+\bar{y_i} = {1 \over n} \sum_{k=1}^n y_{i,k}
+(\#eq:appstructureybar)
+\end{equation}
+
+where $y_k$ is the corrected performance value of progeny $k$ of animal $i$. Each $y_k$ can be decomposed into 
+
+\begin{align}
+y_{i,k}   &=  a_k + e_k \notag \\
+          &=  {1\over 2} a_i + {1\over 2} a_{d,k} + m_k + e_k
+(\#eq:appdecomposeyk)
+\end{align}
+
+The variance ($\sigma_y^2$) of a single phenotypic observation ($y_{i,k}$) of progeny $k$ of parent $i$ can be computed as
+
+\begin{align}
+\sigma_y^2 = var(y_{i,k})  &=  var({1\over 2} a_i + {1\over 2} a_{d,k} + m_k + e_k) \notag \\
+                           &=  var({1\over 2} a_i) + var({1\over 2} a_{d,k}) + var(m_k) + var(e_k) \notag \\
+                           &=  {1\over 4} var(a) + {1\over 4} var(a_{d,k}) + var(m_k) + var(e_k) \notag \\
+                           &=  {1\over 4} \sigma_a^2 + {1\over 4} var(a_{d,k}) + var(m_k) + var(e_k)
+(\#eq:appsigmay2)
+\end{align}
+
+In \@ref(eq:appsigmay2) we have assumed that all the pairwise covariances between the terms are $0$. We define the intra-class correlation $t$ which is the part of the total variance which is attributed to the permanent effect in the single performance records.
+
+\begin{equation}
+t  =  \frac{1/4 \sigma_a^2}{\sigma_y^2} = {1\over 4}h^2
+\end{equation}
+
+Inserting the decomposition of \@ref(eq:appdecomposeyk) into \@ref(eq:appstructureybar) leads to
+
+\begin{align}
+\bar{y_i}  &=  {1 \over n} \sum_{k=1}^n y_{i,k} \notag \\
+           &=  {1 \over n} \sum_{k=1}^n ({1\over 2} a_i + {1\over 2} a_{d,k} + m_k + e_k) \notag \\
+           &=  {1\over 2} a_i + {1 \over n} \sum_{k=1}^n {1\over 2} a_{d,k} + {1 \over n} \sum_{k=1}^n m_k + {1 \over n} \sum_{k=1}^n e_k 
+(\#eq:appstructureybarinserted)
+\end{align}
+
+Taking the variance on both sides of \@ref(eq:appstructureybarinserted) leads to our final result the variance ($\sigma_{\bar{y}}^2$) of the mean progeny performance.
+
+\begin{align}
+\sigma_{\bar{y}}^2 = var(\bar{y_i})  &=  var({1\over 2} a_i + {1 \over n} \sum_{k=1}^n {1\over 2} a_{d,k} + {1 \over n} \sum_{k=1}^n m_k + {1 \over n} \sum_{k=1}^n e_k) \notag \\
+                                     &=  var({1\over 2} a_i) + var({1 \over n} \sum_{k=1}^n {1\over 2} a_{d,k}) + var({1 \over n} \sum_{k=1}^n m_k) + var({1 \over n} \sum_{k=1}^n e_k) \notag \\
+                                     &=  {1\over 4} \sigma_a^2 + \frac{1}{4n} var(a_{d,k}) + {1 \over n} var(m_k) + {1 \over n} var(e_k) \notag \\
+                                     &=  {1\over 4} \sigma_a^2 + {1\over n} \left( {1\over 4}var(a_{d,k})  + var(m_k) + var(e_k) \right) \notag \\
+                                     &=  t * \sigma_y^2 + {1\over n}(1-t) * \sigma_y^2  \notag \\
+                                     &= \frac{n*t + 1-t}{n} * \sigma_y^2  \notag \\
+                                     &= \frac{1 + (n-1)t}{n} * \sigma_y^2
+(\#eq:appsigmaybarresult)                                     
+\end{align}
+
+Because, we saw earlier that $t = h^2 / 4$, we can insert that into \@ref(eq:appsigmaybarresult) which brings us to the final result
+
+\begin{equation}
+\sigma_{\bar{y}}^2 = \frac{1 + (n-1)h^2 / 4}{n} * \sigma_y^2
+(\#eq:appsigmaybarfinalresult)                                     
+\end{equation}
+
+
+#### Covariance between True Breeding Value and Mean Progeny Performance {#cov-breedingvalue-meanprogeny}
+The set-up of the index normal equations requires the matrix $G$ which corresponds to the genetic covariance between the trait in the aggregate genotype and the information sources in the index. For the example with the mean progeny performance values, the matrix $G$ is defined as
+
+\begin{align}
+G = cov(a_i, \bar{y_i})  &=  cov(a_i, {1\over n}\sum_{k=1}^n y_{i,k}) \notag \\
+                         &=  cov \left( a_i, {1 \over 2} a_i + {1\over n}\sum_{k=1}^n \left[ {1 \over 2} a_{d,k} + m_k + e_k \right] \right) \notag \\
+                         &=  cov(a_i, {1 \over 2} a_i) \notag \\
+                         &=  {1 \over 2} \sigma_a^2
+(\#eq:appcovaybar)                         
+\end{align}
+
+In \@ref(eq:appcovaybar), we have used that the covariance between $a_i$ and all other components of $y_{i,k}$, except $a_i$ is $0$. 
+  

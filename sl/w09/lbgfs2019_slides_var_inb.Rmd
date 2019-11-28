@@ -17,9 +17,10 @@ knitr::knit_hooks$set(hook_convert_odg = rmdhelp::hook_convert_odg)
 
 ## Assumption
 
+* Variance of breeding value $u_i$: $var(u_i) = (A)_{ii} \sigma_u^2$
 * Diagnoal elements of numerator relationship matrix $A$
 
-$$(A)_{ii} = (1+F_i) \sigma_u^2$$
+$$(A)_{ii} = (1+F_i)$$
 
 \begin{tabular}{llp{9cm}}
 where  &  &  \\
