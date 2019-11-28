@@ -1,0 +1,416 @@
+---
+title: Livestock Breeding and Genomics - Solution 10
+author: "Peter von Rohr"
+date: "2019-11-29"
+output:
+  bookdown::pdf_document2:
+    toc: false
+    number_sections: false
+    keep_tex: false
+header-includes:
+ \usepackage{longtable}
+ \usepackage{float}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis', fig.pos = 'H')
+knitr::knit_hooks$set(hook_convert_odg = rmdhelp::hook_convert_odg)
+```
+
+
+```{r sol11prob01setup, echo=FALSE, results='hide'}
+n_sel_int <- 1.4
+n_sigma_a <- 16
+```
+
+## Problem 1: Importance of Accuracy
+The importance of the accuracy of predicted breeding values is different between livestock species and even between farmers within the same breeding organisation. When considering the selection response per year as a relevant criterion for comparing different selection strategies, there is a clear trade-off between accuracy of predicted breeding values and length of the generation interval. The selection response per year is defined as 
+
+$$\Delta_G = \frac{i * r_{u, \hat{u}} * \sigma_u}{L}$$
+
+where $i$ is the selection intensity, $r_{u, \hat{u}}$, $\sigma_u$ is the genetic additive variance and $L$ denotes the generation interval. Assume the values for $i$ to be $`r n_sel_int`$ and for $\sigma$ to be $`r n_sigma_a`$. Compute the selection response $\Delta_G$ for the accuracies and the generation intervals given in the following table.
+
+```{r exselresponsetable, echo=FALSE, results='asis'}
+n_nr_row <- (.9 - .45)/.05
+tbl_sel_int <- tibble::tibble(Accuracy = c(0.45+(0:n_nr_row)*0.05),
+                                  `Generation Interval` = c(2+(0:n_nr_row)*.5),
+                                  `Selection Response` = rep("", n_nr_row+1))
+knitr::kable(tbl_sel_int,
+             booktabs = TRUE, 
+             longtable = TRUE)
+```
+
+
+### Solution
+We use the above given forumla to compute $\Delta_G$ and fill out the table
+
+```{r solselresponsetable, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+library(dplyr)
+tbl_sel_int_sol <- tbl_sel_int %>%
+  select(Accuracy, `Generation Interval`) %>%
+  mutate(`Selection Response` = round((n_sel_int * Accuracy * n_sigma_a) / `Generation Interval`, digits = 2))
+
+knitr::kable(tbl_sel_int_sol,
+             booktabs = TRUE, 
+             longtable = TRUE)
+```
+
+These results show that an increase in accuracy is not worth while to accept a longer generation interval, when looking at the selection response.
+
+
+## Problem 2: Decomposition of Predicted Breeding Values
+```{r ex11prob02dataset, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+### # animal of interest
+n_ani_interest <- 4
+
+### # variance components
+n_sigmaa2 <- 8
+n_sigmae2 <- 24
+n_sigmas2 <- n_sigmaa2 / 4
+
+### # specify name of file with data, generated in 20181204_generate_data_ex11_p02
+s_data_file <- "https://charlotte-ngs.github.io/LBGFS2019/ex/w11/data_ex11_p02.csv"
+tbl_data_ex11prob02 <- readr::read_csv(file = s_data_file)
+
+### # constants
+nNrObsSmd <- nrow(tbl_data_ex11prob02)
+```
+
+Given is the following dataset. 
+
+```{r showdataex11prob02, echo=FALSE, results='asis'}
+knitr::kable(tbl_data_ex11prob02,
+             booktabs = TRUE,
+             longtable = TRUE)
+```
+
+Predict the breeding value for animal $`r n_ani_interest`$ once with the sire model and then with the animal model and see what is the difference between the two predicted breeding values based on the decomposition of the respective mixed model equation. The variances are given in the following table
+
+```{r varcompex11prob02, echo=FALSE, results='asis'}
+tbl_var_comp <- tibble::tibble(Component = c("Residual",
+                                                 "Additive Genetic",
+                                                 "Sire"),
+                                   Variance = c(n_sigmae2,
+                                                n_sigmaa2,
+                                                n_sigmas2))
+knitr::kable(tbl_var_comp,
+             booktabs = TRUE,
+             longtable = TRUE)
+```
+
+The residual variance-covariance matrix $R$ is assumed to have a simple structure, meaning that we can write
+
+$$R = I * \sigma_e^2$$
+
+
+### Solution
+The breeding values for animal $`r n_ani_interest`$ is once estimated with a sire model and once with an animal model. 
+
+
+#### Sire Model
+The sire model for the given data set looks as follows
+
+$$y = X\mu + Zs + e$$
+
+Putting the information from the dataset into the model leads to
+
+```{r}
+vec_y <- tbl_data_ex11prob02$Observation
+mat_x <- matrix(data = 1, nrow = nNrObsSmd)
+mat_z_sire <- matrix(c(0, 0,
+                       0, 0,
+                       0, 0,
+                       1, 0,
+                       0, 1), nrow = nNrObsSmd, byrow = TRUE)
+n_nr_sire <- ncol(mat_z_sire)
+# vec_s <- rmddochelper::vecGetVecElem(psBaseElement = "s", pnVecLen = n_nr_sire, psResult = "latex")
+vec_s <- c("s_1", "s_4")
+vec_e <- rmddochelper::vecGetVecElem(psBaseElement = "e", pnVecLen = nNrObsSmd, psResult = "latex")
+cat("$$\n")
+cat("y = \\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_y), collapse = "\n"),"\n")
+cat("\\right] \\text{, }")
+cat("X = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_x, pnDigits = 0), collapse = "\n"),"\n")
+cat("\\right] \\text{, }")
+cat("Z_s = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_z_sire, pnDigits = 0), collapse = "\n"),"\n")
+cat("\\right] \\text{, }")
+cat("s = \\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_s), collapse = "\n"),"\n")
+cat("\\right] \\text{, }")
+cat("e = \\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_e), collapse = "\n"),"\n")
+cat("\\right] \n")
+cat("$$\n")
+```
+
+and $\mu$ is just a scalar parameter. 
+
+The mixed model equations for the sire model have the following structure
+
+$$
+\left[
+  \begin{array}{lr}
+  X^TX  &  X^TZ_s \\
+  Z_s^TX  &  Z_s^TZ_s + G_s^{-1}
+  \end{array}
+\right]
+\left[
+  \begin{array}{c}
+  \hat{\mu} \\
+  \hat{s}
+  \end{array}
+\right]
+=
+\left[
+  \begin{array}{c}
+  X^Ty \\
+  Z_s^Ty
+  \end{array}
+\right]
+$$
+
+Setting $G_s^{-1} = \lambda_s * A_s^{-1}$ with $\lambda_s = \sigma_e^2 / \sigma_s^2$ and $A_s$ is the numerator relationship between the sires. Because we have `r n_nr_sire` sires the matrix $A_s$ will have dimension $`r n_nr_sire` \times `r n_nr_sire`$. The diagonal elements are $1$ and the offdiagonal element is derived from the covariance between $s_1$ and $s_4$. From the pedigree, we know that $1$ is the father of $4$. For the covariance between $s_1$ and $s_4$ this means
+
+$$
+cov(s_1, s_4) = cov(s_1, ({1\over 2} s_1 + e_4)) = {1\over 2}cov(s_1, s_1) = {1\over 2} \sigma_s^2
+$$
+
+
+Hence
+
+```{r}
+### # sire relationship matrix
+mat_a_sire <- matrix(c(1, 0.5,
+                       0.5, 1), nrow = n_nr_sire, byrow = TRUE)
+
+cat("$$\n")
+cat("A_s = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_a_sire, pnDigits = 1), collapse = "\n"),"\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+The inverse $A_s^{-1}$ is 
+
+```{r}
+mat_a_sire_inv <- solve(mat_a_sire)
+cat("$$\n")
+cat("A_s^{-1} = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_a_sire_inv, pnDigits = 3), collapse = "\n"),"\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+
+Inserting the matrices into the mixed model equations
+
+```{r}
+### # design matrices
+mat_xtx <- crossprod(mat_x)
+mat_xtz_sire <- crossprod(mat_x, mat_z_sire)
+mat_ztz_sire <- crossprod(mat_z_sire)
+
+### # variance ratio
+lambda_sire <- n_sigmae2 / n_sigmas2
+
+### # coefficient matrix
+mat_coef_sire <- rbind(cbind(mat_xtx, mat_xtz_sire), 
+                       cbind(t(mat_xtz_sire), mat_ztz_sire + lambda_sire * mat_a_sire_inv))
+vec_unknow_sire <- c("\\hat{\\mu}", "\\hat{s}_1", "\\hat{s}_4")
+
+### # righthandside
+vec_rhs <- c(crossprod(mat_x, vec_y), crossprod(mat_z_sire, vec_y))
+
+### # solution
+vec_sol_sire <- solve(mat_coef_sire, vec_rhs)
+
+cat("$$\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_coef_sire), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_unknow_sire), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("=")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_rhs), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$")
+```
+
+When looking at the last equation, we can see that 
+
+$$1 * \hat{\mu} - 8 * \hat{s}_1 + 17 * \hat{s}_4 = y_5$$
+
+
+
+Solving this for $\hat{s}_4$ leads to 
+
+$$\hat{s}_4 = {1 \over 17} \left[y_5 - \hat{\mu} + 8 \hat{s}_1 \right] $$
+
+The predicted breeding value of animal $`r n_ani_interest`$ depends on the observation $y_5$ of its progeny, the estimate of the global mean $\hat{\mu}$ and on the predicted breeding value of the sire of animal $`r n_ani_interest`$. 
+
+The numeric values of the solutions are fiven by
+
+```{r}
+cat("$$\n")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_unknow_sire), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("=")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_sol_sire, pnDigits = 4), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+
+### Animal Model
+The animal model is given as
+
+$$y = X\mu + Zu + e$$
+
+Putting the information from the data into the model leads to
+
+```{r}
+mat_z <- diag(nNrObsSmd)
+vec_a <- rmddochelper::vecGetVecElem(psBaseElement = "u", pnVecLen = nNrObsSmd, psResult = "latex")
+vec_hat_a <- rmddochelper::vecGetVecElem(psBaseElement = "\\hat{u}", pnVecLen = nNrObsSmd, psResult = "latex")
+
+
+cat("$$\n")
+cat("Z = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_z, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right] \\text{, }")
+cat("u = \\left[\n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_a), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+The other components are the same as in the sire model. The mixed model equations for the animal model have the following structure
+
+$$
+\left[
+  \begin{array}{lr}
+  X^TX  &  X^TZ \\
+  Z^TX  &  Z^TZ_s + G^{-1}
+  \end{array}
+\right]
+\left[
+  \begin{array}{c}
+  \hat{\mu} \\
+  \hat{u}
+  \end{array}
+\right]
+=
+\left[
+  \begin{array}{c}
+  X^Ty \\
+  Z^Ty
+  \end{array}
+\right]
+$$
+
+```{r}
+lambda <- n_sigmae2 / n_sigmaa2
+### # define the pedigree
+tbl_pedi_ex11prob02 <- tibble::tibble(Animal = (1:nNrObsSmd),
+                    Sire = c(NA,NA,NA,1,4),
+                    Dam = c(NA,NA,NA,2,3))
+
+ped_ex11prob02 <- pedigreemm::pedigree(sire = tbl_pedi_ex11prob02$Sire, 
+                                       dam = tbl_pedi_ex11prob02$Dam,
+                                       label = as.character(tbl_pedi_ex11prob02$Animal))
+mat_a_inv <- as.matrix(pedigreemm::getAInv(ped = ped_ex11prob02))
+```
+
+The matrix $G^{-1}$ is computed as $G^{-1} = \lambda * A^{-1}$ where $\lambda = \sigma_e^2 / \sigma_u^2 = `r n_sigmae2`/`r n_sigmaa2` = `r lambda`$ and $A$ corresponds to the numerator relationship matrix. Its inverse $A^{-1}$ is 
+
+```{r}
+cat("$$\n")
+cat("A^{-1} = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_a_inv, pnDigits = 2), collapse = "\n"), "\n")
+cat("\\right]")
+cat("$$\n")
+```
+
+The mixed model equation are then
+
+```{r}
+### # design matrices
+mat_xtz <- crossprod(mat_x, mat_z)
+mat_ztz <- crossprod(mat_z)
+
+### # variance ratio
+lambda <- n_sigmae2 / n_sigmaa2
+
+### # coefficient matrix
+mat_coef <- rbind(cbind(mat_xtx, mat_xtz), 
+                  cbind(t(mat_xtz), mat_ztz + lambda * mat_a_inv))
+
+vec_unknow <- c("\\hat{\\mu}", vec_hat_a)
+
+### # righthandside
+vec_rhs <- c(crossprod(mat_x, vec_y), crossprod(mat_z, vec_y))
+
+### # solution
+vec_sol <- solve(mat_coef, vec_rhs)
+
+cat("$$\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_coef), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_unknow), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("=")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_rhs), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$")
+```
+
+When looking at the second but last equation in the mixed model equations, we get
+
+$$\hat{\mu} - 3 \hat{u}_1 - 3 \hat{u}_2 + 1.5 \hat{u}_3 + 8.5 \hat{u}_4 - 3 \hat{u}_5 = y_4$$
+
+Solving for $\hat{u}_4$ gives
+
+$$\hat{u}_4 = {1\over 8.5} \left[y_4 - \hat{\mu} + 3 \hat{u}_1 + 3 \hat{u}_2 - 1.5 \hat{u}_3 + 3 \hat{u}_5 \right]$$
+
+
+The numerical solution is
+
+```{r}
+cat("$$\n")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_unknow), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("=")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_sol, pnDigits = 4), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+For the animal model, this shows that with the animal model all available information is used to predict the breeding value $\hat{u}_4$. The following information is contained in the above equation
+
+* own performance record $y_4$
+* the estimate $\hat{\mu}$
+* the predicted breeding values $\hat{u}_1$ and $\hat{u}_2$ of the parents
+* the predicted breeding value $\hat{u}_3$ of the mate and 
+* the predicted breeding value $\hat{u}_5$.
+
+
+In contrast to that in the sire model the predicted breeding value $\hat{s}_4$ depends only on
+
+* the performance record $y_5$ of the offspring
+* the estimate $\hat{\mu}$
+* the predicted breeding value $\hat{s}_1$ of the sire
+
+With the sire model predicted breeding values depend on the performance records of progeny. Furthermore, the female side is not considered at all. These are the main differences between the two models.
+
+
+
+

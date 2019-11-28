@@ -200,7 +200,7 @@ vecExTopic[which(Date == format(as.Date("2019/11/15"), "%d.%m"))] <- paste0("[In
 # w10 w10/lbg_fs_2019_w10_ex09.pdf
 vecExTopic[which(Date == format(as.Date("2019/11/22"), "%d.%m"))] <- paste0("[Variance and Inbreeding](", s_base_url_ex, "/w10/lbgfs2019_w10_ex09.pdf)", collapse = '')
 # w11 ex/w11/lbg_fs_2019_w11_ex10.pdf 
-# vecExTopic[which(Date == format(as.Date("2019/11/29"), "%d.%m"))] <- "[]()"
+vecExTopic[which(Date == format(as.Date("2019/11/29"), "%d.%m"))] <- paste0("[Accuracy and Decomposition of Predicted Breeding Values](", s_base_url_ex, "/w11/lbgfs2019_w11_ex10.pdf)", collapse = '')
 # w12 ex/w12/lbg_fs_2019_w12_ex11.pdf
 # vecExTopic[which(Date == format(as.Date("2019/12/06"), "%d.%m"))] <- "[]()"
 # w13 w13/lbg_hs2017_exam.pdf
@@ -236,9 +236,9 @@ vecSolTopic[which(Date == format(as.Date("2019/11/15"), "%d.%m"))] <- paste0("[D
 # w10 sol/w09/lbg_fs_2019_w09_sol08.pdf
 vecSolTopic[which(Date == format(as.Date("2019/11/22"), "%d.%m"))] <- paste0("[Inbreeding](", s_base_url_sol, "/w09/lbgfs2019_w09_sol08.pdf)", collapse = '')
 # w11 w10/lbg_fs_2019_w10_sol09.pdf
-# vecSolTopic[which(Date == format(as.Date("2019/11/29"), "%d.%m"))] <- paste0("[Variance and Inbreeding](", s_base_url_sol, "/w10/lbgfs2019_w10_sol09.pdf)", collapse = '')
+vecSolTopic[which(Date == format(as.Date("2019/11/29"), "%d.%m"))] <- paste0("[Variance and Inbreeding](", s_base_url_sol, "/w10/lbgfs2019_w10_sol09.pdf)", collapse = '')
 # w12 sol/w11/lbg_fs_2019_w11_sol10.pdf
-# vecSolTopic[which(Date == format(as.Date("2019/12/06"), "%d.%m"))] <- "[]()"
+# vecSolTopic[which(Date == format(as.Date("2019/12/06"), "%d.%m"))] <- paste0("[Accuracy and Decomposition of Predicted Breeding Values](", s_base_url_sol, "/w11/lbgfs2019_w11_sol10.pdf)", collapse = '')
 # w13 sol/w12/lbg_fs_2019_w12_sol11.pdf
 # vecSolTopic[which(Date == format(as.Date("2019/12/13"), "%d.%m"))] <- "[]()"
 # w14 
