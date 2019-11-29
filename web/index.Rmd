@@ -161,7 +161,7 @@ vecSlTopic[which(Date == format(as.Date("2019/11/15"), "%d.%m"))] <- paste0("[Va
 ### # w10 /w10/lbg_fs_2019_slides_inbreeding.pdf
 vecSlTopic[which(Date == format(as.Date("2019/11/22"), "%d.%m"))] <- paste0("[Additional Aspects of BLUP](", s_base_url_sl,"/w10/lbgfs2019_slides_additional_aspects.pdf)", collapse = '')
 ### # w11 w11/lbg_fs_2019_slides_additional_aspects.pdf
-# vecSlTopic[which(Date == format(as.Date("2019/11/29"), "%d.%m"))] <- "[]()"
+vecSlTopic[which(Date == format(as.Date("2019/11/29"), "%d.%m"))] <- paste0("[Multiple Traits](", s_base_url_sl,"/w11/lbgfs2019_slides_multiple_traits.pdf)", collapse = '')
 ### # w12
 # vecSlTopic[which(Date == format(as.Date("2019/12/06"), "%d.%m"))] <- "[]()"
 
