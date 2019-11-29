@@ -1,0 +1,101 @@
+---
+title: "Genomic Selection"
+author: "Peter von Rohr"
+date: "06 December 2019"
+output:
+  beamer_presentation:
+header-includes:
+ \usepackage{longtable}
+ \usepackage{float}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = "asis")
+knitr::knit_hooks$set(hook_convert_odg = rmdhelp::hook_convert_odg)
+```
+
+## Introduction
+
+* Proposed in 2001
+* Widely adopted in 2007/2008
+* Costs of breeding program reduced due to shorter generation intervals
+* In cattle: young sire selection versus selection based on sire proofs
+* In pigs: early selection among full sibbs
+* Inbreeding must be considered
+
+
+## Terminology
+
+* **Genomic Selection**: use of genomic Information for selection decisions
+* Genomic Information is used to predict **genomic breeding values**
+
+
+## Benefits in Cattle
+
+```{r fig-benefit-geno-sel-cattle, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg"}
+#rmdhelp::use_odg_graphic(ps_path = "odg/fig-benefit-geno-sel-cattle.odg")
+knitr::include_graphics(path = "odg/fig-benefit-geno-sel-cattle.png")
+```
+ 
+
+## Benefits in Pigs
+
+```{r fig-benefit-geno-sel-pig, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg"}
+#rmdhelp::use_odg_graphic(ps_path = "odg/fig-benefit-geno-sel-pig.odg")
+knitr::include_graphics(path = "odg/fig-benefit-geno-sel-pig.png")
+```
+ 
+
+## Genetic Model
+
+* Recall: BLUP animal model is based on infinitesimal model
+* Prediction of genomic breeding values is based on **polygenic model** 
+* In polygenic model: **Single Nucleotide Polymorphisms** (SNP) are used as markers
+* Marker genotypes are expected to be associated with genotypes of **Quantitative Trait Loci** (QTL) 
+
+
+## Polygenic Model
+
+```{r fig-polygenic-model, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg"}
+#rmdhelp::use_odg_graphic(ps_path = "odg/fig-polygenic-model.odg")
+knitr::include_graphics(path = "odg/fig-polygenic-model.png")
+```
+ 
+
+## Statistical Models
+
+Two types of models are used
+
+1. marker-effect models (MEM)
+2. genomic-breeding-value based models (BVM)
+
+
+## MEM
+
+* marker effects ($a$-values) are fitted using 
+    + a simple linear model $\rightarrow$ marker effects are fixed 
+    + a linear mixed effects model $\rightarrow$ marker effects are random
+    
+* Problem of finding which markers are associated to QTL
+* With high number of SNP compared to number of genotyped animals: very large systems of equations to solve
+
+
+## BVM
+
+* genomic breeding values as random effects
+* similar to animal model
+* genomic relationship matrix ($G$) instead of numerator relationship matrix ($A$)
+
+
+## Logistic Procedures
+
+* Two Step: 
+    + use reference population to get marker effects using MEM
+    + use marker effects to get to genomic breeding values
+    
+* Single Step
+    + MEM or BVM in a single evaluation
+    + difficulty how to combine animals with and without genotypes
+    
+    
+    

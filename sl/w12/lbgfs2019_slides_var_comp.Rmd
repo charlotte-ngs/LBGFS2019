@@ -1,0 +1,184 @@
+---
+title: "Variance Components Estimation"
+author: "Peter von Rohr"
+date: "06 December 2019"
+output:
+  beamer_presentation:
+header-includes:
+ \usepackage{longtable}
+ \usepackage{float}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = "asis")
+knitr::knit_hooks$set(hook_convert_odg = rmdhelp::hook_convert_odg)
+```
+
+## Why
+
+* Predictions of breeding values using BLUP requires variance components $\sigma_u^2$ or $\sigma_s^2$ and $\sigma_e^2$
+* So far we have assumed that they are known
+* In reality: must be estimated from data
+
+
+## Sire Model
+
+* Start with a simple sire model
+
+\begin{equation}
+y = X\beta + Z_ss + e \notag
+\end{equation}
+
+with $var(e) = R$, $var(s) = A_s \sigma_s^2$ and $var(y) = Z_sA_sZ_s^T \sigma_s^2 + R$
+
+* $A_s$: numerator relationship for sires
+* $\sigma_s^2$ corresponds to $0.25 * \sigma_u^2$
+* $R = I * \sigma_e^2$
+
+$\rightarrow$ estimate $\sigma_s^2$ and $\sigma_e^2$ from data
+
+
+## Analysis of Variance (ANOVA)
+
+\tiny
+
+\begin{tabular}{lll}
+\hline \\
+Source           &  Degrees of Freedom ($df$)          &  Sums of Squares ($SSQ$) \\
+\hline \\
+Overall ($\mu$)  &  $Rank(X)=1$                  &  $y^TX(X^TX)^{-1}X^Ty = F$  \\
+Sires ($s$)      &  $Rank(Z_s) - Rank(X) = q - 1$  &  $y^TZ_s(Z_s^TZ_s)^{-1}Z_s^Ty - y^TX(X^TX)^{-1}X^Ty = S$  \\
+Residual ($e$)   &  $n - Rank(Z_s) = n - q$        &  $y^Ty - y^TZ_s(Z_s^TZ_s)^{-1}Z_s^Ty = R$ \\
+\hline \\
+Total            &  $n$                          &  $y^Ty$ \\
+\hline
+\end{tabular}
+\normalsize
+
+## Sums of Squares
+
+$$F = y^TX(X^TX)^{-1}X^Ty = {1\over n} \left[\sum_{i=1}^n y_i \right]^2$$
+
+$$S= y^TZ_s(Z_s^TZ_s)^{-1}Z_s^Ty - y^TX(X^TX)^{-1}X^Ty = \sum_{i=1}^{q} {1 \over n_i} \left[\sum_{j=1}^{n_i} y_{ij}\right]^2 - F $$
+
+$$R = y^Ty - y^TZ_s(Z_s^TZ_s)^{-1}Z_s^Ty = \sum_{i=1}^n y_i^2 - S - F$$
+
+
+## Estimates
+
+* $\beta$ and $s$ fixed 
+* Estimates of $\sigma_e^2$ and $\sigma_s^2$ are based on observed sums of squares $S$ and $R$
+* Set their expected values equal to the observed sums of squares
+
+$$E(R) = (n-q) \sigma_e^2$$ 
+
+$$E(S) = (q-1) \sigma_e^2 + tr(Z_sMZ_s)\sigma_s^2$$ 
+where $M = I - X(X^TX)^{-1}X^T$ and $q$ is the number of sires.
+
+$\rightarrow$ $\widehat{\sigma_e^2} = \frac{R}{n-q}$ and $\widehat{\sigma_s^2} = \frac{S - (q-1)\widehat{\sigma_e^2}}{tr(Z_sMZ_s)}$
+
+
+## Numerical Example
+
+```{r datavcesm, echo=FALSE, results='asis'}
+tbl_num_ex_chp12 <- tibble::tibble( Animal = c(4, 5, 6, 7),
+                                        Sire   = c(2, 1, 3, 2),
+                                        WWG    =  c(2.9, 4.0, 3.5, 3.5) )
+
+knitr::kable(tbl_num_ex_chp12,
+             booktabs  = TRUE,
+             longtable = TRUE,
+             caption   = "Small Example Dataset for Variance Components Estimation Using a Sire Model")
+```
+
+* Model
+
+$$y_{ij} = \mu + s_j + e_i$$
+
+
+## Design Matrices
+
+```{r,echo=FALSE, results='asis'}
+n_nr_obs_p02 <- nrow(tbl_num_ex_chp12)
+### # design matrix X
+mat_x_p02 <- matrix(1, nrow = n_nr_obs_p02, ncol = 1)
+### # design matrix Z
+mat_z_p02 <- matrix(c(0, 1, 0,
+                      1, 0, 0,
+                      0, 0, 1,
+                      0, 1, 0), nrow = n_nr_obs_p02, byrow = TRUE)
+n_nr_sire <- ncol(mat_z_p02)
+### # Observations
+mat_obs <- matrix(tbl_num_ex_chp12$WWG, ncol = 1)
+
+cat("$$\n")
+cat("X = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_x_p02, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right] \\text{, }")
+cat("Z_s = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_z_p02, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right]")
+cat("$$\n")
+```
+
+
+## ANOVA
+
+```{r anovacomp, echo=FALSE, results='hide'}
+### # compute F
+ytx <- crossprod(mat_obs,mat_x_p02)
+xtx <- crossprod(mat_x_p02)
+ssqf <- ytx %*% solve(xtx) %*% t(ytx)
+### # compute S
+ytz <- crossprod(mat_obs, mat_z_p02)
+ztz <- crossprod(mat_z_p02)
+ssqs <- ytz %*% solve(ztz) %*% t(ytz) - ssqf
+### # compute R
+yty <- crossprod(mat_obs)
+ssqr <- yty - ssqs - ssqf
+
+```
+
+An analysis of variance can be constructed as
+
+\begin{center}
+\begin{tabular}{lll}
+\hline \\
+Source           &  Degrees of Freedom ($df$)          &  Sums of Squares ($SSQ$) \\
+\hline \\
+Overall ($\mu$)  &  $Rank(X)=1$                  &  $F = `r ssqf`$  \\
+Sires ($s$)      &  $Rank(Z_s) - Rank(X) = q - 1$  &  $S = `r ssqs`$  \\
+Residual ($e$)   &  $n - Rank(Z_s) = n - q$        &  $R = `r ssqr`$ \\
+\hline \\
+\end{tabular}
+\end{center}
+
+
+## Estimates
+
+```{r varcompest, echo=FALSE, results='asis'}
+mat_m <- diag(n_nr_obs_p02) - mat_x_p02 %*% solve(xtx) %*% t(mat_x_p02)
+ztmz <- t(mat_z_p02) %*% mat_m %*% mat_z_p02
+tr_ztmz <- sum(diag(ztmz))
+cat("$$\n")
+cat("M = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_m)))
+cat("\\right]$$\n")
+cat("$$\n")
+cat("Z_s^TMZ = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = ztmz)))
+cat("\\right] \n")
+cat("$$\n")
+```
+
+
+## Results
+
+```{r, echo=FALSE}
+hat_sigmae2 <- ssqr
+hat_sigmas2 <- (ssqs - (n_nr_sire-1) * hat_sigmae2) / tr_ztmz
+```
+
+$$\hat{\sigma_e^2} = R = `r hat_sigmae2`$$
+$$\hat{\sigma_s^2} = \frac{S - (q-1)\hat{\sigma_e^2}}{tr(Z_s^TMZ_s)} = \frac{`r ssqs` - `r n_nr_sire-1` * `r hat_sigmae2`}{`r tr_ztmz`} = `r hat_sigmas2`$$
+
