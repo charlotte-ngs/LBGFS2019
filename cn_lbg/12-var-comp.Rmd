@@ -1,0 +1,212 @@
+# Variance Components {#variance-components}
+The prediction of breeding values using a BLUP animal model required the __variance components__ $\sigma_e^2$ for the residual variance and $\sigma_u^2$ for the genetic additive variance to be known. For the sire model, $\sigma_u^2$ is replaced by the sire variance component $\sigma_s^2$. In real world livestock breeding evaluations, these variance components are not known and hence must be estimated from the data. The data analysis procedure that estimates the variance components from data is called __variance components estimation__. 
+
+
+## Sire Model
+The sire model is used to motivate the introduction of the topic of variance components estimation. The sire model is given by
+
+\begin{equation}
+y = X\beta + Z_ss + e
+(\#eq:varcompsiremodel)
+\end{equation}
+
+with $var(e) = R$, $var(s) = A_s \sigma_s^2$ and $var(y) = Z_sA_sZ_s^T \sigma_s^2 + R$. The matrix $A_s$ is the numerator relationship for sires, the sire variance component $\sigma_s^2$ corresponds to $0.25 * \sigma_u^2$ and $R$ can often be simplified to $R = I * \sigma_e^2$. The interest in this chapter is how to estimate $\sigma_s^2$ and $\sigma_e^2$. 
+
+In the simple case the vector $\beta$ is reduced to just one scalar fixed effects parameter. This reduced $X$ to a matrix with one column with all elements equal to $1$. Assuming that we have $q$ unrelated sires the relationship matrix $A_s$ for the sires corresponds to the identity matrix $I$. 
+
+
+## Analysis Of Variance (Anova)
+As a first approach we can use an analysis of variance by fitting 
+
+1. a model with an overall effect $\beta = \mu$ and 
+2. a model with sire effects. 
+
+These two models give an analysis of variance of the following structure
+
+\begin{tabular}{lll}
+\hline \\
+Source           &  Degrees of Freedom ($df$)          &  Sums of Squares ($SSQ$) \\
+\hline \\
+Overall ($\mu$)  &  $Rank(X)=1$                        &  $y^TX(X^TX)^{-1}X^Ty = F$  \\
+Sires ($s$)      &  $Rank(Z_s) - Rank(X) = q - 1$      &  $y^TZ_s(Z_s^TZ_s)^{-1}Z_s^Ty - y^TX(X^TX)^{-1}X^Ty = S$  \\
+Residual ($e$)   &  $n - Rank(Z_s) = n - q$            &  $y^Ty - y^TZ_s(Z_s^TZ_s)^{-1}Z_s^Ty = T$ \\
+\hline \\
+Total            &  $n$                                &  $y^Ty$ \\
+\hline
+\end{tabular}
+
+The sums of squares ($SSQ$) can also be expanded into sums of scalar quantities which might be easier to understand. For our sire model we get
+
+$$F = y^TX(X^TX)^{-1}X^Ty = {1\over n} \left[\sum_{i=1}^n y_i \right]^2$$
+where $n$ corresponds to the number of observations in the dataset.
+
+$$S= y^TZ_s(Z_s^TZ_s)^{-1}Z_s^Ty - y^TX(X^TX)^{-1}X^Ty = \sum_{i=1}^{q} {1 \over n_i} \left[\sum_{j=1}^{n_i} y_{ij}\right]^2 - F $$
+where $n_i$ corresponds to the number of observations for sire $i$. 
+
+$$T = y^Ty - y^TZ_s(Z_s^TZ_s)^{-1}Z_s^Ty = \sum_{i=1}^n y_i^2 - S - F$$
+
+In principle effects $\beta$ and $s$ are treated as fixed effects in the above anova. If estimates of $\sigma_e^2$ and $\sigma_s^2$ are required the observed sums of squares $S$ and $T$ can be equated to their expected values $E(T) = (n-q) \sigma_e^2$ and $E(S) = (q-1) \sigma_e^2 + tr(Z_sMZ_s)\sigma_s^2$ where $M = I - X(X^TX)^{-1}X^T$ and $tr(M)$ stands for the trace of matrix M which corresponds to the sum of the diagonal elements of matrix $M$.
+
+
+
+## Numerical Example
+We want to show the estimation of variance components with a very small data set. The data that will be used is shown in the table below. The observations consist of pre-weaning weight gains of beef cattle. 
+
+
+```{r datavcesm, echo=FALSE, results='asis'}
+tbl_num_ex_chp12 <- tibble::data_frame( Animal = c(4, 5, 6, 7),
+                                        Sire   = c(2, 1, 3, 2),
+                                        WWG    =  c(2.9, 4.0, 3.5, 3.5) )
+
+knitr::kable(tbl_num_ex_chp12,
+             booktabs  = TRUE,
+             longtable = TRUE,
+             caption   = "Small Example Dataset for Variance Components Estimation Using a Sire Model")
+```
+
+
+The model used is a simplified sire model where all the fixed effect are captured by a common mean $\mu$. Then there is the sire effect $s$ as a random effect and the random residual effect. Hence for any given observation $y_{ij}$ for animal $i$ of sire $j$, we can write
+
+$$y_{ij} = \mu + s_j + e_i$$
+
+with $\mu$ the common mean, $s_j$ the random effect of sire $j$ ($j = 1, 2, 3$) and $e_i$ corresponds to the random residual of observation $i$ ($i = 1, \ldots, 4$). In matrix notation thi s model was already given in \@ref(eq:varcompsiremodel). The design matrix $X$ is a matrix with one column and with elements all equal to $1$. The design matrix $Z_s$ links observations to sire effects. 
+
+
+```{r,echo=FALSE, results='asis'}
+n_nr_obs_p02 <- nrow(tbl_num_ex_chp12)
+### # design matrix X
+mat_x_p02 <- matrix(1, nrow = n_nr_obs_p02, ncol = 1)
+### # design matrix Z
+mat_z_p02 <- matrix(c(0, 1, 0,
+                      1, 0, 0,
+                      0, 0, 1,
+                      0, 1, 0), nrow = n_nr_obs_p02, byrow = TRUE)
+n_nr_sire <- ncol(mat_z_p02)
+### # Observations
+mat_obs <- matrix(tbl_num_ex_chp12$WWG, ncol = 1)
+
+cat("$$\n")
+cat("X = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_x_p02, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right] \\text{, }")
+cat("Z_s = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_z_p02, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right]")
+cat("$$\n")
+```
+
+```{r anovacomp, echo=FALSE, results='hide'}
+### # compute F
+ytx <- crossprod(mat_obs,mat_x_p02)
+xtx <- crossprod(mat_x_p02)
+ssqf <- ytx %*% solve(xtx) %*% t(ytx)
+### # compute S
+ytz <- crossprod(mat_obs, mat_z_p02)
+ztz <- crossprod(mat_z_p02)
+ssqs <- ytz %*% solve(ztz) %*% t(ytz) - ssqf
+### # compute R
+yty <- crossprod(mat_obs)
+ssqr <- yty - ssqs - ssqf
+
+```
+
+An analysis of variance can be constructed as
+
+\begin{center}
+\begin{tabular}{lll}
+\hline \\
+Source           &  Degrees of Freedom ($df$)          &  Sums of Squares ($SSQ$) \\
+\hline \\
+Overall ($\mu$)  &  $Rank(X)=1$                  &  $F = `r ssqf`$  \\
+Sires ($s$)      &  $Rank(Z_s) - Rank(X) = q - 1$  &  $S = `r ssqs`$  \\
+Residual ($e$)   &  $n - Rank(Z_s) = n - q$        &  $R = `r ssqr`$ \\
+\hline \\
+\end{tabular}
+\end{center}
+
+
+With 
+
+```{r varcompest, echo=FALSE, results='asis'}
+mat_m <- diag(n_nr_obs_p02) - mat_x_p02 %*% solve(xtx) %*% t(mat_x_p02)
+ztmz <- t(mat_z_p02) %*% mat_m %*% mat_z_p02
+tr_ztmz <- sum(diag(ztmz))
+cat("$$\n")
+cat("M = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_m)))
+cat("\\right] \\text{ and } ")
+cat("Z_s^TMZ = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = ztmz)))
+cat("\\right] \n")
+cat("$$\n")
+```
+
+we get the following estimates
+
+```{r, echo=FALSE}
+hat_sigmae2 <- ssqr
+hat_sigmas2 <- (ssqs - (n_nr_sire-1) * hat_sigmae2) / tr_ztmz
+```
+
+$$\hat{\sigma_e^2} = R = `r hat_sigmae2`$$
+$$\hat{\sigma_s^2} = \frac{S - (q-1)\hat{\sigma_e^2}}{tr(Z_s^TMZ_s)} = \frac{`r ssqs` - `r n_nr_sire-1` * `r hat_sigmae2`}{`r tr_ztmz`} = `r hat_sigmas2`$$
+
+The same computations based on an anova can be done in `R` very easily. Assume that our dataset is in a dataframe which is called `tbl_num_ex_chp12_aov`. We are doing the anova using the function `aov()` to get the sums of squares.
+
+```{r, echo=FALSE, results='hide'}
+tbl_num_ex_chp12_aov <- tbl_num_ex_chp12
+tbl_num_ex_chp12_aov$Sire <- as.factor(tbl_num_ex_chp12_aov$Sire)
+```
+
+```{r, echo=TRUE, results='markup'}
+aov_num_ex_chp12 <- aov(formula = WWG ~ Sire, data = tbl_num_ex_chp12_aov)
+summary(aov_num_ex_chp12)
+```
+
+
+The results from above are obtained for $\hat{\sigma_e^2} = 0.18$ as the value under the column `Mean Sq` in the row `Residuals`. Because in our computations above, we have considered the estimation of the overall effect which is not done in the function `aov()` in R.
+
+
+## Negative Estimates with Anova
+One of the problems that frequently occurs when using anova to estimate variance components is that some estimates might be negative. Negative estimates are outside of the permissible range for the parameter and hence are not valid estimates. As a consequence of that alternative methods have been proposed to estimate variance components. 
+
+
+## Likelihood-Based Approaches
+The maximum likelihood (ML) approach was developed and popularized by R. A. Fisher. ML is a general approach for parameter estimation and is not only used for estimating variance components. Let us assume that our observed traits are continuous and real-valued quantities. In ML we assume that these quantities follow a certain density. This density is a function of the observed values and of unknown parameters that we want to estimate. 
+
+
+### Density of Observations
+Given a vector $y$ of observations. As already mentioned, the vector $y$ follows a certain density. As an example such a density might be a multivariate normal distribution. For a given vector $y$ of length $n$, the underlying $n$-dimensional multivariate normal distribution has the following form
+
+$$
+f_Y(y) = \frac{1}{\sqrt{(2\pi)^n det(\Sigma)}} exp \left\{-{1\over 2}(y - \mu)^T \Sigma^{-1}(y - \mu) \right\}
+$$
+
+\begin{tabular}{lll}
+with  &  $\mu$  &  expected value of $y$ \\
+      &  $\Sigma$  &  variance-covariance matrix of $y$ \\
+      &  $det()$   &  determinant
+\end{tabular}
+
+
+### Likelihood Function
+As already mentioned the density is a function of the observed data $y$ and of some unknown parameters. For the multivariate normal distribution these parameters are $\mu$ and $\Sigma$. Before observing any data, we can interpret the density $f(y | \mu, \Sigma)$ as a function of $y$ for some fixed values of $\mu$ and $\Sigma$. But once the data has been observed, $y$ is fixed and the parameters $\mu$ and $\Sigma$ are unknown and must be estimated from the data. For the task of parameter estimation, it makes more sense to view $f(y | \mu, \Sigma)$ as a function of $\mu$ and $\Sigma$. We can write this function a little different
+
+$$L(\mu, \Sigma) = f(y | \mu, \Sigma)$$
+
+The function $L(\mu, \Sigma)$ is called the __Likelihood__ function. 
+
+
+### Maximum Likelihood
+For a given dataset we choose an appropriate density which is suitable for our observations. As already mentioned, due to the Central Limit Theorem, the normal distribution is often used as a density for observations. Once, we have chosen the density, it contains unknown parameters which we have to estimate from the data. Loosely speaking, our goal is to determine the parameters such that the observed data is modeled as good as possible. This requirement is translated into a mathematical framework by the maximization of the likelihood. Hence for a given dataset our parameter estimates are determined such that the likelihood is maximized. For our multi-variate normal distribution, this can be transformed into the following equations
+
+$$\hat{\mu} = argmax_{\mu} L(\mu, \Sigma)$$
+
+and
+
+$$\hat{\Sigma} = argmax_{\Sigma} L(\mu, \Sigma)$$
+
+
+## Summary
+The topic of variance component estimation is a huge area. We have just covered two possible approaches to get estimates of variance components. There are many more of them. The coverage of these methods is outside of the scope of this course.
+
