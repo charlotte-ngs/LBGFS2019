@@ -1,0 +1,311 @@
+---
+title: Livestock Breeding and Genomics - Solution 11
+author: "Peter von Rohr"
+date: "2019-12-06"
+output:
+  bookdown::pdf_document2:
+    toc: false
+    number_sections: false
+    keep_tex: false
+header-includes:
+ \usepackage{longtable}
+ \usepackage{float}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis', fig.pos = 'H')
+knitr::knit_hooks$set(hook_convert_odg = rmddochelper::hook_convert_odg)
+```
+
+```{r TaskCounts, echo=FALSE}
+cnt <- rmddochelper::R6ClassCount$new()
+cnt$set_prefix(ps_prefix = "## Problem")
+```
+
+```{r, echo=FALSE, results='asis'}
+cat(cnt$out(ps_suffix = "Multivariate BLUP Animal Model"), "\n")
+```
+
+```{r sol12p01data, echo=FALSE, results='hide'}
+n_nr_trait <- 2
+n_nr_founder <- 3
+n_nr_animal <- 8
+n_nr_observation <- n_nr_animal - n_nr_founder
+tbl_data_sol12p01 <- tibble::tibble(Animal = c((n_nr_founder+1):n_nr_animal),
+                                        Sex = c("Male", "Female","Female","Male","Male"),
+                                        Sire = c(1,3,1,4,3),
+                                        Dam = c(NA,2,2,5,6),
+                                        WWG = c(4.5,2.9,3.9,3.5,5.0),
+                                        PWG = c(6.8,5.0,6.8,6.0,7.5))
+```
+
+The table below contains data for pre-weaning gain (WWG) and post-weaning gain (PWG) for `r n_nr_observation` beef calves.
+
+```{r sol12p01table, echo=FALSE, results='asis'}
+knitr::kable(tbl_data_sol12p01,
+             booktabs = TRUE,
+             longtable = TRUE)
+```
+
+The genetic variance-covariance matrix $G_0$ between the traits is 
+
+```{r}
+mat_g0 <- matrix(data = c(20,18,18,40), nrow = n_nr_trait, byrow = TRUE)
+cat("$$\n")
+cat("G_0 = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_g0, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+The residual variance-covariance matrix $R_0$ between the traits is
+
+```{r}
+mat_r0 <- matrix(data = c(40,11,11,30), nrow = n_nr_trait, byrow = TRUE)
+cat("$$\n")
+cat("R_0 = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_r0, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+
+### Your Task
+Set up the mixed model equations for a multivariate BLUP analysis and compute the estimates for the fixed effects and the predictions for the breeding values.
+
+
+### Solution
+The matrices $X_1$ and $X_2$ relate records of PWG and WWG to sex effects. For both traits, we have an effect for the male and female sex. Hence the vector $\beta$ of fixed effects corresponds to 
+
+```{r}
+vec_beta <- c("\\beta_{M,WWG}", "\\beta_{F,WWG}", "\\beta_{M,PWG}", "\\beta_{F,PWG}")
+cat("$$\n")
+cat("\\beta = \\left[")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_beta), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+
+The matrices $X_1$ and $X_2$ are the same and correspond to 
+
+```{r}
+mat_x1 <- mat_x2 <- matrix(data = c(1, 0, 
+                                    0, 1,
+                                    0, 1,
+                                    1, 0,
+                                    1, 0), nrow = n_nr_observation, byrow = TRUE)
+cat("$$\n")
+cat("X_1 = X_2 = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_x1, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+Combining them to the multivariate version leads to 
+
+$$X = \left[
+  \begin{array}{lr}
+  X_1  &  0 \\
+  0    &  X_2
+  \end{array}
+\right]$$
+
+```{r}
+mat_zero <- matrix(0, nrow = nrow(mat_x1), ncol = ncol(mat_x1))
+mat_x <- rbind(cbind(mat_x1, mat_zero), cbind(mat_zero, mat_x2))
+cat("$$\n")
+cat("X = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_x, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+Using the matrix $X$ together with matrix $R = I_n \otimes R_0$ to get
+
+```{r}
+mat_r <- mat_r0 %x% diag(1, n_nr_observation)  
+mat_rinv <- solve(mat_r)
+mat_xtrinvx <- t(mat_x) %*% mat_rinv %*% mat_x
+cat("$$\n")
+cat("X^TR^{-1}X = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_xtrinvx, pnDigits = 3), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+Similarly to the fixed effects, we can put together the vector of breeding values $a$. 
+
+```{r}
+vec_a1 <- c("a_{1,WWG}",
+            "a_{2,WWG}",
+            "a_{3,WWG}",
+            "a_{4,WWG}",
+            "a_{5,WWG}",
+            "a_{6,WWG}",
+            "a_{7,WWG}",
+            "a_{8,WWG}")
+vec_a2 <- c("a_{1,PWG}",
+            "a_{2,PWG}",
+            "a_{3,PWG}",
+            "a_{4,PWG}",
+            "a_{5,PWG}",
+            "a_{6,PWG}",
+            "a_{7,PWG}",
+            "a_{8,PWG}")
+vec_a <- c(vec_a1, vec_a2)
+cat("$$\n")
+cat("a = \\left[")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_a), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+
+The design matrices $Z_1$ and $Z_2$ are equal and they link observations to breeding values. 
+
+```{r}
+mat_z1zero <- matrix(0, nrow = n_nr_observation, ncol = n_nr_founder)
+mat_z1 <- mat_z2 <- cbind(mat_z1zero, diag(1, n_nr_observation))
+cat("$$\n")
+cat("Z_1 = Z_2 = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_z1, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+$$Z = \left[
+  \begin{array}{lr}
+  Z_1  &  0 \\
+  0    &  Z_2
+  \end{array}
+\right]$$
+
+```{r}
+mat_zzero <- matrix(0, nrow = nrow(mat_z1), ncol(mat_z2))
+mat_z <- rbind(cbind(mat_z1, mat_zzero), cbind(mat_zzero, mat_z2))
+cat("$$\n")
+cat("Z = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_z, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+Together with the numerator relationship matrix $A$ we can get $G = G_0 \otimes A$ and from this $G^{-1} = G_0^{-1} \otimes A^{-1}$
+
+```{r}
+ped_sol12p01 <- pedigreemm::pedigree(sire = c(rep(NA, n_nr_founder), tbl_data_sol12p01$Sire), 
+                                     dam  = c(rep(NA, n_nr_founder), tbl_data_sol12p01$Dam),
+                                     label = as.character(1:n_nr_animal))
+mat_ainv <- as.matrix(pedigreemm::getAInv(ped = ped_sol12p01))
+cat("$$\n")
+cat("A^{-1} = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_ainv, pnDigits = 3), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+```{r}
+mat_ginv <- solve(mat_g0) %x% mat_ainv
+cat("\\tiny \n")
+cat("$$\n")
+cat("G^{-1} = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_ginv, pnDigits = 2), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+cat("\\normalsize \n")
+```
+
+Using the matrics $X$, $Z$, $R^{-1}$ and $G^{-1}$, we can compute $Z^TR^{-1}X$ and $Z^TR^{-1}Z + G^{-1}$. These matrices define the right-hand side of the mixed model equations. But they are too be to be shown here.
+
+The vector $y$ of observations contains all observations of both traits
+
+```{r}
+vec_y1 <- tbl_data_sol12p01$WWG
+vec_y2 <- tbl_data_sol12p01$PWG
+vec_y <- c(vec_y1, vec_y2)
+cat("$$\n")
+cat("y = \\left[")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_y), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+The right-hand side is computed as
+
+$$
+\left[
+  \begin{array}{c}
+  X^TR^{-1}y \\
+  Z^TR^{-1}y
+  \end{array}
+\right]
+$$
+
+The solutions are 
+
+```{r}
+### # coefficient matrix
+mat_xtrinvz <- t(mat_x) %*% mat_rinv %*% mat_z
+mat_ztrinvzginv <- t(mat_z) %*% mat_rinv %*% mat_z + mat_ginv
+mat_coeff <- rbind(cbind(mat_xtrinvx, mat_xtrinvz), cbind(t(mat_xtrinvz), mat_ztrinvzginv))
+### # right-hand side
+mat_rhs <- rbind(t(mat_x) %*% mat_rinv %*% vec_y,
+                 t(mat_z) %*% mat_rinv %*% vec_y)
+vec_sol <- solve(mat_coeff, mat_rhs)
+
+vec_beta_hat <- c("\\widehat{\\beta_{M,WWG}}", 
+                  "\\widehat{\\beta_{F,WWG}}", 
+                  "\\widehat{\\beta_{M,PWG}}", 
+                  "\\widehat{\\beta_{F,PWG}}")
+vec_a1_hat <- c("\\widehat{a_{1,WWG}}",
+            "\\widehat{a_{2,WWG}}",
+            "\\widehat{a_{3,WWG}}",
+            "\\widehat{a_{4,WWG}}",
+            "\\widehat{a_{5,WWG}}",
+            "\\widehat{a_{6,WWG}}",
+            "\\widehat{a_{7,WWG}}",
+            "\\widehat{a_{8,WWG}}")
+vec_a2_hat <- c("\\widehat{a_{1,PWG}}",
+            "\\widehat{a_{2,PWG}}",
+            "\\widehat{a_{3,PWG}}",
+            "\\widehat{a_{4,PWG}}",
+            "\\widehat{a_{5,PWG}}",
+            "\\widehat{a_{6,PWG}}",
+            "\\widehat{a_{7,PWG}}",
+            "\\widehat{a_{8,PWG}}")
+vec_a_hat <- c(vec_a1_hat, vec_a2_hat)
+
+vec_hat_unknown <- c(vec_beta_hat, vec_a_hat)
+cat("$$\n")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_hat_unknown), collapse = "\n"), "\n")
+cat("\\right]")
+cat(" = ")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_sol, pnDigits = 4), collapse = "\n"), "\n")
+cat("\\right]")
+cat("$$\n")
+```
+
+
+
+\vspace{3ex}
+
+
+
+```{r, echo=FALSE, results='asis'}
+cat(cnt$out(ps_suffix = "Comparison of Reliabilites"), "\n")
+```
+
+Compare the predicted breeding values and the reliabilites obtained as results of Problem 1 with results from two univariate analyses for the same traits are used in Problem 1. All parameters can be taken from Problem 1.
+
+
+### Solution
+For a predicted breeding value $\hat{u}_i$, the reliability $B_i$ is computed as
+
+$$B_i = r_{u,\hat{u}}^2 = 1 - \frac{PEV(\hat{u}_i)}{var(u_i)} = 1 - \frac{C_{ii}^{22}}{var(u_i)}$$
+
+where $C_{ii}^{22}$ are obtained from the inverse coefficient matrix of the mixed model equations.
+
+

@@ -1,0 +1,161 @@
+---
+title: "Selection Index"
+author: "Peter von Rohr"
+date: "29 November 2019"
+output: beamer_presentation
+---
+
+<!-- --------------------------------------------------------------- --
+  -- TODO:                                                           --
+  --       > Slide on "Aggregate Genotype" is not integrated well    --
+  --         Try to put concept of AG in the center and start with   --
+  --         The requirement to improve animals with respect to      --
+  --         several traits simultaneously.                          --
+  --       > Here, we are missing the use of the selection index for --
+  --         predicting breeding values of single traits, this was   --
+  --         done in lbg_fs_2018_slides_pbvsi.Rmd, should be         --
+  --         integrated here.                                        --
+  -- --------------------------------------------------------------- --> 
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = "asis")
+knitr::knit_hooks$set(hook_convert_odg = rmddochelper::hook_convert_odg)
+```
+
+## So far ...
+
+* Prediction of breeding values based on regression approach
+* Usage of single class of information
+    + own performance on the same trait
+    + repeated measures
+    + offspring records
+    
+$\rightarrow$ How to combine different sources of information 
+
+
+## Desired Scenario
+
+```{r desiredscenario, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg"}
+#rmddochelper::use_odg_graphic(ps_path = "odg/desiredscenario.odg")
+knitr::include_graphics(path = "odg/desiredscenario.png")
+```
+ 
+
+## Two Approaches
+
+1. Selection Index Theory  and 
+2. Best Linear Unbiased Prediction (BLUP)
+
+* Same genetic model
+* Main difference in how identifiable environment is corrected for
+* Start with 1. then move to 2. 
+* Nowadays 2. is most widely used method
+
+
+## Differentiate between
+
+* __true breeding value__: measures genetic potential, but cannot be observed
+* __predicted breeding value__: use information, such as phenotypic observations to predict true breeding value as accurate as possible
+
+Three objectives of predicted breeding values
+
+1. selection criterion for parents of next generation
+2. prediction of true breeding value as early as possible
+3. predicted breeding values affect price of semen and breeding animals
+
+
+## Selection Index Method
+
+```{r selectionmethod, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg"}
+#rmddochelper::use_odg_graphic(ps_path = "odg/selectionmethod.odg")
+knitr::include_graphics(path = "odg/selectionmethod.png")
+```
+ 
+ 
+## What is the Selection Index
+
+* Combine all available information 
+* Assign single number $I$ to each animal
+* Rank animals according to $I$ 
+* Use ranking as selection criterion
+* Weights $b_t$ for each information
+* Determine weights $b$ - How To? Follows
+
+
+## Aggregate Genotype
+
+* Want to improve more than just one trait
+* How to select animals?
+
+```{r aggregategenotype, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg"}
+#rmddochelper::use_odg_graphic(ps_path = "odg/aggregategenotype.odg")
+knitr::include_graphics(path = "odg/aggregategenotype.png")
+```
+ 
+ 
+## Selection Methods
+
+* Tandem selection: First improve only trait 1, then improve only trait 2
+* Independent selection boundaries: select for trait 1, among selected look at trait 2
+* Combine traits into aggregate genotype $H$
+
+\begin{equation}
+H = w_1 a_1 + w_2 a_2 + \cdots + w_m a_m = w^T a \notag
+\end{equation}
+
+\begin{tabular}{lll}
+where & $a$  &   vector of true breeding values \\
+      & $w$  &   vector of economic values
+\end{tabular}
+
+
+## Economic Values
+
+* Change in profit when trait changes
+* How does the profit change when animals 
+    + are healthier or 
+    + produce more or 
+    + reduce environmental impact
+
+
+## Change in Profit
+
+```{r changeinprofit, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg"}
+#rmddochelper::use_odg_graphic(ps_path = "odg/changeinprofit.odg")
+knitr::include_graphics(path = "odg/changeinprofit.png")
+```
+ 
+ 
+## Selection Index Construction
+
+* Index Construction means: finding unknown vector of weights $b$ in $I$
+* Objective: $I$ has to approximate $H$ as good as possible
+* Criterion: 
+
+\begin{equation}
+E(H-I)^2 \rightarrow \text{ min} \notag
+\end{equation}
+
+* Result: Index normal equations
+
+\begin{equation}
+Pb = Gw  \notag
+\end{equation}
+
+
+## Solution
+
+* Compute $b$ from index normal equation
+
+\begin{align}
+Pb  &=  Gw  \notag \\
+P^{-1}Pb  &=  P^{-1}Gw  \notag \\
+       b  &=  P^{-1}Gw  \notag
+\end{align}
+
+* Accuracy of index $I$
+
+\begin{equation}
+r_{HI}  =  \frac{cov(H,I)}{\sigma_H \sigma_I} =  \frac{\sigma_I}{\sigma_H} \notag
+\end{equation}
+

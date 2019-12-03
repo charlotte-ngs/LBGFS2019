@@ -1,0 +1,23 @@
+---
+title: "Re-Organise LBG"
+date:  "2019-11-29"
+output: html_notebook
+---
+
+## Disclaimer
+Changes in the lecture plan and in the course structure are designed and developed here.
+
+
+## Terminology
+LBG stands for Livestock Breeding and Genomics. It is a three lecture per week course offered in the master program of the institute of agricultural sciences at ETH Zurich.
+
+
+## Problem
+In the original version of the course LBG the topics were treated in a chronological order in which they were discovered or introduced. This leads to the problem that a lot of time especially during the middle of the semester is used for topics that are no longer relevant such as **prediction of breeding values using selection index theory** or for topics that seam too technical and are not at the center of importance, such as the direct computation of $A^{-1}$ or the computation of inbreeding coefficients. 
+
+## A First Improvement
+A first improvement has already been implemented when eliminating the selection index theory from the beginning of the course. This led to the treatment of BLUP animal models a lot earlier. But the problem with using a lot of time with non-essential topics still remains. This requires further improvements and restructuring of the course material.
+
+
+## Proposal
+
