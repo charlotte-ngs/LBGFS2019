@@ -119,7 +119,7 @@ Source           &  Degrees of Freedom ($df$)          &  Sums of Squares ($SSQ$
 \hline \\
 Overall ($\mu$)  &  $Rank(X)=1$                  &  $F = `r ssqf`$  \\
 Sires ($s$)      &  $Rank(Z_s) - Rank(X) = q - 1$  &  $S = `r ssqs`$  \\
-Residual ($e$)   &  $n - Rank(Z_s) = n - q$        &  $R = `r ssqr`$ \\
+Residual ($e$)   &  $n - Rank(Z_s) = n - q$        &  $T = `r ssqr`$ \\
 \hline \\
 \end{tabular}
 \end{center}
@@ -148,7 +148,7 @@ hat_sigmae2 <- ssqr
 hat_sigmas2 <- (ssqs - (n_nr_sire-1) * hat_sigmae2) / tr_ztmz
 ```
 
-$$\hat{\sigma_e^2} = R = `r hat_sigmae2`$$
+$$\hat{\sigma_e^2} = T = `r hat_sigmae2`$$
 $$\hat{\sigma_s^2} = \frac{S - (q-1)\hat{\sigma_e^2}}{tr(Z_s^TMZ_s)} = \frac{`r ssqs` - `r n_nr_sire-1` * `r hat_sigmae2`}{`r tr_ztmz`} = `r hat_sigmas2`$$
 
 The same computations based on an anova can be done in `R` very easily. Assume that our dataset is in a dataframe which is called `tbl_num_ex_chp12_aov`. We are doing the anova using the function `aov()` to get the sums of squares.

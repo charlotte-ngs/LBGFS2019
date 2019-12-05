@@ -123,7 +123,7 @@ vecCnTopic[which(Date == format(as.Date("2019/11/22"), "%d.%m"))] <- paste0("[Ge
 ### # w11 09-genomic-selection.pdf
 vecCnTopic[which(Date == format(as.Date("2019/11/29"), "%d.%m"))] <- paste0("[Review on Selection Index Theory](", s_base_url_cn, "/093_sel_ind.pdf)", collapse = '')
 ### # w12 10-var-comp.pdf
-# vecCnTopic[which(Date == format(as.Date("2019/12/06"), "%d.%m"))] <- "[]()"
+vecCnTopic[which(Date == format(as.Date("2019/12/06"), "%d.%m"))] <- paste0("[Variance Components Estimation](", s_base_url_cn, "/12_var_comp.pdf)", collapse = '')
 
 dfCnTable <- data.frame(Woche, Date, vecCnTopic, stringsAsFactors = FALSE)
 colnames(dfCnTable) <- vecTableHeaders
@@ -202,7 +202,7 @@ vecExTopic[which(Date == format(as.Date("2019/11/22"), "%d.%m"))] <- paste0("[Va
 # w11 ex/w11/lbg_fs_2019_w11_ex10.pdf 
 vecExTopic[which(Date == format(as.Date("2019/11/29"), "%d.%m"))] <- paste0("[Accuracy and Decomposition of Predicted Breeding Values](", s_base_url_ex, "/w11/lbgfs2019_w11_ex10.pdf)", collapse = '')
 # w12 ex/w12/lbg_fs_2019_w12_ex11.pdf
-# vecExTopic[which(Date == format(as.Date("2019/12/06"), "%d.%m"))] <- "[]()"
+vecExTopic[which(Date == format(as.Date("2019/12/06"), "%d.%m"))] <- paste0("[Multivariate Analysis](", s_base_url_ex, "/w12/lbgfs2019_w12_ex11.pdf)", collapse = '')
 # w13 w13/lbg_hs2017_exam.pdf
 # vecExTopic[which(Date == format(as.Date("2019/12/13"), "%d.%m"))] <- "[]()"
 
@@ -238,9 +238,9 @@ vecSolTopic[which(Date == format(as.Date("2019/11/22"), "%d.%m"))] <- paste0("[I
 # w11 w10/lbg_fs_2019_w10_sol09.pdf
 vecSolTopic[which(Date == format(as.Date("2019/11/29"), "%d.%m"))] <- paste0("[Variance and Inbreeding](", s_base_url_sol, "/w10/lbgfs2019_w10_sol09.pdf)", collapse = '')
 # w12 sol/w11/lbg_fs_2019_w11_sol10.pdf
-# vecSolTopic[which(Date == format(as.Date("2019/12/06"), "%d.%m"))] <- paste0("[Accuracy and Decomposition of Predicted Breeding Values](", s_base_url_sol, "/w11/lbgfs2019_w11_sol10.pdf)", collapse = '')
+vecSolTopic[which(Date == format(as.Date("2019/12/06"), "%d.%m"))] <- paste0("[Accuracy and Decomposition of Predicted Breeding Values](", s_base_url_sol, "/w11/lbgfs2019_w11_sol10.pdf)", collapse = '')
 # w13 sol/w12/lbg_fs_2019_w12_sol11.pdf
-# vecSolTopic[which(Date == format(as.Date("2019/12/13"), "%d.%m"))] <- "[]()"
+# vecSolTopic[which(Date == format(as.Date("2019/12/13"), "%d.%m"))] <- paste0("[Multivariate Analysis](", s_base_url_sol, "/w12/lbgfs2019_w12_sol11.pdf)", collapse = '')
 # w14 
 # vecSolTopic[which(Date == format(as.Date("2019/12/20"), "%d.%m"))] <- "[]()"
 
@@ -258,6 +258,8 @@ knitr::kable(dfSolTable)
 vecAddMatTopic = vector(mode = "character", length = nNrSemesterWeeks)
 ### # w1
 vecAddMatTopic[which(Date == format(as.Date("2019/09/20"), "%d.%m"))] <- "[Introduction to Linear Algebra](https://charlotte-ngs.github.io/LBGFS2019/cn_lbg/01_intro_linalg.pdf), [Introduction to R/RStudio](https://charlotte-ngs.github.io/LBGFS2019/cn_lbg/02_intro_rstats.pdf), [Questionnaire](https://charlotte-ngs.github.io/LBGFS2019/misc/20190920_students_questionnaire/20190920_students_questionnaire.pdf)"
+
+vecAddMatTopic[which(Date == format(as.Date("2019/12/06"), "%d.%m"))] <- paste0("[Bibliography](", s_base_url_cn, "/bibliography.pdf)", collapse = '')
 
 ### # construct the table
 dfAddMatTable <- data.frame(Woche, Date, vecAddMatTopic, stringsAsFactors = FALSE)
