@@ -335,7 +335,91 @@ C^{21}  &  C^{22}
 \right]
 $$
 
-For the two univariate analyses, we get the breeding values as
+For the two univariate analyses, we get the solutions for the fixed effects and the breeding values and their reliabilities as follows
+
+* WWG: estimates $s_{WWG}$ and reliabilites $B_{WWG}$
 
 
+```{r, echo=FALSE}
+lambda1 <- mat_r0[1,1] / mat_g0[1,1]
+matxtx1 <- crossprod(mat_x1)
+matxtz1 <- crossprod(mat_x1,mat_z1)
+matztx1 <- t(matxtz1)
+matztzainv1 <- crossprod(mat_z1) + mat_ainv * lambda1
+mat_coeff1 <- rbind(cbind(matxtx1, matxtz1), cbind(matztx1, matztzainv1))
+mat_rhs1 <- rbind(crossprod(mat_x1, vec_y1), crossprod(mat_z1, vec_y1))
+mat_sol1 <- solve(mat_coeff1, mat_rhs1)
+```
 
+```{r, echo=FALSE, results='asis'}
+cat("s_{WWG} = \\left[")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = mat_sol1, pnDigits = 4), collapse = "\n"), "\n")
+cat("\\right]")
+cat("$$\n")
+```
+
+```{r, echo=FALSE}
+mat_coeff_inv1 <- solve(mat_coeff1)
+n_nr_sol <- dim(mat_coeff_inv1)[1]
+vec_c22_diag1 <- diag(mat_coeff_inv1)[(n_nr_sol - n_nr_animal + 1):n_nr_sol]
+vec_rel1 <- 1 - vec_c22_diag1 / mat_g0[1,1]
+```
+
+```{r, echo=FALSE, results='asis'}
+cat("B_{WWG} = \\left[")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_rel1, pnDigits = 4), collapse = "\n"), "\n")
+cat("\\right]")
+cat("$$\n")
+```
+
+
+* PWG
+
+```{r, echo=FALSE}
+lambda2 <- mat_r0[2,2] / mat_g0[2,2]
+matxtx2 <- crossprod(mat_x2)
+matxtz2 <- crossprod(mat_x2,mat_z2)
+matztx2 <- t(matxtz2)
+matztzainv2 <- crossprod(mat_z2) + mat_ainv * lambda2
+mat_coeff2 <- rbind(cbind(matxtx2, matxtz2), cbind(matztx2, matztzainv2))
+mat_rhs2 <- rbind(crossprod(mat_x2, vec_y2), crossprod(mat_z2, vec_y2))
+mat_sol2 <- solve(mat_coeff2, mat_rhs2)
+```
+
+```{r, echo=FALSE, results='asis'}
+cat("s_{PWG} = \\left[")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = mat_sol2, pnDigits = 4), collapse = "\n"), "\n")
+cat("\\right]")
+cat("$$\n")
+```
+
+```{r, echo=FALSE}
+mat_coeff_inv2 <- solve(mat_coeff2)
+n_nr_sol <- dim(mat_coeff_inv2)[1]
+vec_c22_diag2 <- diag(mat_coeff_inv2)[(n_nr_sol - n_nr_animal + 1):n_nr_sol]
+vec_rel2 <- 1 - vec_c22_diag2 / mat_g0[2,2]
+```
+```{r, echo=FALSE, results='asis'}
+cat("B_{PWG} = \\left[")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_rel2, pnDigits = 4), collapse = "\n"), "\n")
+cat("\\right]")
+cat("$$\n")
+```
+
+
+The reliabilities from the bivariate analysis are obtained as 
+
+```{r}
+mat_coeff_inv <- solve(mat_coeff)
+n_nr_sol <- dim(mat_coeff_inv)[1]
+vec_c22_diag <- diag(mat_coeff_inv)[(n_nr_sol - n_nr_trait * n_nr_animal + 1):n_nr_sol]
+vec_rel <- 1 - vec_c22_diag / c(rep(mat_g0[1,1], n_nr_animal), rep(mat_g0[2,2], n_nr_animal))
+
+```
+
+```{r, echo=FALSE, results='asis'}
+cat("B = \\left[")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_rel, pnDigits = 4), collapse = "\n"), "\n")
+cat("\\right]")
+cat("$$\n")
+```
