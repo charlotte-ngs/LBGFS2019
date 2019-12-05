@@ -137,25 +137,25 @@ cat("$$\n")
 Similarly to the fixed effects, we can put together the vector of breeding values $a$. 
 
 ```{r}
-vec_a1 <- c("a_{1,WWG}",
-            "a_{2,WWG}",
-            "a_{3,WWG}",
-            "a_{4,WWG}",
-            "a_{5,WWG}",
-            "a_{6,WWG}",
-            "a_{7,WWG}",
-            "a_{8,WWG}")
-vec_a2 <- c("a_{1,PWG}",
-            "a_{2,PWG}",
-            "a_{3,PWG}",
-            "a_{4,PWG}",
-            "a_{5,PWG}",
-            "a_{6,PWG}",
-            "a_{7,PWG}",
-            "a_{8,PWG}")
+vec_a1 <- c("u_{1,WWG}",
+            "u_{2,WWG}",
+            "u_{3,WWG}",
+            "u_{4,WWG}",
+            "u_{5,WWG}",
+            "u_{6,WWG}",
+            "u_{7,WWG}",
+            "u_{8,WWG}")
+vec_a2 <- c("u_{1,PWG}",
+            "u_{2,PWG}",
+            "u_{3,PWG}",
+            "u_{4,PWG}",
+            "u_{5,PWG}",
+            "u_{6,PWG}",
+            "u_{7,PWG}",
+            "u_{8,PWG}")
 vec_a <- c(vec_a1, vec_a2)
 cat("$$\n")
-cat("a = \\left[")
+cat("u = \\left[")
 cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_a), collapse = "\n"), "\n")
 cat("\\right]\n")
 cat("$$\n")
@@ -258,22 +258,22 @@ vec_beta_hat <- c("\\widehat{\\beta_{M,WWG}}",
                   "\\widehat{\\beta_{F,WWG}}", 
                   "\\widehat{\\beta_{M,PWG}}", 
                   "\\widehat{\\beta_{F,PWG}}")
-vec_a1_hat <- c("\\widehat{a_{1,WWG}}",
-            "\\widehat{a_{2,WWG}}",
-            "\\widehat{a_{3,WWG}}",
-            "\\widehat{a_{4,WWG}}",
-            "\\widehat{a_{5,WWG}}",
-            "\\widehat{a_{6,WWG}}",
-            "\\widehat{a_{7,WWG}}",
-            "\\widehat{a_{8,WWG}}")
-vec_a2_hat <- c("\\widehat{a_{1,PWG}}",
-            "\\widehat{a_{2,PWG}}",
-            "\\widehat{a_{3,PWG}}",
-            "\\widehat{a_{4,PWG}}",
-            "\\widehat{a_{5,PWG}}",
-            "\\widehat{a_{6,PWG}}",
-            "\\widehat{a_{7,PWG}}",
-            "\\widehat{a_{8,PWG}}")
+vec_a1_hat <- c("\\widehat{u_{1,WWG}}",
+            "\\widehat{u_{2,WWG}}",
+            "\\widehat{u_{3,WWG}}",
+            "\\widehat{u_{4,WWG}}",
+            "\\widehat{u_{5,WWG}}",
+            "\\widehat{u_{6,WWG}}",
+            "\\widehat{u_{7,WWG}}",
+            "\\widehat{u_{8,WWG}}")
+vec_a2_hat <- c("\\widehat{u_{1,PWG}}",
+            "\\widehat{u_{2,PWG}}",
+            "\\widehat{u_{3,PWG}}",
+            "\\widehat{u_{4,PWG}}",
+            "\\widehat{u_{5,PWG}}",
+            "\\widehat{u_{6,PWG}}",
+            "\\widehat{u_{7,PWG}}",
+            "\\widehat{u_{8,PWG}}")
 vec_a_hat <- c(vec_a1_hat, vec_a2_hat)
 
 vec_hat_unknown <- c(vec_beta_hat, vec_a_hat)
@@ -306,6 +306,36 @@ For a predicted breeding value $\hat{u}_i$, the reliability $B_i$ is computed as
 
 $$B_i = r_{u,\hat{u}}^2 = 1 - \frac{PEV(\hat{u}_i)}{var(u_i)} = 1 - \frac{C_{ii}^{22}}{var(u_i)}$$
 
-where $C_{ii}^{22}$ are obtained from the inverse coefficient matrix of the mixed model equations.
+where $C_{ii}^{22}$ are obtained from the inverse coefficient matrix of the mixed model equations. Just as a reminder, we can write the mixed model equations (MME) as 
+
+$$M \cdot s = r$$
+with the vectors $r$ and $s$ corresponding to the right-hand side and to the unknowns of the MME. Hence
+
+$$r = \left[\begin{array}{c}X^TR^{-1}y \\ Z^TR^{-1}y \end{array}\right]$$ 
+and 
+
+$$s = \left[\begin{array}{c}\hat{\beta} \\ \hat{u} \end{array}\right]$$
+The matrix $C_{22}$ is taken from the inverse coefficient matrix. 
+
+$$
+M^{-1} 
+= 
+\left[
+\begin{array}{lr}
+X^TR^{-1}X  &  X^TR^{-1}Z \\
+Z^TR^{-1}X  &  Z^TR^{-1}Z + G^{-1}
+\end{array}
+\right]^{-1}
+=
+\left[
+\begin{array}{lr}
+C^{11}  &  C^{12} \\
+C^{21}  &  C^{22}
+\end{array}
+\right]
+$$
+
+For the two univariate analyses, we get the breeding values as
+
 
 
