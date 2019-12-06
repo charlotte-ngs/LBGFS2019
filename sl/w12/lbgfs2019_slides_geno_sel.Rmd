@@ -87,6 +87,14 @@ Two types of models are used
 * genomic relationship matrix ($G$) instead of numerator relationship matrix ($A$)
 
 
+## MEM versus BVM
+
+```{r mem-vs-bvm, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg"}
+#rmdhelp::use_odg_graphic(ps_path = "odg/mem-vs-bvm.odg")
+knitr::include_graphics(path = "odg/mem-vs-bvm.png")
+```
+
+
 ## Logistic Procedures
 
 * Two Step: 
@@ -98,4 +106,10 @@ Two types of models are used
     + difficulty how to combine animals with and without genotypes
     
     
-    
+## Two Step Procedure
+
+```{r two-step-gs, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg"}
+#rmdhelp::use_odg_graphic(ps_path = "odg/two-step-gs.odg")
+knitr::include_graphics(path = "odg/two-step-gs.png")
+```
+ 

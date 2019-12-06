@@ -1,8 +1,8 @@
 #!/bin/bash
 
 SCRIPTDIR=source/misctools/github
-DIRTOFETCH=ex/w11
-# DIRTOFETCH=sol/w10
+# DIRTOFETCH=ex/w12
+DIRTOFETCH=sol/w11
 
 #' fetch individual directory
 #' change to progdir
