@@ -1,0 +1,1111 @@
+---
+output:
+  pdf_document:
+    includes:
+      in_header: header.tex
+    fig_caption: false
+    keep_tex: true
+documentclass: article
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::knit_hooks$set(conv.odg = rmddochelper::odg.graphics.conv.hook)
+```
+
+```{r TaskCounts, echo=FALSE}
+cnt <- rmddochelper::R6ClassCount$new()
+cnt$set_prefix(ps_prefix = "## Problem")
+```
+
+```{r PointAssignment, echo=FALSE}
+# Assign Points for Q1
+lPointsQ1 <- list(TaskA = 5,
+                  TaskB = 6,
+                  TaskC = 2,
+                  TaskD = 4)
+nPointQ1Total <- sum(unlist(lPointsQ1))
+# Assign Points for Q2
+lPointsQ2 <- list(TaskA = 8,
+                  TaskB = 9,
+                  TaskC = 2)
+nPointQ2Total <- sum(unlist(lPointsQ2))
+# Assign Points for Q3
+lPointsQ3 <- list(TaskA = 8,
+                  TaskB = 8,
+                  TaskC = 3)
+nPointQ3Total <- sum(unlist(lPointsQ3))
+# Assign Points for Q4
+lPointsQ4 <- list(TaskA = 29,
+                  TaskB = 51,
+                  TaskC = 0)
+nPointQ4Total <- sum(unlist(lPointsQ4))
+# Assign Points for Q5
+lPointsQ5 <- list(TaskA = 48,
+                  TaskB = 21,
+                  TaskC = 0)
+nPointQ5Total <- sum(unlist(lPointsQ5))
+# compute overal sum of points
+nPointOverallTotal <- nPointQ1Total + nPointQ2Total + nPointQ3Total + nPointQ4Total + nPointQ5Total
+```
+
+
+\thispagestyle{empty}
+
+\begin{tabular}{l}
+ETH Zurich \\
+D-USYS\\
+Institute of Agricultural Sciences\\
+\end{tabular}
+
+\vspace{15ex}
+\begin{center}
+\huge
+Solutions To Test Exam\\ \vspace{1ex}
+Livestock Breeding and Genomics \\  \vspace{1ex}
+FS 2019 \\
+
+\normalsize
+\vspace{7ex}
+Peter von Rohr 
+\end{center}
+
+\vspace{7ex}
+\begin{tabular}{p{5cm}lr}
+  & \textsc{Date}  & \textsc{\emph{13. December 2019}} \\
+  & \textsc{Begin} & \textsc{\emph{09:15 }}\\
+  & \textsc{End}   & \textsc{\emph{ }}\\ 
+\end{tabular}
+
+\vspace{5ex}
+<!-- Table with Name -->
+\large
+\begin{tabular}{p{2.5cm}p{3cm}p{6cm}}
+  &  Name:     &  \\
+  &            &  \\
+  &  Legi-Nr:  & \\
+\end{tabular}
+\normalsize
+
+<!-- Table with Points -->
+
+\vspace{9ex}
+\begin{center}
+\begin{tabular}{|p{3cm}|c|c|}
+\hline
+Problem  &  Maximum Number of Points  &  Number of Points Reached \\
+\hline
+1        &  `r nPointQ1Total`         & \\
+\hline
+2        &  `r nPointQ2Total`         & \\
+\hline
+3        &  `r nPointQ3Total`         & \\
+\hline
+4        &  `r nPointQ4Total`          & \\
+\hline
+5        &  `r nPointQ5Total`          & \\
+\hline
+Total    &  `r nPointOverallTotal`    & \\
+\hline
+\end{tabular}
+\end{center}
+
+\clearpage
+\pagebreak
+
+
+
+```{r, echo=FALSE, results='asis'}
+cat(cnt$out(ps_suffix = "Quantitative Genetics"), "\n")
+```
+
+```{r GenerateGenoData, echo=FALSE, results='hide'}
+set.seed(6789)
+### # population size
+n_pop_size <- 100
+### # allele frequencies
+n_freq_e1 <- .2
+n_freq_e2 <- 1-n_freq_e1
+### # genotype frequencies
+n_freq_e1e1 <- n_freq_e1 ^ 2
+n_freq_e1e2 <- 2 * n_freq_e1 * n_freq_e2
+n_freq_e2e2 <- n_freq_e2 ^ 2
+### # rounded number of genotypes
+n_nr_e2e2 <- floor(n_freq_e2e2 * n_pop_size)
+n_nr_e1e2 <- floor(n_freq_e1e2 * n_pop_size)
+n_nr_e1e1 <- n_pop_size - n_nr_e1e2 - n_nr_e2e2
+### # fix the regression coefficients
+n_inter <- 13.3
+n_slope <- 4.5
+n_dom <- 1.7
+n_res_var <- 5.92
+### # vectors of values
+vec_val_e1e1 <- n_inter + 2 * n_slope + rnorm(n_nr_e1e1, mean = 0, sd = sqrt(n_res_var))
+vec_val_e1e2 <- n_inter + n_slope + n_dom + rnorm(n_nr_e1e2, mean = 0, sd = sqrt(n_res_var))
+vec_val_e2e2 <- n_inter + rnorm(n_nr_e2e2, mean = 0, sd = sqrt(n_res_var))
+
+tbl_geno_data_enz <- tibble::tibble(Genotype = c(rep("E1E1", length(vec_val_e1e1)),
+                                                     rep("E1E2", length(vec_val_e1e2)),
+                                                     rep("E2E2", length(vec_val_e2e2))),
+                                        Value = c(vec_val_e1e1, 
+                                                  vec_val_e1e2, 
+                                                  vec_val_e2e2))
+tbl_geno_data_enz$Genotype <- as.factor(tbl_geno_data_enz$Genotype)
+```
+
+Recently published research results indicate that the level of a critical enzyme is mostly determined by a single genetic locus. The locus is bi-allelic with alleles $E_1$ and $E_2$. $E_1$ is the favorite allele which increases the enzyme level and it has a frequency of $`r n_freq_e1`$. For reasons of simplicity, we assume that the Hardy-Weinberg equilibrium holds. The following plot indicates the distribution of enzyme levels accross the three genotypes for a given population of interest. 
+
+
+\vspace{3ex}
+```{r PlotGenoData, echo=FALSE, out.width='10cm', fig.align='center'}
+library(ggplot2)
+# qplot(Genotype, Value, data = tbl_geno_data_enz, geom = c("point", "smooth"), method = "lm")
+ggplot(tbl_geno_data_enz, aes(Genotype, Value)) + geom_point()
+```
+
+We take the mean enzyme levels as the characteristic values for a given genotype. This results in 
+
+```{r MeanEnzLevel, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+library(dplyr)
+tbl_mean_enz <- tbl_geno_data_enz %>% group_by(Genotype) %>% summarise(`Mean Enzyme Level` = round(mean(Value), digits = 2))
+knitr::kable(tbl_mean_enz, booktabs = TRUE, lontable = TRUE)
+```
+
+After re-scaling the Mean Enzyme Levels for each genotype such that the origin is exactly between the two homozygous genotypes `E1E1` and `E2E2`, we get the following genotypic values for the three genotypes.
+
+```{r RescaledEnzLevel, echo=FALSE, results='asis'}
+n_scale_origin <- (tbl_mean_enz %>% filter(Genotype == "E1E1") %>% select(`Mean Enzyme Level`) + tbl_mean_enz %>% filter(Genotype == "E2E2") %>% select(`Mean Enzyme Level`)) / 2
+n_scale_origin <- n_scale_origin[[1]]
+tbl_mean_enz_resc <- tbl_mean_enz %>% mutate(`Genotypic Value` = `Mean Enzyme Level` - n_scale_origin) %>% select(Genotype, `Genotypic Value`)
+knitr::kable(tbl_mean_enz_resc, booktabs = TRUE, lontable = TRUE)
+```
+
+
+
+\begin{enumerate}
+\item[a)] Assuming a single locus model, what are the values of $a$ and $d$ for the enzyme levels at locus $E$ and what is the population mean $\mu$?
+\points{`r lPointsQ1$TaskA`}
+\end{enumerate}
+
+\pagebreak
+
+\sol
+
+The genotypic values given in the last table of the problem corresponds to the following symbolic values
+
+```{r GenotypicValue, echo=FALSE, results='asis'}
+tbl_geno_val <- tbl_mean_enz_resc %>% 
+  select(Genotype) %>% 
+  mutate(`Genotypic Value` = c("$V_{11} = a$", "$V_{12} = d$", "$V_{22} = -a$"))
+knitr::kable(tbl_geno_val, booktabs = TRUE, longtable = TRUE)
+```
+
+Hence 
+
+```{r ValueAD, echo=FALSE, results='hide'}
+n_value_a <- tbl_mean_enz_resc %>% filter(Genotype == "E1E1") %>% select(`Genotypic Value`)
+n_value_d <- tbl_mean_enz_resc %>% filter(Genotype == "E1E2") %>% select(`Genotypic Value`)
+```
+
+$$a = `r n_value_a`$$
+and
+$$d = `r n_value_d`$$
+
+The population mean is defined as 
+
+$$\mu = V_{11} * f(E1E1) + V_{12} * f(E1E2) + V_{22} * f(E2E2)$$
+
+where $f(EiEj)$ stands for the frequency of genotype $EiEj$. From Hardy-Weinberg we know that 
+
+```{r GenoFreq, echo=FALSE, results='asis'}
+tbl_geno_freq <- tbl_mean_enz_resc %>% 
+  select(Genotype) %>% 
+  mutate(`Genotype Frequency` = c("$f(E1E1) = p^2$", "$f(E1E2) = 2pq$", "$f(E2E2) = q^2$"))
+knitr::kable(tbl_geno_freq, booktabs = TRUE, longtable = TRUE)
+```
+
+where $p = f(E1)$ the allele frequency of $E1$ which is given in the task and is $p = `r n_freq_e1`$. Because the locus $E$ is bi-allelic, we get $q = f(E2) = 1-p = `r n_freq_e2`$.
+
+Using all this, we get the population mean $\mu$ as
+
+```{r PopMean, echo=FALSE, results='hide'}
+n_pop_mean <- (n_freq_e1 - n_freq_e2) * n_value_a + 2 * n_freq_e1 * n_freq_e2 * n_value_d
+```
+
+
+$$\mu = a * p^2 + d * 2pq + (-a) * q^2 = (p-q)a + 2pqd = (`r n_freq_e1` - `r n_freq_e2`) * `r n_value_a` + 2 * `r n_freq_e1` * `r n_freq_e2` * `r n_value_d` = `r n_pop_mean`$$
+
+\clearpage
+\pagebreak
+
+
+\begin{enumerate}
+\item[b)] Compute the breeding values and the dominance deviations for all three genotypes
+\points{`r lPointsQ1$TaskB`}
+\end{enumerate}
+
+\sol
+
+```{r BreedingValues, echo=FALSE, results='hide'}
+n_value_alpha <- n_value_a + (n_freq_e2 - n_freq_e1) * n_value_d
+n_bv_e1e1 <- 2 * n_freq_e2 * n_value_alpha
+n_bv_e1e2 <- (n_freq_e2 - n_freq_e1) * n_value_alpha
+n_bv_e2e2 <- -2 * n_freq_e1 * n_value_alpha
+```
+
+All breeding values depend on the allele substitution effect $\alpha$ which corresponds to 
+
+$$\alpha = a + (q-p)d = `r n_value_a` + (`r n_freq_e2` - `r n_freq_e1`) * `r n_value_d` = `r n_value_alpha`$$
+
+Breeding values are computed according to the following table
+
+```{r BvTable, echo=FALSE, results='asis'}
+tbl_bv <- tbl_mean_enz_resc %>% 
+  select(Genotype) %>% 
+  mutate(`Breeding Value` = c(paste0("$2q \\alpha = ", n_bv_e1e1, "$"),
+                              paste0("$(q-p) \\alpha = ", n_bv_e1e2, "$"),
+                              paste0("$-2p \\alpha = ", n_bv_e2e2, "$")))
+knitr::kable(tbl_bv, booktabs = TRUE, longtable = TRUE)
+```
+
+The dominance deviation is
+
+```{r DomDev, echo=FALSE, results='asis'}
+n_dom_e1e1 <- -2 * n_freq_e2^2 * n_value_d
+n_dom_e1e2 <- 2 * n_freq_e1 * n_freq_e2 * n_value_d
+n_dom_e2e2 <- -2 * n_freq_e1^2 * n_value_d
+tbl_dom <- tbl_mean_enz_resc %>% 
+  select(Genotype) %>% 
+  mutate(`Dominance Deviation` = c(paste0("$-2q^2d = ", n_dom_e1e1, "$"),
+                                   paste0("$2pqd = ", n_dom_e1e2, "$"),
+                                   paste0("$-2p^2d = ", n_dom_e2e2, "$")))
+knitr::kable(tbl_dom, booktabs = TRUE, longtable = TRUE)
+```
+
+
+\clearpage
+\pagebreak
+
+\begin{enumerate}
+\item[c)] Compute the genetic additive variance and the dominance variance.
+\points{`r lPointsQ1$TaskC`}
+\end{enumerate}
+
+\sol
+
+The additive genetic variance corresponds to 
+
+```{r GeneticVariances, echo=FALSE, results='hide'}
+n_sigma_a2 <- 2 * n_freq_e1 * n_freq_e2 * n_value_alpha^2
+n_sigma_d2 <- (2 * n_freq_e1 * n_freq_e2 * n_value_d)^2
+```
+
+$$\sigma_A^2 = 2pq\alpha^2 = 2 * `r n_freq_e1` * `r n_freq_e2` * `r n_value_alpha`^2 = `r n_sigma_a2`$$
+
+$$\sigma_D^2 = (2pqd)^2 = (2 * `r n_freq_e1` * `r n_freq_e2` * `r n_value_d`)^2 = `r n_sigma_d2`$$
+
+
+\clearpage
+\pagebreak
+
+\begin{enumerate}
+\item[d)] When two heterozygous parents have offspring, these offspring individuals can have genotypes $E1E1$, $E1E2$ or $E2E2$. When comparing the breeding values of the offspring with different genotypes, we realize that the breeding values are different. Compute all pairwise differences between the breeding values of all offspring genotypes. What is the name of the specific effect that appears in the differences of the breeding values? 
+\points{`r lPointsQ1$TaskD`}
+\end{enumerate}
+
+\sol
+
+$$BV_{11} - BV_{12} = 2q\alpha - (q-p)\alpha = \alpha$$
+$$BV_{12} - BV_{22} = (q-p)\alpha - (-2p\alpha) = \alpha$$
+$$BV_{11} - BV_{22} = 2q\alpha - (-2p\alpha) = 2\alpha$$
+
+The effect $\alpha$ appears in all differences and is called __allele substitution__ effect.
+
+\clearpage
+\pagebreak
+
+```{r, echo=FALSE, results='asis'}
+cat(cnt$out(ps_suffix = "Livestock Breeding"), "\n")
+```
+A group of farmers have decided to start a breeding organisation for [Alpaca](https://en.wikipedia.org/wiki/Alpaca) (_Vicugna pacos_). In a first time period, the breeding organisation focuses on importing animals from South America. In a second stage, the breeding organisation wants to establish an own breeding program. The members of the breeding organisation have decided to use the wool of the alpacas as a marketable product. From an economic point of view the two traits wool yield and wool quality are of primary importance to be able to sell the wools of the alpaca.
+
+The members of the breeding organisation have a few questions with respect to the design of the planned breeding program. You as an expert in Livestock breeding are now asked to answer the following questions.
+
+
+\begin{enumerate}
+\item[a)] The breeding organisation wants to increase wool yield. To do that they plan to get the weight of the wool of every male animal at the age of two years. The male animals with the highest wool weight at the age of two years are selected to be sires of the future generation. The female animals are mated to the sires randomly. Do you think this is a good strategy? Please reason about your answer by providing facts from Livestock Breeding. Could you suggest some improvements to the planned breeding program of the alpaca breeders. 
+\points{`r lPointsQ2$TaskA`}
+\end{enumerate}
+
+\sol
+
+* The strategy is not very good, because parents do not pass phenotypes to their offspring but random samples of their alleles, hence selection should not be based on phenotypic values.
+* The measurements are done only at two years of age, which is probably very late. It would be better to have observations earlier in the life of a selection candidate.
+* Only male animals are measured and selected, the same should be done on the female side.
+* Animals are related, this should be recorded as important information in a pedigree
+* Breeding values should be predicted based on a BLUP animal model which uses all information in an optimal way
+* Selection decisions should be based for males and females on the ranking according to the predicted breeding values
+
+
+\clearpage
+\pagebreak
+
+\begin{enumerate}
+\item[b)] During the negociations between the farmers and the buyers of the wool, it became clear, that the quality of the wool is a second important criterion. The trait `fiber diameter` is used to describe the wool quality. Now the Alpaca breeder want to improve their population with respect to the two traits `wool yield` and `fiber diameter`. What are the different selection strategies when a population should be improved with respect to several traits? Please specify three selection strategies. Which of the three strategies do you recommend to the Alpaca breeders? What is the reason for your recommendation?  
+\points{`r lPointsQ2$TaskB`}
+\end{enumerate}
+
+\sol
+
+1. Tandem selection
+2. Selection based on independent selection thresholds
+3. Selection based on dependent selection thresholds which corresponds to a selection index using multivariate BLUP breeding values
+
+* The best is strategy 3.
+* genetic relationships (correlations) between traits in the aggregate genotype are considered correctly 
+* relationships between information sources in the index are considered correctly
+* information from auxiliary traits can be used
+* differences in economic relevance of different traits are considered correctly
+* expected selection responses can be estimated and thereby quantified
+
+
+\clearpage
+\pagebreak
+
+\begin{enumerate}
+\item[c)] The breeding organisation has decided to define an aggregate genotype with the two traits of `wool yield` and `fiber diameter`. The economic values for the two traits are given in the table below. The aggregate genotype is approximated using an index with the predicted breeding values for the same traits `wool yield` and `fiber diameter` as information sources. The breeding values are predicted using a multivariate BLUP animal model. What are the index weights with which the information sources are used in the index.
+\points{`r lPointsQ2$TaskC`}
+\end{enumerate}
+
+```{r EvWoolFibre, echo=FALSE, results='asis'}
+tbl_ev_wool <- tibble::tibble(Trait = c("Wool Yield", "Fibre Diameter"),
+                                  `Economic Value` = c(12.75, -3.20))
+knitr::kable(tbl_ev_wool, booktabs = TRUE, longtable = TRUE)
+```
+
+\sol
+
+Because the same traits are used in the aggregate genotype and in the index and because the information sources used in the selection index are based on BLUP predictions, the index weights are the same as the econmic values. Hence 
+
+$$b = w = \left[ \begin{array}{c} 12.75 \\ -3.20 \end{array} \right]$$
+
+\clearpage
+\pagebreak
+
+```{r, echo=FALSE, results='asis'}
+cat(cnt$out(ps_suffix = "Own Performance and Progeny Records"), "\n")
+```
+Given is the following data set
+
+```{r BvPredData, echo=FALSE, results='hide'}
+set.seed(1521)
+n_nr_obs <- 4
+### # intercept and two levels of a fixed effect
+vec_beta <- c(10.34, 5.2, -1.92)
+mat_x <- matrix(c(1, 1, 0,
+                  1, 0, 1,
+                  1, 0, 1,
+                  1, 0, 1), nrow = n_nr_obs, byrow = TRUE)
+### # find number of herds, knowing that first column is intercept
+n_nr_herd <- ncol(mat_x)-1
+### # variance components
+n_sigmae2 <- 60
+n_sigmaa2 <- 20
+n_sigmas2 <- n_sigmaa2 / 4
+n_h2 <- n_sigmaa2 / (n_sigmaa2 + n_sigmae2)
+n_k_sire <- (4-n_h2)/n_h2
+
+### # pedigree
+tbl_ped_exmp3 <- tibble::tibble(Animal = c(4, 5, 6, 7),
+                                    Sire   = c(1, 1, 3, 6),
+                                    Dam    = c(2, 4, 2, 5))
+### # number of animals, number of founders and number of sirees
+n_nr_ani_exmp3pedext <- max(tbl_ped_exmp3$Animal)
+n_nr_founder_exmp3pedext <- min(tbl_ped_exmp3$Animal) - 1
+n_nr_sire_exmp3pedext <- nlevels(as.factor(tbl_ped_exmp3$Sire))
+### # extend pedigree with founders
+tbl_ped_exmp3_ext <- tibble::tibble(Animal = c(1:n_nr_ani_exmp3pedext),
+                                        Sire   = c(rep(NA, n_nr_founder_exmp3pedext), tbl_ped_exmp3$Sire),
+                                        Dam    = c(rep(NA, n_nr_founder_exmp3pedext), tbl_ped_exmp3$Dam))
+
+### # breeding values
+### # function to get breeding values
+#' @title Generate vector of breeding values 
+#'
+#' @description
+#' Breeding values are generated using a vectorized 
+#' version of the generation of breeding values
+generate_vec_bv <- function(ptbl_ped, pn_sigmaa2){
+  ### # get pedigree
+  ped <- pedigreemm::pedigree(sire = ptbl_ped$Sire, dam = ptbl_ped$Dam, label = as.character(ptbl_ped$Animal))
+  ### # number of animal
+  n_nr_ani <- nrow(ptbl_ped)
+  ### # get matrix D
+  diag_mat_d <- diag(pedigreemm::Dmat(ped = ped), nrow = n_nr_ani, ncol = n_nr_ani)
+  ### # get matrix A based on pedigree
+  mat_a <- as.matrix(pedigreemm::getA(ped = ped))
+  ### # cholesky of A
+  mat_r <- t(chol(mat_a))
+  ### # sqrt(D) to mat_s
+  mat_s <- sqrt(diag_mat_d)
+  ### # matrix L
+  mat_l <- mat_r %*% solve(mat_s)
+  ### # finally get matrix P
+  mat_p <- diag(n_nr_ani) - solve(mat_l)
+  ### # sample the vector of mendelian sampling
+  vec_a <- rnorm(n_nr_ani, mean = 0, sd = sqrt(diag(diag_mat_d) * pn_sigmaa2))
+  ### # adding pedigree Information
+  vec_a_result <- mat_p %*% vec_a + vec_a
+  ### # return result
+  return(vec_a_result)
+}
+### # vector of breeding values
+vec_bv <- generate_vec_bv(ptbl_ped = tbl_ped_exmp3_ext, pn_sigmaa2 = n_sigmaa2)
+### # design matrix Z
+mat_z <- cbind(matrix(0, nrow = n_nr_obs, ncol = n_nr_founder_exmp3pedext), diag(1, nrow = n_nr_obs, ncol = n_nr_obs))
+
+### # generate observations
+vec_y <- crossprod(t(mat_x), vec_beta) + crossprod(t(mat_z), vec_bv) + rnorm(n_nr_obs, mean = 0, sd = sqrt(n_sigmae2))
+
+### # population mean
+n_mu <- mean(vec_y)
+```
+
+
+```{r BvPredTable, echo=FALSE, results='asis'}
+library(dplyr)
+mat_herd <- crossprod(t(mat_x), c(0,1,2))
+tbl_dat_exmp3 <- tbl_ped_exmp3 %>% mutate(Herd = mat_herd[,1], Observation = round(vec_y, digits = 2))
+knitr::kable(tbl_dat_exmp3, booktabs = TRUE, longtable = TRUE)
+```
+
+The variance components $\sigma_e^2$ (residual) and $\sigma_u^2$ (genetic) are 
+
+$$\sigma_e^2 = `r n_sigmae2`$$
+$$\sigma_u^2 = `r n_sigmaa2`$$
+
+
+\begin{enumerate}
+\item[a)] Predict the breeding values and the corresponding accuracies of the predicted breeding values based on the animals own performance. The population mean $\mu$ is taken as the average of all observations, $\mu = `r round(n_mu, digits = 2)`$. 
+\points{`r lPointsQ3$TaskA`}
+\end{enumerate}
+
+\sol
+
+The predicted breeding value $\hat{u}_i$ based on an own performance is
+
+$$\hat{u}_i = h^2(y_i - \mu)$$
+where $$h^2 = \frac{\sigma_u^2}{\sigma_u^2 + \sigma_e^2} = \frac{`r n_sigmaa2`}{`r n_sigmaa2` + `r n_sigmae2`} = `r n_h2`$$
+
+The accuracies of all predicted breeding values correspond to the correlation $r_{u, y}$ between the true breeding value and the information source $y$. 
+
+$$r_{u,y} = \frac{cov(u,y)}{\sigma_u \sigma_y} = \frac{\sigma_u^2}{\sigma_u \sigma_y} = \frac{\sigma_u}{\sigma_y} = h = \sqrt{`r n_h2`} = `r sqrt(n_h2)`$$
+
+The results are shown in the following table
+
+```{r PredBvOwnPerf, echo=FALSE, results='asis'}
+tbl_predbv_ownperf <- tbl_dat_exmp3 %>% 
+  mutate(`Predicted Breeding Value` = n_h2 * (Observation - n_mu)) %>% 
+  mutate(Accuracy = sqrt(n_h2))  %>% 
+  select(Animal, `Predicted Breeding Value`, Accuracy)
+knitr::kable(tbl_predbv_ownperf, booktabs = TRUE, longtable = TRUE)
+```
+
+
+
+\clearpage
+\pagebreak
+
+```{r VecSireIdx, echo=FALSE, results='hide'}
+vec_sire_idx <- unique(tbl_ped_exmp3$Sire)
+```
+
+\begin{enumerate}
+\item[b)] Predict the breeding values of the sires $`r vec_sire_idx[1]`$, $`r vec_sire_idx[2]`$ and $`r vec_sire_idx[3]`$ based on the performance records of their progeny using the regression method. Indicate for each breeding value the corresponding accuracy.
+\points{`r lPointsQ3$TaskB`}
+\end{enumerate}
+
+
+\sol
+
+The predicted breeding value $\hat{u}_i$ based on the progeny performance is
+
+$$\hat{u}_i = b(\bar{y_i} - \mu)$$
+where $$b = \frac{2n}{n + k} \text{, } \mu = `r round(n_mu, digits = 2)`$$
+
+with $$k = \frac{4 - h^2}{h^2} = \frac{4 - `r n_h2`}{`r n_h2`} = `r n_k_sire`$$
+
+
+First the number of progeny per sire is determined
+
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+### # count number of progeny per sire
+tbl_dat_exmp3_nrprog_count <- tbl_dat_exmp3 %>%
+  group_by(Sire) %>%
+  summarise(`Number of Progeny` = n())
+
+### # compute average observation of progeny per sire
+tbl_dat_exmp3_meanobs <- tbl_dat_exmp3 %>%
+  group_by(Sire) %>%
+  summarise(`Mean Observation` = mean(Observation))
+
+tbl_dat_exmp3_nprogsire <- tbl_dat_exmp3_meanobs %>%
+  inner_join(tbl_dat_exmp3_nrprog_count)
+knitr::kable(tbl_dat_exmp3_nprogsire, booktabs = TRUE, longtable = TRUE)
+```
+
+Adding the predicted breeding values
+
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+tbl_dat_exmp3_bvprog <- tbl_dat_exmp3_nprogsire %>%
+  mutate(`Predicted Breeding Value` = round(2 * `Number of Progeny`/(`Number of Progeny` + n_k_sire) * (`Mean Observation` - n_mu), digits = 3)) %>%
+  mutate(Accuracy = round(sqrt(`Number of Progeny`/(`Number of Progeny` + n_k_sire)), digits = 2))
+knitr::kable(tbl_dat_exmp3_bvprog)
+```
+
+
+\clearpage
+\pagebreak
+
+
+\begin{enumerate}
+\item[c)] What is the reason for the difference between the accuracies found in Problem 3a and 3b? How many offspring does a sire need that the accuracy of its predicted breeding value based on progeny records will be bigger than the accuracy in 3a? 
+\points{`r lPointsQ3$TaskC`}
+\end{enumerate}
+
+\sol
+
+* In 3a the accuracies are all constant and depend only on $h^2$
+* In 3b, the accuracies are also influenced by the number of offspring, but for low number of progeny, accuracies are lower
+* The number of progeny that is required can be computed as
+
+$$\sqrt{\frac{n}{n + k}} = h$$
+
+$$\frac{n}{n + k} = h^2$$
+
+$$\frac{n}{n + (4-h^2)/h^2} = h^2$$
+
+$$\frac{nh^2}{nh^2 + 4-h^2} = h^2$$
+
+$$nh^2 = h^2(nh^2+ (4-h^2))$$
+
+$$nh^2 = nh^4+ 4h^2-h^4$$
+
+$$n = nh^2+ 4-h^2$$
+
+$$n - nh^2 = 4-h^2$$
+
+$$n(1 - h^2) = 4-h^2$$
+
+```{r, echo=FALSE, results='hide'}
+n_prob3c <- (4-n_h2)/(1-n_h2)
+```
+
+$$n = \frac{4-h^2}{1 - h^2} = \frac{4 - `r n_h2`}{1 - `r n_h2`} = `r n_prob3c`$$
+
+\clearpage
+\pagebreak
+
+```{r, echo=FALSE, results='asis'}
+cat(cnt$out(ps_suffix = "BLUP Models"), "\n")
+```
+
+Given is the same data set as in Problem 3. 
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(tbl_dat_exmp3, booktabs = TRUE, longtable = TRUE)
+```
+
+The variance components $\sigma_e^2$ (residual) and $\sigma_u^2$ (genetic) are 
+
+$$\sigma_e^2 = `r n_sigmae2`$$
+$$\sigma_u^2 = `r n_sigmaa2`$$
+
+\begin{enumerate}
+\item[a)] Predict the breeding values based on the data given above, using a sire model. Herds are treated as fixed effects and sire breeding values are modeled as random effects. Please specify all model components including expected values and variances for the random components. Set up the mixed model equations to get solutions for the predicted breeding values. 
+\points{`r lPointsQ4$TaskA`}
+\end{enumerate}
+
+
+\sol
+
+### Model components
+The sire model is defined as 
+
+$$y = X \beta + Z_ss + e$$
+
+
+\begin{tabular}{lll}
+where  &  $y$      &  vector of length $`r n_nr_obs`$ of observations \\
+       &  $\beta$  &  vector of length $`r n_nr_herd`$ of fixed herd effects  \\
+       &  $X$      &  design matrix linking fixed effects to observations \\
+       &  $s$      &  vector of length $`r n_nr_sire_exmp3pedext`$ of sire breeding values \\
+       &  $Z_s$    &  design matrix linking sire breeding values to observations \\
+       &  $e$      &  vector of length $`r n_nr_obs`$ of random rest effects
+\end{tabular}
+
+The vectors of the model are
+
+```{r SireModelComp, echo=FALSE, results='asis'}
+mat_y_sire <- tbl_dat_exmp3$Observation
+vec_beta_sire <- rmddochelper::vecGetVecElem(psBaseElement = "\\beta", pnVecLen = n_nr_herd, psResult = "latex")
+# vec_bv_sire <- rmddochelper::vecGetVecElem(psBaseElement = "s", pnVecLen = n_nr_sire_exmp3pedext, psResult = "latex")
+vec_bv_sire <- sapply(unique(tbl_ped_exmp3$Sire), function(x) paste0("s_{", x, "}"), USE.NAMES = FALSE)
+vec_res <- rmddochelper::vecGetVecElem(psBaseElement = "e", pnVecLen = n_nr_obs, psResult = "latex")
+cat("$$\n")
+cat("y = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_y_sire), collapse = "\n"), "\n")
+cat("\\right] \\text{, }")
+cat("\\beta = \\left[")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_beta_sire), collapse = "\n"), "\n")
+cat("\\right] \\text{, }")
+cat("s = \\left[")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_bv_sire), collapse = "\n"), "\n")
+cat("\\right] \\text{, }")
+cat("e = \\left[")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_res), collapse = "\n"), "\n")
+cat("\\right]")
+cat("$$\n")
+```
+
+The design matrices
+
+```{r SireModelDesignMat, echo=FALSE, results='asis'}
+mat_x_model <- mat_x[,-1]
+mat_z_sire <- matrix(c(1, 0, 0,
+                       1, 0, 0,
+                       0, 1, 0,
+                       0, 0, 1), nrow = n_nr_obs, byrow = TRUE)
+cat("$$\n")
+cat("X = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_x_model, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right] \\text{, }")
+cat("Z_s = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_z_sire, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right]")
+cat("$$\n")
+```
+
+
+
+### Expected Values and Variances of Random Components
+
+$$E\left[ \begin{array}{c} y \\ s \\ e\end{array}\right] = \left[ \begin{array}{c} X \beta \\ 0 \\ 0 \end{array}\right]$$
+
+$$var\left[ \begin{array}{c} y \\ s \\ e\end{array}\right] = 
+\left[ \begin{array}{ccc} 
+          V         &  Z_sG  &  0 \\ 
+          GZ_s^T  &  G     &  0 \\
+          0         &  0     &  R
+       \end{array}
+\right]
+$$
+where $R = I * \sigma_e^2$, $G = A_s*\sigma_s^2$, $V = Z_sGZ_s^T + R$ and $A_s$ is the numerator relationship matrix between the sires given below and 
+$$\sigma_s^2 = {1\over 4}\sigma_u^2$$
+```{r NumRelMatSire, echo=FALSE, results='asis'}
+mat_a_sire <- matrix(c(1, 0,   0,
+                       0, 1,   0.5,
+                       0, 0.5, 1), nrow = n_nr_sire_exmp3pedext, byrow = TRUE)
+cat("$$\n")
+cat("A_s = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_a_sire)))
+cat("\\right]")
+cat("$$\n")
+```
+
+
+### Mixed Model Equations
+MME for the sire model are
+
+$$
+\left[
+  \begin{array}{lr}
+  X^TX  &  X^TZ_s \\
+  Z_s^TX  &  Z_s^TZ_s + \lambda_s * A_s^{-1}
+  \end{array}
+\right] 
+\left[
+  \begin{array}{c}
+  \widehat{\beta}  \\
+  \widehat{s}
+  \end{array}
+\right]
+=
+\left[
+  \begin{array}{c}
+  X^Ty  \\
+  Z_s^Ty
+  \end{array}
+\right]
+$$
+
+The single components of MME are
+
+```{r MmeSireComp, echo=FALSE, results='asis'}
+### # coefficient matrix
+n_lambda_sire <- n_sigmae2/n_sigmas2
+mat_xtx <- crossprod(mat_x_model)
+mat_xtz_sire <- crossprod(mat_x_model, mat_z_sire)
+mat_ztz_sire <- crossprod(mat_z_sire)
+mat_ainv_sire <- solve(mat_a_sire)
+mat_ztz_sire_ainv_sire_lambda <- mat_ztz_sire + n_lambda_sire * mat_ainv_sire
+mat_coef_sire <- rbind(cbind(mat_xtx, mat_xtz_sire),cbind(t(mat_xtz_sire), mat_ztz_sire_ainv_sire_lambda))
+### # rhs
+mat_xty_sire <- crossprod(mat_x_model, mat_y_sire)
+mat_zty_sire <- crossprod(mat_z_sire, mat_y_sire)
+mat_rhs_sire <- rbind(mat_xty_sire, mat_zty_sire)
+### # solution
+mat_sol_sire <- solve(mat_coef_sire, mat_rhs_sire)
+
+### # show the components
+cat("$$\n")
+cat("X^TX = \\left[ \n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_xtx, pnDigits = 0)))
+cat("\\right] \\text{, } \n")
+cat("X^TZ = \\left[ \n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_xtz_sire, pnDigits = 0)))
+cat("\\right] \\text{, } \n")
+cat("Z^TZ = \\left[ \n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_ztz_sire, pnDigits = 0)))
+cat("\\right] \\text{, } \n")
+cat("\\lambda_s = \\frac{\\sigma_e^2}{\\sigma_s^2} = \\frac{", n_sigmae2, "}{", n_sigmas2, "} = ", n_lambda_sire, sep = "")
+cat("$$\n")
+### # A inverse for sires
+cat("$$\n")
+cat("A_s^{-1} = \\left[ \n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_ainv_sire, pnDigits = 4)))
+cat("\\right] \n")
+cat("$$\n")
+```
+
+Putting all mixed model equations together leads to
+
+```{r MmeSireComplete, echo=FALSE, results='asis'}
+vec_beta_hat_sire <- rmddochelper::vecGetVecElem(psBaseElement = "\\widehat{\\beta}", pnVecLen = n_nr_herd, psResult = "latex")
+vec_bv_hat_sire <- sapply(unique(tbl_ped_exmp3$Sire), function(x) paste0("\\widehat{s}_{", x, "}"), USE.NAMES = FALSE)
+
+cat("$$\n")
+cat("\\left[ \n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_coef_sire, pnDigits = 2)))
+cat("\\right] \n")
+cat("\\left[ \n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(c(vec_beta_hat_sire, vec_bv_hat_sire)), collapse = "\n"), "\n")
+cat("\\right] \n")
+cat("= \n")
+cat("\\left[ \n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(rbind(mat_xty_sire, mat_zty_sire), pnDigits = 2), collapse = "\n"), "\n")
+cat("\\right] \n")
+cat("$$\n")
+```
+
+The solution
+
+```{r MmeSireSol, echo=FALSE, results='asis'}
+cat("$$\n")
+cat("\\left[ \n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(c(vec_beta_hat_sire, vec_bv_hat_sire)), collapse = "\n"), "\n")
+cat("\\right] \n")
+cat("= \n")
+cat("\\left[ \n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_sol_sire, pnDigits = 4), collapse = "\n"), "\n")
+cat("\\right] \n")
+cat("$$\n")
+```
+
+
+\clearpage
+\pagebreak
+
+
+\begin{enumerate}
+\item[b)] Predict the breeding values based on the data given above, using an animal model. Herds are treated as fixed effects and breeding values are modeled as random effects. Please specify all model components including expected values and variances for the random components. Set up the mixed model equations to get solutions for the predicted breeding values.  
+\points{`r lPointsQ4$TaskB`}
+\end{enumerate}
+
+\sol
+
+### Model components
+The animal model is defined as 
+
+$$y = X \beta + Zu+ e$$
+
+
+\begin{tabular}{lll}
+where  &  $y$      &  vector of length $`r n_nr_obs`$ of observations \\
+       &  $\beta$  &  vector of length $`r n_nr_herd`$ of fixed herd effects  \\
+       &  $X$      &  design matrix linking fixed effects to observations \\
+       &  $a$      &  vector of length $`r n_nr_ani_exmp3pedext`$ of animal breeding values \\
+       &  $Z$      &  design matrix linking animal breeding values to observations \\
+       &  $e$      &  vector of length $`r n_nr_obs`$ of random rest effects
+\end{tabular}
+
+The vectors of the model are
+
+```{r animalModelComp, echo=FALSE, results='asis'}
+mat_y_animal <- tbl_dat_exmp3$Observation
+vec_beta_animal <- rmddochelper::vecGetVecElem(psBaseElement = "\\beta", pnVecLen = n_nr_herd, psResult = "latex")
+vec_bv_animal <- rmddochelper::vecGetVecElem(psBaseElement = "a", pnVecLen = n_nr_ani_exmp3pedext, psResult = "latex")
+vec_res <- rmddochelper::vecGetVecElem(psBaseElement = "e", pnVecLen = n_nr_obs, psResult = "latex")
+cat("$$\n")
+cat("y = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_y_animal), collapse = "\n"), "\n")
+cat("\\right] \\text{, }")
+cat("\\beta = \\left[")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_beta_animal), collapse = "\n"), "\n")
+cat("\\right] \\text{, }")
+cat("a = \\left[")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_bv_animal), collapse = "\n"), "\n")
+cat("\\right] \\text{, }")
+cat("e = \\left[")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_res), collapse = "\n"), "\n")
+cat("\\right]")
+cat("$$\n")
+```
+
+The design matrices
+
+```{r animalModelDesignMat, echo=FALSE, results='asis'}
+mat_x_model <- mat_x[,-1]
+mat_z_animal <- cbind(matrix(0, nrow = n_nr_obs, ncol = n_nr_founder_exmp3pedext),
+                      diag(1,nrow = n_nr_obs))
+cat("$$\n")
+cat("X = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_x_model, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right] \\text{, }")
+cat("Z = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_z_animal, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right]")
+cat("$$\n")
+```
+
+
+
+### Expected Values and Variances of Random Components
+
+$$E\left[ \begin{array}{c} y \\ a \\ e\end{array}\right] = \left[ \begin{array}{c} X \beta \\ 0 \\ 0 \end{array}\right]$$
+
+$$var\left[ \begin{array}{c} y \\ a \\ e\end{array}\right] = 
+\left[ \begin{array}{ccc} 
+          V     &  ZG  &  0 \\ 
+          GZ^T  &  G   &  0 \\
+          0     &  0   &  R
+       \end{array}
+\right]
+$$
+where $R = I * \sigma_e^2$, $G = A*\sigma_u^2$, $V = ZGZ^T + R$ and $A$ is the numerator relationship matrix between the animals given below  
+
+```{r NumRelMatanimal, echo=FALSE, results='asis'}
+ped_exmp3pedext <- pedigreemm::pedigree(sire = tbl_ped_exmp3_ext$Sire,
+                                        dam  = tbl_ped_exmp3_ext$Dam,
+                                        label = as.character(tbl_ped_exmp3_ext$Animal))
+mat_a_animal <- as.matrix(pedigreemm::getA(ped = ped_exmp3pedext))
+
+cat("$$\n")
+cat("A = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_a_animal, pnDigits = 4)))
+cat("\\right]")
+cat("$$\n")
+```
+
+
+### Mixed Model Equations
+MME for the animal model are
+
+$$
+\left[
+  \begin{array}{lr}
+  X^TX  &  X^TZ \\
+  Z^TX  &  Z^TZ + \lambda * A^{-1}
+  \end{array}
+\right] 
+\left[
+  \begin{array}{c}
+  \widehat{\beta}  \\
+  \widehat{a}
+  \end{array}
+\right]
+=
+\left[
+  \begin{array}{c}
+  X^Ty  \\
+  Z^Ty
+  \end{array}
+\right]
+$$
+
+The single components of MME are
+
+```{r MmeanimalComp, echo=FALSE, results='asis'}
+### # coefficient matrix
+n_lambda_animal <- n_sigmae2/n_sigmaa2
+mat_xtx <- crossprod(mat_x_model)
+mat_xtz_animal <- crossprod(mat_x_model, mat_z_animal)
+mat_ztz_animal <- crossprod(mat_z_animal)
+mat_ainv_animal <- solve(mat_a_animal)
+mat_ztz_animal_ainv_animal_lambda <- mat_ztz_animal + n_lambda_animal * mat_ainv_animal
+mat_coef_animal <- rbind(cbind(mat_xtx, mat_xtz_animal),cbind(t(mat_xtz_animal), mat_ztz_animal_ainv_animal_lambda))
+### # rhs
+mat_xty_animal <- crossprod(mat_x_model, mat_y_animal)
+mat_zty_animal <- crossprod(mat_z_animal, mat_y_animal)
+mat_rhs_animal <- rbind(mat_xty_animal, mat_zty_animal)
+### # solution
+mat_sol_animal <- solve(mat_coef_animal, mat_rhs_animal)
+
+### # show the components
+cat("$$\n")
+cat("X^TX = \\left[ \n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_xtx, pnDigits = 0)))
+cat("\\right] \\text{, } \n")
+cat("X^TZ = \\left[ \n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_xtz_animal, pnDigits = 0)))
+cat("\\right] \\text{, } \n")
+cat("Z^TZ = \\left[ \n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_ztz_animal, pnDigits = 0)))
+cat("\\right] \\text{, } \n")
+cat("\\lambda = \\frac{\\sigma_e^2}{\\sigma_s^2} = \\frac{", n_sigmae2, "}{", n_sigmaa2, "} = ", n_lambda_animal, sep = "")
+cat("$$\n")
+### # A inverse for animals
+cat("$$\n")
+cat("A^{-1} = \\left[ \n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_ainv_animal, pnDigits = 4)))
+cat("\\right] \n")
+cat("$$\n")
+```
+
+Putting all mixed model equations together leads to
+
+```{r MmeanimalComplete, echo=FALSE, results='asis'}
+vec_beta_hat_animal <- rmddochelper::vecGetVecElem(psBaseElement = "\\widehat{\\beta}", pnVecLen = n_nr_herd, psResult = "latex")
+vec_bv_hat_animal <- rmddochelper::vecGetVecElem(psBaseElement = "\\widehat{a}", pnVecLen = n_nr_ani_exmp3pedext, psResult = "latex")
+
+cat("$$\n")
+cat("\\left[ \n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_coef_animal, pnDigits = 2)))
+cat("\\right] \n")
+cat("\\left[ \n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(c(vec_beta_hat_animal, vec_bv_hat_animal)), collapse = "\n"), "\n")
+cat("\\right] \n")
+cat("= \n")
+cat("\\left[ \n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(rbind(mat_xty_animal, mat_zty_animal), pnDigits = 2), collapse = "\n"), "\n")
+cat("\\right] \n")
+cat("$$\n")
+```
+
+The solution
+
+```{r MmeanimalSol, echo=FALSE, results='asis'}
+cat("$$\n")
+cat("\\left[ \n")
+cat(paste(rmddochelper::sConvertVectorToLaTexArray(c(vec_beta_hat_animal, vec_bv_hat_animal)), collapse = "\n"), "\n")
+cat("\\right] \n")
+cat("= \n")
+cat("\\left[ \n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_sol_animal, pnDigits = 4), collapse = "\n"), "\n")
+cat("\\right] \n")
+cat("$$\n")
+```
+
+\clearpage
+\pagebreak
+
+
+```{r, echo=FALSE, results='asis'}
+cat(cnt$out(ps_suffix = "Relationship and Inbreeding"), "\n")
+```
+
+Given is the following pedigree
+
+```{r, echo=FALSE, results='asis'}
+tbl_ped_exmp5 <- tibble::tibble(Animal = c("FREUDI", "RENARD","SIRA", "Flurina"),
+                                    Sire   = c("RENARD", "LARS", "TELL", "HARRY"),
+                                    Dam    = c("Flurina", "SIRA", "SILVA", "Freia"))
+
+knitr::kable(tbl_ped_exmp5, booktabs = TRUE, longtable = TRUE)
+```
+
+
+\begin{enumerate}
+\item[a)] Compute the numerator relationship matrix for the above given pedigree. 
+\points{`r lPointsQ5$TaskA`}
+\end{enumerate}
+
+\sol
+
+First we have to re-order the pedigree such that parents are always before progeny. This results in
+
+```{r, echo=FALSE, results='asis'}
+tbl_ped_exmp5_reord <- tibble::tibble(Animal = c("SIRA", "Flurina", "RENARD", "FREUDI"),
+                                    Sire   = c("TELL", "HARRY", "LARS", "RENARD"),
+                                    Dam    = c("SILVA", "Freia", "SIRA", "Flurina"))
+
+knitr::kable(tbl_ped_exmp5_reord, booktabs = TRUE, longtable = TRUE)
+```
+
+
+Recoding the pedigree to numers with the following mapping
+
+```{r, echo=FALSE, results='asis'}
+tbl_ped_exmp5_map <- tibble::tibble(Name = c("TELL","SILVA","HARRY","Freia","LARS","SIRA","Flurina", "RENARD", "FREUDI"),
+                                        Code = c(1:9))
+knitr::kable(tbl_ped_exmp5_map, booktabs = TRUE, longtable = TRUE)
+```
+
+Applying the above shown mapping
+
+```{r, echo=FALSE, results='asis'}
+tbl_ped_exmp5_recode <- tibble::tibble(Animal = c(6, 7, 8, 9),
+                                    Sire   = c(1, 3, 5, 8),
+                                    Dam    = c(2, 4, 6, 7))
+knitr::kable(tbl_ped_exmp5_recode, booktabs = TRUE, longtable = TRUE)
+```
+
+Extending the pedigree with founders
+
+```{r, echo=FALSE, results='asis'}
+n_nr_founder_emp5 <- min(tbl_ped_exmp5_recode$Animal)-1
+n_nr_ani_emp5 <- max(tbl_ped_exmp5_recode$Animal)
+tbl_ped_exmp5_ext <- tibble::tibble(Animal = c(1:n_nr_ani_emp5),
+                                        Sire   = c(rep(NA, n_nr_founder_emp5), tbl_ped_exmp5_recode$Sire),
+                                        Dam    = c(rep(NA, n_nr_founder_emp5), tbl_ped_exmp5_recode$Dam))
+knitr::kable(tbl_ped_exmp5_ext, booktabs = TRUE, longtable = TRUE)
+```
+
+This pedigree can be used to compute the numerator relationship matrix
+
+```{r, echo=FALSE, results='asis'}
+ped_exmp5 <- pedigreemm::pedigree(sire = tbl_ped_exmp5_ext$Sire,
+                                  dam  = tbl_ped_exmp5_ext$Dam,
+                                  label = as.character(tbl_ped_exmp5_ext$Animal))
+mat_a_exmp5 <- as.matrix(pedigreemm::getA(ped = ped_exmp5))
+
+cat("$$\n")
+cat("A = \\left[ \n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_a_exmp5, pnDigits = 3), collapse = "\n"), "\n")
+cat("\\right] \n")
+cat("$$\n")
+```
+
+
+\clearpage
+\pagebreak
+
+
+\begin{enumerate}
+\item[b)] Compute the inverse numerator relationship matrix $A^{-1}$ from the above given pedigree.
+\points{`r lPointsQ5$TaskB`}
+\end{enumerate}
+
+\sol
+
+```{r, echo=FALSE, results='asis'}
+mat_ainv_exmp5 <- as.matrix(pedigreemm::getAInv(ped = ped_exmp5))
+
+cat("$$\n")
+cat("A^{-1} = \\left[ \n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_ainv_exmp5, pnDigits = 4), collapse = "\n"), "\n")
+cat("\\right] \n")
+cat("$$\n")
+```
+
+
