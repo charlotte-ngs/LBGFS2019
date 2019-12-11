@@ -171,7 +171,7 @@ The solutions to get estimates of fixed effects and to get predictions for breed
 $$
 \left[ 
 \begin{array}{lr}
-X^TR^{-1}X  &  Z^TR^{-1}X  \\
+X^TR^{-1}X  &  X^TR^{-1}Z  \\
 Z^TR^{-1}X  &  Z^TR^{-1}Z + G^{-1}
 \end{array}
 \right]

@@ -1,0 +1,72 @@
+---
+title: "Variance Components Estimation Re-Worked"
+author: "Peter von Rohr"
+date: "12/6/2019"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Goal
+
+* Provide introduction to the topics of **variance components estimation**
+* Separate technical details out from presentation and move it into an appendix
+* Cover the currently used approaches, such as REML and Bayesian Methods
+* Include ANOVA to get students a benefit for their work on term papers and their thesis projects
+
+
+## Terminology
+
+* Variance Components Estimation (VCE)
+* Fixed effect
+* Random effect
+* Mixed effects model
+* Analysis of variance (ANOVA)
+
+
+## References
+
+* Searle, Casella and Mc Culloch (1992)
+    + Chpt 1: Fixed, random and mixed models
+    + Chpt 2: History
+    + Chpt 3: 1-way classification for (un-) balanced data using 4 methods (ANOVA, ML, REML, Bayes)
+    + Chpt 4 and 5: ANOVA in general
+    + Chpt 6: ML and REML
+    + Chpt 7: Prediction of random effects using BP, BLP and BLUP
+    + Chpt 8: Computation of ML and REML estimates
+    + Chpt 9: Bayes and hierarchical models
+    + Chpt 10: Binary and discrete data
+    + Chpt 11: Estimation of covariance components and criteria-based estimation
+    + Chpt 12: Dispersion-mean model and fourth moments
+
+
+## Methods
+
+* ANOVA
+* ML
+* REML
+* Bayesian
+
+
+## Motivation
+
+* VCE stands at the beginning of every new routine genetic analysis.
+* Mostly treated as a black box
+* Black box is a software package having certain properties
+* Model choice is greatly restricted by the properties of the black box
+
+
+## Pre-Requisites
+
+* Linear Mixed Effects Models
+* Fixed versus random effects
+
+
+## Summary I (Fixed, Random and Mixed Models)
+
+* Statistics is concerned with variability in data
+* ANOVA is a useful method to quantify and to summarise variability
+* ANOVA was originally developed for considering differences between means
+* Many of the ideas behind ANOVA are presented as linear models, mainly fixed models
