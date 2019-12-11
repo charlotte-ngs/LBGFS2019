@@ -61,7 +61,7 @@ Institute of Agricultural Sciences\\
 \vspace{15ex}
 \begin{center}
 \huge
-Solutions To Test Exam\\ \vspace{1ex}
+Test Exam\\ \vspace{1ex}
 Livestock Breeding and Genomics \\  \vspace{1ex}
 FS 2019 \\
 
@@ -155,6 +155,7 @@ tbl_geno_data_enz$Genotype <- as.factor(tbl_geno_data_enz$Genotype)
 
 Recently published research results indicate that the level of a critical enzyme is mostly determined by a single genetic locus. The locus is bi-allelic with alleles $E_1$ and $E_2$. $E_1$ is the favorite allele which increases the enzyme level and it has a frequency of $`r n_freq_e1`$. For reasons of simplicity, we assume that the Hardy-Weinberg equilibrium holds. The following plot indicates the distribution of enzyme levels accross the three genotypes for a given population of interest. 
 
+\textit{Kürzlich publizierte Forschungsergebnisse geben Hinweise, dass die produzierte Menge eines bestimmten Enzyms im wesentlichen von einem einzigen Genort bestimmt wird. Es handelt sich dabei um einen bi-allelen Genort mit den Allelen $E_1$ und $E_2$. Das Allele $E_1$ ist das Allel mit der positiven Wirkung. Es tritt mit einer Häufigkeit von $`r n_freq_e1`$ auf. Der Einfachheit halber nehmen wir an, dass für den Genort das Hardy-Weinberg-Gleichgewicht gilt. Der folgende Plot zeigt die Verteilung der Enzymlevels über die drei Genotypen.}
 
 \vspace{3ex}
 ```{r PlotGenoData, echo=FALSE, out.width='10cm', fig.align='center'}
@@ -165,6 +166,10 @@ ggplot(tbl_geno_data_enz, aes(Genotype, Value)) + geom_point()
 
 We take the mean enzyme levels as the characteristic values for a given genotype. This results in 
 
+\textit{Die mittleren Enzymlevels pro Genotyp werden als genotypische Werte für die Genotypen angenommen. Daraus resultiert dann}
+
+\vspace{3ex}
+
 ```{r MeanEnzLevel, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
 library(dplyr)
 tbl_mean_enz <- tbl_geno_data_enz %>% group_by(Genotype) %>% summarise(`Mean Enzyme Level` = round(mean(Value), digits = 2))
@@ -172,6 +177,8 @@ knitr::kable(tbl_mean_enz, booktabs = TRUE, lontable = TRUE)
 ```
 
 After re-scaling the Mean Enzyme Levels for each genotype such that the origin is exactly between the two homozygous genotypes `E1E1` and `E2E2`, we get the following genotypic values for the three genotypes.
+
+\textit{Die mittleren Enzymlevels werden so skaliert, dass sich der Nullpunkt der neuen Skala genau in der Mitte zwischen den genotypischen Werte für die homzygoten Genotypen $E_1E_1$ und $E_2E_2$ befinden.}
 
 ```{r RescaledEnzLevel, echo=FALSE, results='asis'}
 n_scale_origin <- (tbl_mean_enz %>% filter(Genotype == "E1E1") %>% select(`Mean Enzyme Level`) + tbl_mean_enz %>% filter(Genotype == "E2E2") %>% select(`Mean Enzyme Level`)) / 2
@@ -184,56 +191,16 @@ knitr::kable(tbl_mean_enz_resc, booktabs = TRUE, lontable = TRUE)
 
 \begin{enumerate}
 \item[a)] Assuming a single locus model, what are the values of $a$ and $d$ for the enzyme levels at locus $E$ and what is the population mean $\mu$?
+
+\textit{Wir nehmen ein Ein-Locus-Modell an. Was sind die Werte für $a$ und $d$ für die Enzymlevels am Locus $E$ gemäss dem Ein-Locus-Modell und wie gross ist das Populationsmittel $\mu$?}
+
 \points{`r lPointsQ1$TaskA`}
 \end{enumerate}
 
+
 \pagebreak
 
-\sol
 
-The genotypic values given in the last table of the problem corresponds to the following symbolic values
-
-```{r GenotypicValue, echo=FALSE, results='asis'}
-tbl_geno_val <- tbl_mean_enz_resc %>% 
-  select(Genotype) %>% 
-  mutate(`Genotypic Value` = c("$V_{11} = a$", "$V_{12} = d$", "$V_{22} = -a$"))
-knitr::kable(tbl_geno_val, booktabs = TRUE, longtable = TRUE)
-```
-
-Hence 
-
-```{r ValueAD, echo=FALSE, results='hide'}
-n_value_a <- tbl_mean_enz_resc %>% filter(Genotype == "E1E1") %>% select(`Genotypic Value`)
-n_value_d <- tbl_mean_enz_resc %>% filter(Genotype == "E1E2") %>% select(`Genotypic Value`)
-```
-
-$$a = `r n_value_a`$$
-and
-$$d = `r n_value_d`$$
-
-The population mean is defined as 
-
-$$\mu = V_{11} * f(E1E1) + V_{12} * f(E1E2) + V_{22} * f(E2E2)$$
-
-where $f(EiEj)$ stands for the frequency of genotype $EiEj$. From Hardy-Weinberg we know that 
-
-```{r GenoFreq, echo=FALSE, results='asis'}
-tbl_geno_freq <- tbl_mean_enz_resc %>% 
-  select(Genotype) %>% 
-  mutate(`Genotype Frequency` = c("$f(E1E1) = p^2$", "$f(E1E2) = 2pq$", "$f(E2E2) = q^2$"))
-knitr::kable(tbl_geno_freq, booktabs = TRUE, longtable = TRUE)
-```
-
-where $p = f(E1)$ the allele frequency of $E1$ which is given in the task and is $p = `r n_freq_e1`$. Because the locus $E$ is bi-allelic, we get $q = f(E2) = 1-p = `r n_freq_e2`$.
-
-Using all this, we get the population mean $\mu$ as
-
-```{r PopMean, echo=FALSE, results='hide'}
-n_pop_mean <- (n_freq_e1 - n_freq_e2) * n_value_a + 2 * n_freq_e1 * n_freq_e2 * n_value_d
-```
-
-
-$$\mu = a * p^2 + d * 2pq + (-a) * q^2 = (p-q)a + 2pqd = (`r n_freq_e1` - `r n_freq_e2`) * `r n_value_a` + 2 * `r n_freq_e1` * `r n_freq_e2` * `r n_value_d` = `r n_pop_mean`$$
 
 \clearpage
 \pagebreak
@@ -244,43 +211,7 @@ $$\mu = a * p^2 + d * 2pq + (-a) * q^2 = (p-q)a + 2pqd = (`r n_freq_e1` - `r n_f
 \points{`r lPointsQ1$TaskB`}
 \end{enumerate}
 
-\sol
-
-```{r BreedingValues, echo=FALSE, results='hide'}
-n_value_alpha <- n_value_a + (n_freq_e2 - n_freq_e1) * n_value_d
-n_bv_e1e1 <- 2 * n_freq_e2 * n_value_alpha
-n_bv_e1e2 <- (n_freq_e2 - n_freq_e1) * n_value_alpha
-n_bv_e2e2 <- -2 * n_freq_e1 * n_value_alpha
-```
-
-All breeding values depend on the allele substitution effect $\alpha$ which corresponds to 
-
-$$\alpha = a + (q-p)d = `r n_value_a` + (`r n_freq_e2` - `r n_freq_e1`) * `r n_value_d` = `r n_value_alpha`$$
-
-Breeding values are computed according to the following table
-
-```{r BvTable, echo=FALSE, results='asis'}
-tbl_bv <- tbl_mean_enz_resc %>% 
-  select(Genotype) %>% 
-  mutate(`Breeding Value` = c(paste0("$2q \\alpha = ", n_bv_e1e1, "$"),
-                              paste0("$(q-p) \\alpha = ", n_bv_e1e2, "$"),
-                              paste0("$-2p \\alpha = ", n_bv_e2e2, "$")))
-knitr::kable(tbl_bv, booktabs = TRUE, longtable = TRUE)
-```
-
-The dominance deviation is
-
-```{r DomDev, echo=FALSE, results='asis'}
-n_dom_e1e1 <- -2 * n_freq_e2^2 * n_value_d
-n_dom_e1e2 <- 2 * n_freq_e1 * n_freq_e2 * n_value_d
-n_dom_e2e2 <- -2 * n_freq_e1^2 * n_value_d
-tbl_dom <- tbl_mean_enz_resc %>% 
-  select(Genotype) %>% 
-  mutate(`Dominance Deviation` = c(paste0("$-2q^2d = ", n_dom_e1e1, "$"),
-                                   paste0("$2pqd = ", n_dom_e1e2, "$"),
-                                   paste0("$-2p^2d = ", n_dom_e2e2, "$")))
-knitr::kable(tbl_dom, booktabs = TRUE, longtable = TRUE)
-```
+\textit{Berechnen Sie die Zuchtwerte und die Dominanzabweichung für alle drei Genotypen}
 
 
 \clearpage
@@ -291,35 +222,19 @@ knitr::kable(tbl_dom, booktabs = TRUE, longtable = TRUE)
 \points{`r lPointsQ1$TaskC`}
 \end{enumerate}
 
-\sol
-
-The additive genetic variance corresponds to 
-
-```{r GeneticVariances, echo=FALSE, results='hide'}
-n_sigma_a2 <- 2 * n_freq_e1 * n_freq_e2 * n_value_alpha^2
-n_sigma_d2 <- (2 * n_freq_e1 * n_freq_e2 * n_value_d)^2
-```
-
-$$\sigma_A^2 = 2pq\alpha^2 = 2 * `r n_freq_e1` * `r n_freq_e2` * `r n_value_alpha`^2 = `r n_sigma_a2`$$
-
-$$\sigma_D^2 = (2pqd)^2 = (2 * `r n_freq_e1` * `r n_freq_e2` * `r n_value_d`)^2 = `r n_sigma_d2`$$
+\textit{Berechnen Sie die genetisch additive Varianz und die Dominanzvarianz}
 
 
 \clearpage
 \pagebreak
 
 \begin{enumerate}
-\item[d)] When two heterozygous parents have offspring, these offspring individuals can have genotypes $E1E1$, $E1E2$ or $E2E2$. When comparing the breeding values of the offspring with different genotypes, we realize that the breeding values are different. Compute all pairwise differences between the breeding values of all offspring genotypes. What is the name of the specific effect that appears in the differences of the breeding values? 
+\item[d)] When two heterozygous parents have offspring, these offspring individuals can have genotypes $E_1E_1$, $E_1E_2$ or $E_2E_2$. When comparing the breeding values of the offspring with different genotypes, we realize that the breeding values are different. Compute all pairwise differences between the breeding values of all offspring genotypes. What is the name of the specific effect that appears in the differences of the breeding values? 
 \points{`r lPointsQ1$TaskD`}
 \end{enumerate}
 
-\sol
+\textit{Eine Paarung aus zwei heterozygoten Eltern kann zu Nachkommen mit allen drei Genotypen $E_1E_1$, $E_1E_2$ or $E_2E_2$ führen. Beim Vergleich der Zuchtwerte der Nachkommen mit den verschiedenen Genotypen, realisieren wir, dass diese unterschiedlich sind. Berechnen Sie alle paar-weise Unterschiede zwischen den Zuchtwerten der Nachkommengenotypen. Wie lautet der Effekt, welcher in allen Differenzen von Zuchtwerten erscheint?}
 
-$$BV_{11} - BV_{12} = 2q\alpha - (q-p)\alpha = \alpha$$
-$$BV_{12} - BV_{22} = (q-p)\alpha - (-2p\alpha) = \alpha$$
-$$BV_{11} - BV_{22} = 2q\alpha - (-2p\alpha) = 2\alpha$$
-
-The effect $\alpha$ appears in all differences and is called __allele substitution__ effect.
 
 \clearpage
 \pagebreak
@@ -331,21 +246,16 @@ A group of farmers have decided to start a breeding organisation for [Alpaca](ht
 
 The members of the breeding organisation have a few questions with respect to the design of the planned breeding program. You as an expert in Livestock breeding are now asked to answer the following questions.
 
+\textit{Eine Gruppe von Landwirten entschliesst sich eine Zuchtorganisation für Alpacas zu gründen. In einer ersten Phase werden Tiere aus Südamerika importiert. In einer zweiten Phase entwirft die Zuchtorganisation ihr eigenes Zuchtprogramm. Die Zuchtorganisation findet heraus, dass ein Markt für Alpacawolle besteht. Von einem wirtschaftlichen Standpunkt aus sind dabei die Merkmale Wollertrag und Wollqualität sehr wichtig, damit die Wolle verkauft werden kann.
+
+Die Mitglieder der Zuchtorganisation haben ein paar Fragen betreffend der Planung des Zuchtprogramms. Sie als Expertinnen und Experten auf dem Gebiet der Nutztierzucht sind gebeten die folgenden Fragen zu beantworten.}
 
 \begin{enumerate}
 \item[a)] The breeding organisation wants to increase wool yield. To do that they plan to get the weight of the wool of every male animal at the age of two years. The male animals with the highest wool weight at the age of two years are selected to be sires of the future generation. The female animals are mated to the sires randomly. Do you think this is a good strategy? Please reason about your answer by providing facts from Livestock Breeding. Could you suggest some improvements to the planned breeding program of the alpaca breeders. 
 \points{`r lPointsQ2$TaskA`}
 \end{enumerate}
 
-\sol
-
-* The strategy is not very good, because parents do not pass phenotypes to their offspring but random samples of their alleles, hence selection should not be based on phenotypic values.
-* The measurements are done only at two years of age, which is probably very late. It would be better to have observations earlier in the life of a selection candidate.
-* Only male animals are measured and selected, the same should be done on the female side.
-* Animals are related, this should be recorded as important information in a pedigree
-* Breeding values should be predicted based on a BLUP animal model which uses all information in an optimal way
-* Selection decisions should be based for males and females on the ranking according to the predicted breeding values
-
+\textit{}
 
 \clearpage
 \pagebreak
