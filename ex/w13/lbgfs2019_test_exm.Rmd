@@ -193,7 +193,6 @@ knitr::kable(tbl_mean_enz_resc, booktabs = TRUE, lontable = TRUE)
 \item[a)] Assuming a single locus model, what are the values of $a$ and $d$ for the enzyme levels at locus $E$ and what is the population mean $\mu$?
 
 \textit{Wir nehmen ein Ein-Locus-Modell an. Was sind die Werte für $a$ und $d$ für die Enzymlevels am Locus $E$ gemäss dem Ein-Locus-Modell und wie gross ist das Populationsmittel $\mu$?}
-
 \points{`r lPointsQ1$TaskA`}
 \end{enumerate}
 
@@ -208,10 +207,10 @@ knitr::kable(tbl_mean_enz_resc, booktabs = TRUE, lontable = TRUE)
 
 \begin{enumerate}
 \item[b)] Compute the breeding values and the dominance deviations for all three genotypes
-\points{`r lPointsQ1$TaskB`}
-\end{enumerate}
 
 \textit{Berechnen Sie die Zuchtwerte und die Dominanzabweichung für alle drei Genotypen}
+\points{`r lPointsQ1$TaskB`}
+\end{enumerate}
 
 
 \clearpage
@@ -219,10 +218,11 @@ knitr::kable(tbl_mean_enz_resc, booktabs = TRUE, lontable = TRUE)
 
 \begin{enumerate}
 \item[c)] Compute the genetic additive variance and the dominance variance.
+
+\textit{Berechnen Sie die genetisch additive Varianz und die Dominanzvarianz}
 \points{`r lPointsQ1$TaskC`}
 \end{enumerate}
 
-\textit{Berechnen Sie die genetisch additive Varianz und die Dominanzvarianz}
 
 
 \clearpage
@@ -230,10 +230,11 @@ knitr::kable(tbl_mean_enz_resc, booktabs = TRUE, lontable = TRUE)
 
 \begin{enumerate}
 \item[d)] When two heterozygous parents have offspring, these offspring individuals can have genotypes $E_1E_1$, $E_1E_2$ or $E_2E_2$. When comparing the breeding values of the offspring with different genotypes, we realize that the breeding values are different. Compute all pairwise differences between the breeding values of all offspring genotypes. What is the name of the specific effect that appears in the differences of the breeding values? 
+
+\textit{Eine Paarung aus zwei heterozygoten Eltern kann zu Nachkommen mit allen drei Genotypen $E_1E_1$, $E_1E_2$ or $E_2E_2$ führen. Beim Vergleich der Zuchtwerte der Nachkommen mit den verschiedenen Genotypen, realisieren wir, dass diese unterschiedlich sind. Berechnen Sie alle paar-weise Unterschiede zwischen den Zuchtwerten der Nachkommengenotypen. Wie lautet der Effekt, welcher in allen Differenzen von Zuchtwerten erscheint?}
 \points{`r lPointsQ1$TaskD`}
 \end{enumerate}
 
-\textit{Eine Paarung aus zwei heterozygoten Eltern kann zu Nachkommen mit allen drei Genotypen $E_1E_1$, $E_1E_2$ or $E_2E_2$ führen. Beim Vergleich der Zuchtwerte der Nachkommen mit den verschiedenen Genotypen, realisieren wir, dass diese unterschiedlich sind. Berechnen Sie alle paar-weise Unterschiede zwischen den Zuchtwerten der Nachkommengenotypen. Wie lautet der Effekt, welcher in allen Differenzen von Zuchtwerten erscheint?}
 
 
 \clearpage
@@ -252,31 +253,21 @@ Die Mitglieder der Zuchtorganisation haben ein paar Fragen betreffend der Planun
 
 \begin{enumerate}
 \item[a)] The breeding organisation wants to increase wool yield. To do that they plan to get the weight of the wool of every male animal at the age of two years. The male animals with the highest wool weight at the age of two years are selected to be sires of the future generation. The female animals are mated to the sires randomly. Do you think this is a good strategy? Please reason about your answer by providing facts from Livestock Breeding. Could you suggest some improvements to the planned breeding program of the alpaca breeders. 
+
+\textit{Die Zuchtorganisation will den Wollertrag der Tiere steigern. Dazu planen sie das Wollgewicht der männlichen Tiere im Alter von zwei Jahren zu erfassen. Die männlichen Tiere mit dem höchsten Wollgewicht werden als Väter der zukünftigen Generation ausgewählt. Die weiblichen Tiere werden zufällig ausgewählt. Wie beurteilen Sie diese Strategie? Bitte begründen Sie Ihre Antwort anhand von Fakten aus der Nutztierzucht. Können Sie Verbesserungen des geplanten Zuchtprogramms vorschlagen.}
 \points{`r lPointsQ2$TaskA`}
 \end{enumerate}
 
-\textit{}
 
 \clearpage
 \pagebreak
 
 \begin{enumerate}
 \item[b)] During the negociations between the farmers and the buyers of the wool, it became clear, that the quality of the wool is a second important criterion. The trait `fiber diameter` is used to describe the wool quality. Now the Alpaca breeder want to improve their population with respect to the two traits `wool yield` and `fiber diameter`. What are the different selection strategies when a population should be improved with respect to several traits? Please specify three selection strategies. Which of the three strategies do you recommend to the Alpaca breeders? What is the reason for your recommendation?  
+
+\textit{Bei den Verhandlungen der Alpacazüchter mit den Abnehmern der Wolle wird klar, dass die Wollqualität auch eine wichtige Eigenschaft ist. Das Merkmal `Faserdurchmesser` wird verwendet um die Qualität der Wolle zu beschreiben. Basierend auf diesen Erkenntnissen wollen die Alpacazüchter ihre Tiere in den zwei Merkmalen Wollertrag und Wollqualität verbessern. Welche Selektionsstrategien existieren für die Verbesserung einer Population in mehreren Merkmalen? Bitte geben Sie drei Strategien. Welche der drei Strategien empfehlen Sie den Alpcazüchtern? Bitte begründen Sie Ihre Empfehlung.}
 \points{`r lPointsQ2$TaskB`}
 \end{enumerate}
-
-\sol
-
-1. Tandem selection
-2. Selection based on independent selection thresholds
-3. Selection based on dependent selection thresholds which corresponds to a selection index using multivariate BLUP breeding values
-
-* The best is strategy 3.
-* genetic relationships (correlations) between traits in the aggregate genotype are considered correctly 
-* relationships between information sources in the index are considered correctly
-* information from auxiliary traits can be used
-* differences in economic relevance of different traits are considered correctly
-* expected selection responses can be estimated and thereby quantified
 
 
 \clearpage
@@ -284,6 +275,8 @@ Die Mitglieder der Zuchtorganisation haben ein paar Fragen betreffend der Planun
 
 \begin{enumerate}
 \item[c)] The breeding organisation has decided to define an aggregate genotype with the two traits of `wool yield` and `fiber diameter`. The economic values for the two traits are given in the table below. The aggregate genotype is approximated using an index with the predicted breeding values for the same traits `wool yield` and `fiber diameter` as information sources. The breeding values are predicted using a multivariate BLUP animal model. What are the index weights with which the information sources are used in the index.
+
+\textit{}
 \points{`r lPointsQ2$TaskC`}
 \end{enumerate}
 

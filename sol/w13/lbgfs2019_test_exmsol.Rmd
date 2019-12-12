@@ -827,7 +827,7 @@ cat("$$\n")
 ### Model components
 The animal model is defined as 
 
-$$y = X \beta + Zu+ e$$
+$$y = X \beta + Zu + e$$
 
 
 \begin{tabular}{lll}
