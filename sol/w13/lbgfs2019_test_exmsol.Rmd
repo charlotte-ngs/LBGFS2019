@@ -187,7 +187,6 @@ knitr::kable(tbl_mean_enz_resc, booktabs = TRUE, lontable = TRUE)
 \points{`r lPointsQ1$TaskA`}
 \end{enumerate}
 
-\pagebreak
 
 \sol
 

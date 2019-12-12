@@ -247,9 +247,9 @@ A group of farmers have decided to start a breeding organisation for [Alpaca](ht
 
 The members of the breeding organisation have a few questions with respect to the design of the planned breeding program. You as an expert in Livestock breeding are now asked to answer the following questions.
 
-\textit{Eine Gruppe von Landwirten entschliesst sich eine Zuchtorganisation für Alpacas zu gründen. In einer ersten Phase werden Tiere aus Südamerika importiert. In einer zweiten Phase entwirft die Zuchtorganisation ihr eigenes Zuchtprogramm. Die Zuchtorganisation findet heraus, dass ein Markt für Alpacawolle besteht. Von einem wirtschaftlichen Standpunkt aus sind dabei die Merkmale Wollertrag und Wollqualität sehr wichtig, damit die Wolle verkauft werden kann.
+\textit{Eine Gruppe von Landwirten entschliesst sich eine Zuchtorganisation für Alpacas zu gründen. In einer ersten Phase werden Tiere aus Südamerika importiert. In einer zweiten Phase entwirft die Zuchtorganisation ihr eigenes Zuchtprogramm. Die Zuchtorganisation findet heraus, dass ein Markt für Alpacawolle besteht. Von einem wirtschaftlichen Standpunkt aus sind dabei die Merkmale Wollertrag und Wollqualität sehr wichtig, damit die Wolle verkauft werden kann.}
 
-Die Mitglieder der Zuchtorganisation haben ein paar Fragen betreffend der Planung des Zuchtprogramms. Sie als Expertinnen und Experten auf dem Gebiet der Nutztierzucht sind gebeten die folgenden Fragen zu beantworten.}
+\textit{Die Mitglieder der Zuchtorganisation haben ein paar Fragen betreffend der Planung des Zuchtprogramms. Sie als Expertinnen und Experten auf dem Gebiet der Nutztierzucht sind gebeten die folgenden Fragen zu beantworten.}
 
 \begin{enumerate}
 \item[a)] The breeding organisation wants to increase wool yield. To do that they plan to get the weight of the wool of every male animal at the age of two years. The male animals with the highest wool weight at the age of two years are selected to be sires of the future generation. The female animals are mated to the sires randomly. Do you think this is a good strategy? Please reason about your answer by providing facts from Livestock Breeding. Could you suggest some improvements to the planned breeding program of the alpaca breeders. 
@@ -276,7 +276,7 @@ Die Mitglieder der Zuchtorganisation haben ein paar Fragen betreffend der Planun
 \begin{enumerate}
 \item[c)] The breeding organisation has decided to define an aggregate genotype with the two traits of `wool yield` and `fiber diameter`. The economic values for the two traits are given in the table below. The aggregate genotype is approximated using an index with the predicted breeding values for the same traits `wool yield` and `fiber diameter` as information sources. The breeding values are predicted using a multivariate BLUP animal model. What are the index weights with which the information sources are used in the index.
 
-\textit{}
+\textit{Die Zuchtorganisation hat sich entschieden einen Gesamtzuchtwert bestehend aus den Merkmalen Wollertrag und Faserdurchmesser zu definieren. Die wirtschaftlichen Gewichte für diese Merkmale sind in der nachfolgenden Tabelle aufgelistet. Der Gesamtzuchtwert wird mit einem Index geschätzt, welcher aus den geschätzten Zuchtwerten für die Merkmale Wollertrag und Faserdurchmesser besteht. Die Zuchtwerte werden anhand eines multivariaten BLUP Tiermodells geschätzt. Wie lauten die Indexgewichte mit welchen die Informationen im Index gewichtet werden müssen?}
 \points{`r lPointsQ2$TaskC`}
 \end{enumerate}
 
@@ -286,12 +286,6 @@ tbl_ev_wool <- tibble::tibble(Trait = c("Wool Yield", "Fibre Diameter"),
 knitr::kable(tbl_ev_wool, booktabs = TRUE, longtable = TRUE)
 ```
 
-\sol
-
-Because the same traits are used in the aggregate genotype and in the index and because the information sources used in the selection index are based on BLUP predictions, the index weights are the same as the econmic values. Hence 
-
-$$b = w = \left[ \begin{array}{c} 12.75 \\ -3.20 \end{array} \right]$$
-
 \clearpage
 \pagebreak
 
@@ -299,6 +293,8 @@ $$b = w = \left[ \begin{array}{c} 12.75 \\ -3.20 \end{array} \right]$$
 cat(cnt$out(ps_suffix = "Own Performance and Progeny Records"), "\n")
 ```
 Given is the following data set
+
+\textit{Gegeben ist der folgende Datensatz.}
 
 ```{r BvPredData, echo=FALSE, results='hide'}
 set.seed(1521)
@@ -384,36 +380,18 @@ knitr::kable(tbl_dat_exmp3, booktabs = TRUE, longtable = TRUE)
 
 The variance components $\sigma_e^2$ (residual) and $\sigma_u^2$ (genetic) are 
 
+\textit{Die Varianzkomponenten $\sigma_e^2$ (Residuen) und $\sigma_u^2$ (genetisch) betragen}
+
 $$\sigma_e^2 = `r n_sigmae2`$$
 $$\sigma_u^2 = `r n_sigmaa2`$$
 
 
 \begin{enumerate}
 \item[a)] Predict the breeding values and the corresponding accuracies of the predicted breeding values based on the animals own performance. The population mean $\mu$ is taken as the average of all observations, $\mu = `r round(n_mu, digits = 2)`$. 
+
+\textit{Schätzen Sie die Zuchtwerte und berechnen Sie die Genauigkeiten der geschätzen Zuchtwerte aufgrund der Eigenleistungen der Tiere. Das Populationsmittel $\mu$ entspricht dem Mittelwert aller Beobachtungen, $\mu = `r round(n_mu, digits = 2)`$.}
 \points{`r lPointsQ3$TaskA`}
 \end{enumerate}
-
-\sol
-
-The predicted breeding value $\hat{u}_i$ based on an own performance is
-
-$$\hat{u}_i = h^2(y_i - \mu)$$
-where $$h^2 = \frac{\sigma_u^2}{\sigma_u^2 + \sigma_e^2} = \frac{`r n_sigmaa2`}{`r n_sigmaa2` + `r n_sigmae2`} = `r n_h2`$$
-
-The accuracies of all predicted breeding values correspond to the correlation $r_{u, y}$ between the true breeding value and the information source $y$. 
-
-$$r_{u,y} = \frac{cov(u,y)}{\sigma_u \sigma_y} = \frac{\sigma_u^2}{\sigma_u \sigma_y} = \frac{\sigma_u}{\sigma_y} = h = \sqrt{`r n_h2`} = `r sqrt(n_h2)`$$
-
-The results are shown in the following table
-
-```{r PredBvOwnPerf, echo=FALSE, results='asis'}
-tbl_predbv_ownperf <- tbl_dat_exmp3 %>% 
-  mutate(`Predicted Breeding Value` = n_h2 * (Observation - n_mu)) %>% 
-  mutate(Accuracy = sqrt(n_h2))  %>% 
-  select(Animal, `Predicted Breeding Value`, Accuracy)
-knitr::kable(tbl_predbv_ownperf, booktabs = TRUE, longtable = TRUE)
-```
-
 
 
 \clearpage
@@ -425,46 +403,11 @@ vec_sire_idx <- unique(tbl_ped_exmp3$Sire)
 
 \begin{enumerate}
 \item[b)] Predict the breeding values of the sires $`r vec_sire_idx[1]`$, $`r vec_sire_idx[2]`$ and $`r vec_sire_idx[3]`$ based on the performance records of their progeny using the regression method. Indicate for each breeding value the corresponding accuracy.
+
+\textit{Schätzen Sie die Zuchtwerte der Väter $`r vec_sire_idx[1]`$, $`r vec_sire_idx[2]`$ und $`r vec_sire_idx[3]`$ basierend auf den Leistungen der Nachkommen mittels der Regressionsmethode. Geben Sie für jeden geschätzten Zuchtwert die entsprechende Genauigkeit an.}
 \points{`r lPointsQ3$TaskB`}
 \end{enumerate}
 
-
-\sol
-
-The predicted breeding value $\hat{u}_i$ based on the progeny performance is
-
-$$\hat{u}_i = b(\bar{y_i} - \mu)$$
-where $$b = \frac{2n}{n + k} \text{, } \mu = `r round(n_mu, digits = 2)`$$
-
-with $$k = \frac{4 - h^2}{h^2} = \frac{4 - `r n_h2`}{`r n_h2`} = `r n_k_sire`$$
-
-
-First the number of progeny per sire is determined
-
-```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
-### # count number of progeny per sire
-tbl_dat_exmp3_nrprog_count <- tbl_dat_exmp3 %>%
-  group_by(Sire) %>%
-  summarise(`Number of Progeny` = n())
-
-### # compute average observation of progeny per sire
-tbl_dat_exmp3_meanobs <- tbl_dat_exmp3 %>%
-  group_by(Sire) %>%
-  summarise(`Mean Observation` = mean(Observation))
-
-tbl_dat_exmp3_nprogsire <- tbl_dat_exmp3_meanobs %>%
-  inner_join(tbl_dat_exmp3_nrprog_count)
-knitr::kable(tbl_dat_exmp3_nprogsire, booktabs = TRUE, longtable = TRUE)
-```
-
-Adding the predicted breeding values
-
-```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
-tbl_dat_exmp3_bvprog <- tbl_dat_exmp3_nprogsire %>%
-  mutate(`Predicted Breeding Value` = round(2 * `Number of Progeny`/(`Number of Progeny` + n_k_sire) * (`Mean Observation` - n_mu), digits = 3)) %>%
-  mutate(Accuracy = round(sqrt(`Number of Progeny`/(`Number of Progeny` + n_k_sire)), digits = 2))
-knitr::kable(tbl_dat_exmp3_bvprog)
-```
 
 
 \clearpage
@@ -473,38 +416,10 @@ knitr::kable(tbl_dat_exmp3_bvprog)
 
 \begin{enumerate}
 \item[c)] What is the reason for the difference between the accuracies found in Problem 3a and 3b? How many offspring does a sire need that the accuracy of its predicted breeding value based on progeny records will be bigger than the accuracy in 3a? 
+
+\textit{Wo liegen die Gründe für die unterschiedlichen Genauigkeiten in den Aufgaben 3a und 3b? Wieviele Nachkommen muss ein Vater haben, damit die Genauigkeit des geschätzten Zuchtwerts aufgrund von Nachkommenleistungen grösser wird als unter 3a?}
 \points{`r lPointsQ3$TaskC`}
 \end{enumerate}
-
-\sol
-
-* In 3a the accuracies are all constant and depend only on $h^2$
-* In 3b, the accuracies are also influenced by the number of offspring, but for low number of progeny, accuracies are lower
-* The number of progeny that is required can be computed as
-
-$$\sqrt{\frac{n}{n + k}} = h$$
-
-$$\frac{n}{n + k} = h^2$$
-
-$$\frac{n}{n + (4-h^2)/h^2} = h^2$$
-
-$$\frac{nh^2}{nh^2 + 4-h^2} = h^2$$
-
-$$nh^2 = h^2(nh^2+ (4-h^2))$$
-
-$$nh^2 = nh^4+ 4h^2-h^4$$
-
-$$n = nh^2+ 4-h^2$$
-
-$$n - nh^2 = 4-h^2$$
-
-$$n(1 - h^2) = 4-h^2$$
-
-```{r, echo=FALSE, results='hide'}
-n_prob3c <- (4-n_h2)/(1-n_h2)
-```
-
-$$n = \frac{4-h^2}{1 - h^2} = \frac{4 - `r n_h2`}{1 - `r n_h2`} = `r n_prob3c`$$
 
 \clearpage
 \pagebreak
@@ -515,205 +430,27 @@ cat(cnt$out(ps_suffix = "BLUP Models"), "\n")
 
 Given is the same data set as in Problem 3. 
 
+\textit{Gegeben ist der gleiche Datensatz, wie in der Aufgabe 3.}
+
 ```{r, echo=FALSE, results='asis'}
 knitr::kable(tbl_dat_exmp3, booktabs = TRUE, longtable = TRUE)
 ```
 
 The variance components $\sigma_e^2$ (residual) and $\sigma_u^2$ (genetic) are 
 
+\textit{Die Varianzkomponenten betragen}
+
 $$\sigma_e^2 = `r n_sigmae2`$$
 $$\sigma_u^2 = `r n_sigmaa2`$$
 
 \begin{enumerate}
 \item[a)] Predict the breeding values based on the data given above, using a sire model. Herds are treated as fixed effects and sire breeding values are modeled as random effects. Please specify all model components including expected values and variances for the random components. Set up the mixed model equations to get solutions for the predicted breeding values. 
+
+\textit{Schätzen Sie die Zuchtwerte aufgrund des gegebenen Datensatzes mit einem Vatermodell. Herden werden als fixe Effekte behandelt und Vatereffekte werden als zufällige Effekte modelliert. Bitte geben sie alle Modellkomonenten inklusive der Erwartungswerte und der Varianz der zufälligen Komponenten an. Stellen Sie die Mischmodellgleichungen auf und lösen Sie diese nach den geschätzen fixen Effekte und nach den geschätzten Vatereffekten.}
 \points{`r lPointsQ4$TaskA`}
 \end{enumerate}
 
 
-\sol
-
-### Model components
-The sire model is defined as 
-
-$$y = X \beta + Z_ss + e$$
-
-
-\begin{tabular}{lll}
-where  &  $y$      &  vector of length $`r n_nr_obs`$ of observations \\
-       &  $\beta$  &  vector of length $`r n_nr_herd`$ of fixed herd effects  \\
-       &  $X$      &  design matrix linking fixed effects to observations \\
-       &  $s$      &  vector of length $`r n_nr_sire_exmp3pedext`$ of sire breeding values \\
-       &  $Z_s$    &  design matrix linking sire breeding values to observations \\
-       &  $e$      &  vector of length $`r n_nr_obs`$ of random rest effects
-\end{tabular}
-
-The vectors of the model are
-
-```{r SireModelComp, echo=FALSE, results='asis'}
-mat_y_sire <- tbl_dat_exmp3$Observation
-vec_beta_sire <- rmddochelper::vecGetVecElem(psBaseElement = "\\beta", pnVecLen = n_nr_herd, psResult = "latex")
-# vec_bv_sire <- rmddochelper::vecGetVecElem(psBaseElement = "s", pnVecLen = n_nr_sire_exmp3pedext, psResult = "latex")
-vec_bv_sire <- sapply(unique(tbl_ped_exmp3$Sire), function(x) paste0("s_{", x, "}"), USE.NAMES = FALSE)
-vec_res <- rmddochelper::vecGetVecElem(psBaseElement = "e", pnVecLen = n_nr_obs, psResult = "latex")
-cat("$$\n")
-cat("y = \\left[")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_y_sire), collapse = "\n"), "\n")
-cat("\\right] \\text{, }")
-cat("\\beta = \\left[")
-cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_beta_sire), collapse = "\n"), "\n")
-cat("\\right] \\text{, }")
-cat("s = \\left[")
-cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_bv_sire), collapse = "\n"), "\n")
-cat("\\right] \\text{, }")
-cat("e = \\left[")
-cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_res), collapse = "\n"), "\n")
-cat("\\right]")
-cat("$$\n")
-```
-
-The design matrices
-
-```{r SireModelDesignMat, echo=FALSE, results='asis'}
-mat_x_model <- mat_x[,-1]
-mat_z_sire <- matrix(c(1, 0, 0,
-                       1, 0, 0,
-                       0, 1, 0,
-                       0, 0, 1), nrow = n_nr_obs, byrow = TRUE)
-cat("$$\n")
-cat("X = \\left[")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_x_model, pnDigits = 0), collapse = "\n"), "\n")
-cat("\\right] \\text{, }")
-cat("Z_s = \\left[")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_z_sire, pnDigits = 0), collapse = "\n"), "\n")
-cat("\\right]")
-cat("$$\n")
-```
-
-
-
-### Expected Values and Variances of Random Components
-
-$$E\left[ \begin{array}{c} y \\ s \\ e\end{array}\right] = \left[ \begin{array}{c} X \beta \\ 0 \\ 0 \end{array}\right]$$
-
-$$var\left[ \begin{array}{c} y \\ s \\ e\end{array}\right] = 
-\left[ \begin{array}{ccc} 
-          V         &  Z_sG  &  0 \\ 
-          GZ_s^T  &  G     &  0 \\
-          0         &  0     &  R
-       \end{array}
-\right]
-$$
-where $R = I * \sigma_e^2$, $G = A_s*\sigma_s^2$, $V = Z_sGZ_s^T + R$ and $A_s$ is the numerator relationship matrix between the sires given below and 
-$$\sigma_s^2 = {1\over 4}\sigma_u^2$$
-```{r NumRelMatSire, echo=FALSE, results='asis'}
-mat_a_sire <- matrix(c(1, 0,   0,
-                       0, 1,   0.5,
-                       0, 0.5, 1), nrow = n_nr_sire_exmp3pedext, byrow = TRUE)
-cat("$$\n")
-cat("A_s = \\left[")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_a_sire)))
-cat("\\right]")
-cat("$$\n")
-```
-
-
-### Mixed Model Equations
-MME for the sire model are
-
-$$
-\left[
-  \begin{array}{lr}
-  X^TX  &  X^TZ_s \\
-  Z_s^TX  &  Z_s^TZ_s + \lambda_s * A_s^{-1}
-  \end{array}
-\right] 
-\left[
-  \begin{array}{c}
-  \widehat{\beta}  \\
-  \widehat{s}
-  \end{array}
-\right]
-=
-\left[
-  \begin{array}{c}
-  X^Ty  \\
-  Z_s^Ty
-  \end{array}
-\right]
-$$
-
-The single components of MME are
-
-```{r MmeSireComp, echo=FALSE, results='asis'}
-### # coefficient matrix
-n_lambda_sire <- n_sigmae2/n_sigmas2
-mat_xtx <- crossprod(mat_x_model)
-mat_xtz_sire <- crossprod(mat_x_model, mat_z_sire)
-mat_ztz_sire <- crossprod(mat_z_sire)
-mat_ainv_sire <- solve(mat_a_sire)
-mat_ztz_sire_ainv_sire_lambda <- mat_ztz_sire + n_lambda_sire * mat_ainv_sire
-mat_coef_sire <- rbind(cbind(mat_xtx, mat_xtz_sire),cbind(t(mat_xtz_sire), mat_ztz_sire_ainv_sire_lambda))
-### # rhs
-mat_xty_sire <- crossprod(mat_x_model, mat_y_sire)
-mat_zty_sire <- crossprod(mat_z_sire, mat_y_sire)
-mat_rhs_sire <- rbind(mat_xty_sire, mat_zty_sire)
-### # solution
-mat_sol_sire <- solve(mat_coef_sire, mat_rhs_sire)
-
-### # show the components
-cat("$$\n")
-cat("X^TX = \\left[ \n")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_xtx, pnDigits = 0)))
-cat("\\right] \\text{, } \n")
-cat("X^TZ = \\left[ \n")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_xtz_sire, pnDigits = 0)))
-cat("\\right] \\text{, } \n")
-cat("Z^TZ = \\left[ \n")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_ztz_sire, pnDigits = 0)))
-cat("\\right] \\text{, } \n")
-cat("\\lambda_s = \\frac{\\sigma_e^2}{\\sigma_s^2} = \\frac{", n_sigmae2, "}{", n_sigmas2, "} = ", n_lambda_sire, sep = "")
-cat("$$\n")
-### # A inverse for sires
-cat("$$\n")
-cat("A_s^{-1} = \\left[ \n")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_ainv_sire, pnDigits = 4)))
-cat("\\right] \n")
-cat("$$\n")
-```
-
-Putting all mixed model equations together leads to
-
-```{r MmeSireComplete, echo=FALSE, results='asis'}
-vec_beta_hat_sire <- rmddochelper::vecGetVecElem(psBaseElement = "\\widehat{\\beta}", pnVecLen = n_nr_herd, psResult = "latex")
-vec_bv_hat_sire <- sapply(unique(tbl_ped_exmp3$Sire), function(x) paste0("\\widehat{s}_{", x, "}"), USE.NAMES = FALSE)
-
-cat("$$\n")
-cat("\\left[ \n")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_coef_sire, pnDigits = 2)))
-cat("\\right] \n")
-cat("\\left[ \n")
-cat(paste(rmddochelper::sConvertVectorToLaTexArray(c(vec_beta_hat_sire, vec_bv_hat_sire)), collapse = "\n"), "\n")
-cat("\\right] \n")
-cat("= \n")
-cat("\\left[ \n")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(rbind(mat_xty_sire, mat_zty_sire), pnDigits = 2), collapse = "\n"), "\n")
-cat("\\right] \n")
-cat("$$\n")
-```
-
-The solution
-
-```{r MmeSireSol, echo=FALSE, results='asis'}
-cat("$$\n")
-cat("\\left[ \n")
-cat(paste(rmddochelper::sConvertVectorToLaTexArray(c(vec_beta_hat_sire, vec_bv_hat_sire)), collapse = "\n"), "\n")
-cat("\\right] \n")
-cat("= \n")
-cat("\\left[ \n")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_sol_sire, pnDigits = 4), collapse = "\n"), "\n")
-cat("\\right] \n")
-cat("$$\n")
-```
 
 
 \clearpage
@@ -722,194 +459,11 @@ cat("$$\n")
 
 \begin{enumerate}
 \item[b)] Predict the breeding values based on the data given above, using an animal model. Herds are treated as fixed effects and breeding values are modeled as random effects. Please specify all model components including expected values and variances for the random components. Set up the mixed model equations to get solutions for the predicted breeding values.  
+
+\textit{Schätzen Sie die Zuchtwerte mit den gegebenen Daten aufgrund eines Tiermodells. Herden werden als fixe Effekte behandelt und Zuchtwerte der Tiere werden als zufällige Effekte modelliert. Geben Sie alle Modellkomponenten inklusive der Erwartungswerte und der Varianzen der zufälligen Effekte an. Stellen Sie die Mischmodellgleichungen auf und lösen Sie diese nach den unbekannten Grössen im Modell.}
 \points{`r lPointsQ4$TaskB`}
 \end{enumerate}
 
-\sol
-
-### Model components
-The animal model is defined as 
-
-$$y = X \beta + Zu+ e$$
-
-
-\begin{tabular}{lll}
-where  &  $y$      &  vector of length $`r n_nr_obs`$ of observations \\
-       &  $\beta$  &  vector of length $`r n_nr_herd`$ of fixed herd effects  \\
-       &  $X$      &  design matrix linking fixed effects to observations \\
-       &  $u$      &  vector of length $`r n_nr_ani_exmp3pedext`$ of animal breeding values \\
-       &  $Z$      &  design matrix linking animal breeding values to observations \\
-       &  $e$      &  vector of length $`r n_nr_obs`$ of random rest effects
-\end{tabular}
-
-The vectors of the model are
-
-```{r animalModelComp, echo=FALSE, results='asis'}
-mat_y_animal <- tbl_dat_exmp3$Observation
-vec_beta_animal <- rmddochelper::vecGetVecElem(psBaseElement = "\\beta", pnVecLen = n_nr_herd, psResult = "latex")
-vec_bv_animal <- rmddochelper::vecGetVecElem(psBaseElement = "u", pnVecLen = n_nr_ani_exmp3pedext, psResult = "latex")
-vec_res <- rmddochelper::vecGetVecElem(psBaseElement = "e", pnVecLen = n_nr_obs, psResult = "latex")
-cat("$$\n")
-cat("y = \\left[")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_y_animal), collapse = "\n"), "\n")
-cat("\\right] \\text{, }")
-cat("\\beta = \\left[")
-cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_beta_animal), collapse = "\n"), "\n")
-cat("\\right] \\text{, }")
-cat("a = \\left[")
-cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_bv_animal), collapse = "\n"), "\n")
-cat("\\right] \\text{, }")
-cat("e = \\left[")
-cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_res), collapse = "\n"), "\n")
-cat("\\right]")
-cat("$$\n")
-```
-
-The design matrices
-
-```{r animalModelDesignMat, echo=FALSE, results='asis'}
-mat_x_model <- mat_x[,-1]
-mat_z_animal <- cbind(matrix(0, nrow = n_nr_obs, ncol = n_nr_founder_exmp3pedext),
-                      diag(1,nrow = n_nr_obs))
-cat("$$\n")
-cat("X = \\left[")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_x_model, pnDigits = 0), collapse = "\n"), "\n")
-cat("\\right] \\text{, }")
-cat("Z = \\left[")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_z_animal, pnDigits = 0), collapse = "\n"), "\n")
-cat("\\right]")
-cat("$$\n")
-```
-
-
-
-### Expected Values and Variances of Random Components
-
-$$E\left[ \begin{array}{c} y \\ u \\ e\end{array}\right] = \left[ \begin{array}{c} X \beta \\ 0 \\ 0 \end{array}\right]$$
-
-$$var\left[ \begin{array}{c} y \\ u \\ e\end{array}\right] = 
-\left[ \begin{array}{ccc} 
-          V     &  ZG  &  0 \\ 
-          GZ^T  &  G   &  0 \\
-          0     &  0   &  R
-       \end{array}
-\right]
-$$
-where $R = I * \sigma_e^2$, $G = A*\sigma_u^2$, $V = ZGZ^T + R$ and $A$ is the numerator relationship matrix between the animals given below  
-
-```{r NumRelMatanimal, echo=FALSE, results='asis'}
-ped_exmp3pedext <- pedigreemm::pedigree(sire = tbl_ped_exmp3_ext$Sire,
-                                        dam  = tbl_ped_exmp3_ext$Dam,
-                                        label = as.character(tbl_ped_exmp3_ext$Animal))
-mat_a_animal <- as.matrix(pedigreemm::getA(ped = ped_exmp3pedext))
-
-cat("$$\n")
-cat("A = \\left[")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_a_animal, pnDigits = 4)))
-cat("\\right]")
-cat("$$\n")
-```
-
-
-### Mixed Model Equations
-MME for the animal model are
-
-$$
-\left[
-  \begin{array}{lr}
-  X^TX  &  X^TZ \\
-  Z^TX  &  Z^TZ + \lambda * A^{-1}
-  \end{array}
-\right] 
-\left[
-  \begin{array}{c}
-  \widehat{\beta}  \\
-  \widehat{a}
-  \end{array}
-\right]
-=
-\left[
-  \begin{array}{c}
-  X^Ty  \\
-  Z^Ty
-  \end{array}
-\right]
-$$
-
-The single components of MME are
-
-```{r MmeanimalComp, echo=FALSE, results='asis'}
-### # coefficient matrix
-n_lambda_animal <- n_sigmae2/n_sigmaa2
-mat_xtx <- crossprod(mat_x_model)
-mat_xtz_animal <- crossprod(mat_x_model, mat_z_animal)
-mat_ztz_animal <- crossprod(mat_z_animal)
-mat_ainv_animal <- solve(mat_a_animal)
-mat_ztz_animal_ainv_animal_lambda <- mat_ztz_animal + n_lambda_animal * mat_ainv_animal
-mat_coef_animal <- rbind(cbind(mat_xtx, mat_xtz_animal),cbind(t(mat_xtz_animal), mat_ztz_animal_ainv_animal_lambda))
-### # rhs
-mat_xty_animal <- crossprod(mat_x_model, mat_y_animal)
-mat_zty_animal <- crossprod(mat_z_animal, mat_y_animal)
-mat_rhs_animal <- rbind(mat_xty_animal, mat_zty_animal)
-### # solution
-mat_sol_animal <- solve(mat_coef_animal, mat_rhs_animal)
-
-### # show the components
-cat("$$\n")
-cat("X^TX = \\left[ \n")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_xtx, pnDigits = 0)))
-cat("\\right] \\text{, } \n")
-cat("X^TZ = \\left[ \n")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_xtz_animal, pnDigits = 0)))
-cat("\\right] \\text{, } \n")
-cat("Z^TZ = \\left[ \n")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_ztz_animal, pnDigits = 0)))
-cat("\\right] \n")
-cat("$$\n")
-cat("$$\n")
-cat("\\lambda = \\frac{\\sigma_e^2}{\\sigma_u^2} = \\frac{", n_sigmae2, "}{", n_sigmaa2, "} = ", n_lambda_animal, sep = "")
-cat("$$\n")
-### # A inverse for animals
-cat("$$\n")
-cat("A^{-1} = \\left[ \n")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_ainv_animal, pnDigits = 4)))
-cat("\\right] \n")
-cat("$$\n")
-```
-
-Putting all mixed model equations together leads to
-
-```{r MmeanimalComplete, echo=FALSE, results='asis'}
-vec_beta_hat_animal <- rmddochelper::vecGetVecElem(psBaseElement = "\\widehat{\\beta}", pnVecLen = n_nr_herd, psResult = "latex")
-vec_bv_hat_animal <- rmddochelper::vecGetVecElem(psBaseElement = "\\widehat{u}", pnVecLen = n_nr_ani_exmp3pedext, psResult = "latex")
-
-cat("$$\n")
-cat("\\left[ \n")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_coef_animal, pnDigits = 2)))
-cat("\\right] \n")
-cat("\\left[ \n")
-cat(paste(rmddochelper::sConvertVectorToLaTexArray(c(vec_beta_hat_animal, vec_bv_hat_animal)), collapse = "\n"), "\n")
-cat("\\right] \n")
-cat("= \n")
-cat("\\left[ \n")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(rbind(mat_xty_animal, mat_zty_animal), pnDigits = 2), collapse = "\n"), "\n")
-cat("\\right] \n")
-cat("$$\n")
-```
-
-The solution
-
-```{r MmeanimalSol, echo=FALSE, results='asis'}
-cat("$$\n")
-cat("\\left[ \n")
-cat(paste(rmddochelper::sConvertVectorToLaTexArray(c(vec_beta_hat_animal, vec_bv_hat_animal)), collapse = "\n"), "\n")
-cat("\\right] \n")
-cat("= \n")
-cat("\\left[ \n")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_sol_animal, pnDigits = 4), collapse = "\n"), "\n")
-cat("\\right] \n")
-cat("$$\n")
-```
 
 \clearpage
 \pagebreak
@@ -920,6 +474,8 @@ cat(cnt$out(ps_suffix = "Relationship and Inbreeding"), "\n")
 ```
 
 Given is the following pedigree
+
+\textit{Gegeben ist das folgende Pedigree}
 
 ```{r, echo=FALSE, results='asis'}
 tbl_ped_exmp5 <- tibble::tibble(Animal = c("FREUDI", "RENARD","SIRA", "Flurina"),
@@ -932,64 +488,10 @@ knitr::kable(tbl_ped_exmp5, booktabs = TRUE, longtable = TRUE)
 
 \begin{enumerate}
 \item[a)] Compute the numerator relationship matrix for the above given pedigree. 
+
+\textit{Stellen Sie die additive genetische Verwandtschaftsmatrix für das oben gegebene Pedigree auf.}
 \points{`r lPointsQ5$TaskA`}
 \end{enumerate}
-
-\sol
-
-First we have to re-order the pedigree such that parents are always before progeny. This results in
-
-```{r, echo=FALSE, results='asis'}
-tbl_ped_exmp5_reord <- tibble::tibble(Animal = c("SIRA", "Flurina", "RENARD", "FREUDI"),
-                                    Sire   = c("TELL", "HARRY", "LARS", "RENARD"),
-                                    Dam    = c("SILVA", "Freia", "SIRA", "Flurina"))
-
-knitr::kable(tbl_ped_exmp5_reord, booktabs = TRUE, longtable = TRUE)
-```
-
-
-Recoding the pedigree to numers with the following mapping
-
-```{r, echo=FALSE, results='asis'}
-tbl_ped_exmp5_map <- tibble::tibble(Name = c("TELL","SILVA","HARRY","Freia","LARS","SIRA","Flurina", "RENARD", "FREUDI"),
-                                        Code = c(1:9))
-knitr::kable(tbl_ped_exmp5_map, booktabs = TRUE, longtable = TRUE)
-```
-
-Applying the above shown mapping
-
-```{r, echo=FALSE, results='asis'}
-tbl_ped_exmp5_recode <- tibble::tibble(Animal = c(6, 7, 8, 9),
-                                    Sire   = c(1, 3, 5, 8),
-                                    Dam    = c(2, 4, 6, 7))
-knitr::kable(tbl_ped_exmp5_recode, booktabs = TRUE, longtable = TRUE)
-```
-
-Extending the pedigree with founders
-
-```{r, echo=FALSE, results='asis'}
-n_nr_founder_emp5 <- min(tbl_ped_exmp5_recode$Animal)-1
-n_nr_ani_emp5 <- max(tbl_ped_exmp5_recode$Animal)
-tbl_ped_exmp5_ext <- tibble::tibble(Animal = c(1:n_nr_ani_emp5),
-                                        Sire   = c(rep(NA, n_nr_founder_emp5), tbl_ped_exmp5_recode$Sire),
-                                        Dam    = c(rep(NA, n_nr_founder_emp5), tbl_ped_exmp5_recode$Dam))
-knitr::kable(tbl_ped_exmp5_ext, booktabs = TRUE, longtable = TRUE)
-```
-
-This pedigree can be used to compute the numerator relationship matrix
-
-```{r, echo=FALSE, results='asis'}
-ped_exmp5 <- pedigreemm::pedigree(sire = tbl_ped_exmp5_ext$Sire,
-                                  dam  = tbl_ped_exmp5_ext$Dam,
-                                  label = as.character(tbl_ped_exmp5_ext$Animal))
-mat_a_exmp5 <- as.matrix(pedigreemm::getA(ped = ped_exmp5))
-
-cat("$$\n")
-cat("A = \\left[ \n")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_a_exmp5, pnDigits = 3), collapse = "\n"), "\n")
-cat("\\right] \n")
-cat("$$\n")
-```
 
 
 \clearpage
@@ -998,19 +500,8 @@ cat("$$\n")
 
 \begin{enumerate}
 \item[b)] Compute the inverse numerator relationship matrix $A^{-1}$ from the above given pedigree.
+
+\textit{Berechnen Sie die Inverse $A^{-1}$ der additiv genetischen Verwandtschaftsmatrix.}
 \points{`r lPointsQ5$TaskB`}
 \end{enumerate}
-
-\sol
-
-```{r, echo=FALSE, results='asis'}
-mat_ainv_exmp5 <- as.matrix(pedigreemm::getAInv(ped = ped_exmp5))
-
-cat("$$\n")
-cat("A^{-1} = \\left[ \n")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_ainv_exmp5, pnDigits = 4), collapse = "\n"), "\n")
-cat("\\right] \n")
-cat("$$\n")
-```
-
 
