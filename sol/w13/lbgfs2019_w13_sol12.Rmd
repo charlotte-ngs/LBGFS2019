@@ -86,9 +86,49 @@ knitr::kable(tbl_all_data,
 
 
 ### Solution
+The fixed effects model to estimate the marker effects can be written as
 
-\vspace{3ex}
+$$y = X\beta + e$$
+where $y$ is the vector of observations, $\beta$ is the vector of fixed effects and $e$ is the vector of residuals. Inserting the data from the dataset into the model components leads to
 
+```{r show-vec-obs, echo=FALSE, results='asis'}
+vec_beta <- c("\\beta_0", "\\beta_{A}", "\\beta_{B}")
+vec_res <- rmddochelper::vecGetVecElem(psBaseElement = "e", pnVecLen = n_nr_animal, psResult = 'latex')
+cat("$$\n")
+cat("y = \\left[\n")
+cat(paste0(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = tbl_all_data$Observation, 
+                                                    pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right], \n")
+cat("\\beta = \\left[\n")
+cat(paste0(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_beta), collapse = "\n"), "\n")
+cat("\\right], \n")
+cat("e = \\left[\n")
+cat(paste0(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_res), collapse = "\n"), "\n")
+cat("\\right], \n")
+cat("$$\n")
+```
+
+where $\beta_0$ is the intercept and $\beta_A$ and $\beta_B$ correspond to the marker effects (a-values) for both SNPs A and B.
+
+The design matrix $X$ is taken from the dataset as
+
+```{r show-design-mat-x, echo=FALSE, results='asis'}
+cat("$$\n")
+cat("X = \\left[\n")
+cat(paste0(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = t(mat_geno_snp), pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+The solution for the intercept and the marker effects are obtained with 
+
+```{r, results='markup'}
+lm_snp_eff <- lm(tbl_all_data$Observation ~ tbl_all_data$`SNP A` + tbl_all_data$`SNP B`, data = tbl_all_data)
+summary(lm_snp_eff)
+```
+
+
+\pagebreak
 
 
 ```{r, echo=FALSE, results='asis'}
@@ -123,7 +163,7 @@ matG <-computeMatGrm(pmatData = t(mat_geno_snp))
 matG_star <- rvcetools::make_pd_rat_ev(matG, pn_max_ratio = 100)
 ```
 
-```{r showmatx, echo=FALSE, results='asis'}
+```{r show-genomic-reltionship-matrix, echo=FALSE, results='asis'}
 cat("$$\n")
 cat("G = \\left[\n")
 cat(paste0(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matG_star, pnDigits = 3), collapse = "\n"), "\n")
@@ -136,3 +176,145 @@ cat("$$\n")
 
 
 ### Solution
+The breeding value model is a linear mixed effects model which can be written as
+
+$$y = X \beta + W u + e$$
+where 
+
+* $y$ is the vector of observations
+* $\beta$ is the vector of fixed effects
+* $u$ is the vector of random genomic breeding values
+* $e$ is the vector of random residuals
+* $X$ and $W$ are design matrices linking fixed effects and genomic breeding values to observations.
+
+Inserting the information from the dataset into the model leads to
+
+```{r show-vecs-bv-model, echo=FALSE, results='asis'}
+vec_beta <- c("\\mu")
+vec_u <- rmddochelper::vecGetVecElem(psBaseElement = "u", pnVecLen = n_nr_animal, psResult = 'latex')
+vec_res <- rmddochelper::vecGetVecElem(psBaseElement = "e", pnVecLen = n_nr_animal, psResult = 'latex')
+cat("$$\n")
+cat("y = \\left[\n")
+cat(paste0(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = tbl_all_data$Observation, 
+                                                    pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right], \n")
+cat("\\beta = \\left[\n")
+cat(paste0(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_beta), collapse = "\n"), "\n")
+cat("\\right], \n")
+cat("u = \\left[\n")
+cat(paste0(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_u), collapse = "\n"), "\n")
+cat("\\right], \n")
+cat("e = \\left[\n")
+cat(paste0(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_res), collapse = "\n"), "\n")
+cat("\\right], \n")
+cat("$$\n")
+```
+
+The design matrices $X$ and $W$ correspond to
+
+```{r show-design-mat-bv-model, echo=FALSE, results='asis'}
+mat_x_bv <- matrix(1, nrow = n_nr_animal, ncol = 1)
+mat_w_bv <- diag(nrow = n_nr_animal)
+cat("$$\n")
+cat("X = \\left[\n")
+cat(paste0(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_x_bv, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right] , \n")
+cat("W = \\left[\n")
+cat(paste0(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_w_bv, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+The expected values of the random effects are
+
+$$E(u) = 0$$
+$$E(e) = 0$$
+$$E(y) = X\beta$$
+
+The variance-covariance matrices of the random effects are
+
+$$var(u) = G * \sigma_u^2$$
+where $G$ is the genomic relationship matrix and $\sigma_u^2$ the genetic additive variance explained by the SNPs 
+
+$$var(e) = I * \sigma_e^2 = R$$
+where $I$ is the identity matrix and $\sigma_e^2$ the residual variance.
+
+$$var(y) = WGW^T * \sigma_u^2 + R$$
+
+The solutions for the fixed effects are obtained from mixed model equations.
+
+\begin{equation}
+\left[
+  \begin{array}{lr}
+  X^TX  &  X^TW \\
+  W^TX  &  W^TW + G^{-1}* \lambda
+  \end{array}
+\right]
+\left[
+  \begin{array}{c}
+  \hat{\beta} \\
+  \hat{u}
+  \end{array}
+\right]
+=
+\left[
+  \begin{array}{c}
+  X^Ty \\
+  W^Ty
+  \end{array}
+\right]
+\notag
+\end{equation}
+
+```{r}
+lambda <- 3
+```
+
+The parameter $\lambda = \sigma_e^2 / \sigma_u^2$ is the ratio between residual variance and genetic variance. We assume that this value corresponds to $\lambda = `r lambda`$. 
+
+The single components of the mixed model equations are
+
+```{r}
+mat_xtx <- crossprod(mat_x_bv)
+mat_xtw <- crossprod(mat_x_bv, mat_w_bv)
+mat_wtx <- t(mat_xtw)
+mat_wtw_ginv_lam <- crossprod(mat_w_bv) + solve(matG_star) * lambda
+mat_coeff <- rbind(cbind(mat_xtx, mat_xtw), cbind(mat_wtx, mat_wtw_ginv_lam))
+mat_rhs <- rbind(crossprod(mat_x_bv, mat_obs_y), crossprod(mat_w_bv, mat_obs_y))
+mat_sol <- solve(mat_coeff, mat_rhs)
+```
+
+```{r}
+cat("$$\n")
+cat("X^TX = \\left[\n")
+cat(paste0(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_xtx, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right] , \n")
+cat("X^TW = \\left[\n")
+cat(paste0(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_xtw, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right] , \n")
+cat("W^TX = \\left[\n")
+cat(paste0(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_wtx, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+cat("$$\n")
+cat("W^TW + G^{-1}* \\lambda = \\left[\n")
+cat(paste0(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_wtw_ginv_lam, pnDigits = 3), collapse = "\n"), "\n")
+cat("\\right] , \n")
+cat("$$\n")
+cat("$$\n")
+cat("\\left[\\begin{array}{c} X^Ty \\\\ W^Ty \\end{array}\\right] = \\left[\n")
+cat(paste0(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_rhs, pnDigits = 3), collapse = "\n"), "\n")
+cat("\\right] , \n")
+cat("$$\n")
+```
+
+The solution vector for the estimate of the fixed effect $\mu$ and the genomic breeding values for all animals are given by
+
+```{r}
+cat("$$\n")
+cat("\\left[\\begin{array}{c} \\hat{\\beta} \\\\ \\hat{u} \\end{array}\\right] = \\left[\n")
+cat(paste0(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_sol, pnDigits = 3), collapse = "\n"), "\n")
+cat("\\right] , \n")
+cat("$$\n")
+```
+
