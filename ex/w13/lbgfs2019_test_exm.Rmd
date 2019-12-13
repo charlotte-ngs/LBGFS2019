@@ -1,0 +1,507 @@
+---
+output:
+  pdf_document:
+    includes:
+      in_header: header.tex
+    fig_caption: false
+    keep_tex: true
+documentclass: article
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::knit_hooks$set(conv.odg = rmddochelper::odg.graphics.conv.hook)
+```
+
+```{r TaskCounts, echo=FALSE}
+cnt <- rmddochelper::R6ClassCount$new()
+cnt$set_prefix(ps_prefix = "## Problem")
+```
+
+```{r PointAssignment, echo=FALSE}
+# Assign Points for Q1
+lPointsQ1 <- list(TaskA = 5,
+                  TaskB = 6,
+                  TaskC = 2,
+                  TaskD = 4)
+nPointQ1Total <- sum(unlist(lPointsQ1))
+# Assign Points for Q2
+lPointsQ2 <- list(TaskA = 8,
+                  TaskB = 9,
+                  TaskC = 2)
+nPointQ2Total <- sum(unlist(lPointsQ2))
+# Assign Points for Q3
+lPointsQ3 <- list(TaskA = 8,
+                  TaskB = 8,
+                  TaskC = 3)
+nPointQ3Total <- sum(unlist(lPointsQ3))
+# Assign Points for Q4
+lPointsQ4 <- list(TaskA = 29,
+                  TaskB = 51,
+                  TaskC = 0)
+nPointQ4Total <- sum(unlist(lPointsQ4))
+# Assign Points for Q5
+lPointsQ5 <- list(TaskA = 48,
+                  TaskB = 21,
+                  TaskC = 0)
+nPointQ5Total <- sum(unlist(lPointsQ5))
+# compute overal sum of points
+nPointOverallTotal <- nPointQ1Total + nPointQ2Total + nPointQ3Total + nPointQ4Total + nPointQ5Total
+```
+
+
+\thispagestyle{empty}
+
+\begin{tabular}{l}
+ETH Zurich \\
+D-USYS\\
+Institute of Agricultural Sciences\\
+\end{tabular}
+
+\vspace{15ex}
+\begin{center}
+\huge
+Test Exam\\ \vspace{1ex}
+Livestock Breeding and Genomics \\  \vspace{1ex}
+FS 2019 \\
+
+\normalsize
+\vspace{7ex}
+Peter von Rohr 
+\end{center}
+
+\vspace{7ex}
+\begin{tabular}{p{5cm}lr}
+  & \textsc{Date}  & \textsc{\emph{13. December 2019}} \\
+  & \textsc{Begin} & \textsc{\emph{09:15 }}\\
+  & \textsc{End}   & \textsc{\emph{ }}\\ 
+\end{tabular}
+
+\vspace{5ex}
+<!-- Table with Name -->
+\large
+\begin{tabular}{p{2.5cm}p{3cm}p{6cm}}
+  &  Name:     &  \\
+  &            &  \\
+  &  Legi-Nr:  & \\
+\end{tabular}
+\normalsize
+
+<!-- Table with Points -->
+
+\vspace{9ex}
+\begin{center}
+\begin{tabular}{|p{3cm}|c|c|}
+\hline
+Problem  &  Maximum Number of Points  &  Number of Points Reached \\
+\hline
+1        &  `r nPointQ1Total`         & \\
+\hline
+2        &  `r nPointQ2Total`         & \\
+\hline
+3        &  `r nPointQ3Total`         & \\
+\hline
+4        &  `r nPointQ4Total`          & \\
+\hline
+5        &  `r nPointQ5Total`          & \\
+\hline
+Total    &  `r nPointOverallTotal`    & \\
+\hline
+\end{tabular}
+\end{center}
+
+\clearpage
+\pagebreak
+
+
+
+```{r, echo=FALSE, results='asis'}
+cat(cnt$out(ps_suffix = "Quantitative Genetics"), "\n")
+```
+
+```{r GenerateGenoData, echo=FALSE, results='hide'}
+set.seed(6789)
+### # population size
+n_pop_size <- 100
+### # allele frequencies
+n_freq_e1 <- .2
+n_freq_e2 <- 1-n_freq_e1
+### # genotype frequencies
+n_freq_e1e1 <- n_freq_e1 ^ 2
+n_freq_e1e2 <- 2 * n_freq_e1 * n_freq_e2
+n_freq_e2e2 <- n_freq_e2 ^ 2
+### # rounded number of genotypes
+n_nr_e2e2 <- floor(n_freq_e2e2 * n_pop_size)
+n_nr_e1e2 <- floor(n_freq_e1e2 * n_pop_size)
+n_nr_e1e1 <- n_pop_size - n_nr_e1e2 - n_nr_e2e2
+### # fix the regression coefficients
+n_inter <- 13.3
+n_slope <- 4.5
+n_dom <- 1.7
+n_res_var <- 5.92
+### # vectors of values
+vec_val_e1e1 <- n_inter + 2 * n_slope + rnorm(n_nr_e1e1, mean = 0, sd = sqrt(n_res_var))
+vec_val_e1e2 <- n_inter + n_slope + n_dom + rnorm(n_nr_e1e2, mean = 0, sd = sqrt(n_res_var))
+vec_val_e2e2 <- n_inter + rnorm(n_nr_e2e2, mean = 0, sd = sqrt(n_res_var))
+
+tbl_geno_data_enz <- tibble::tibble(Genotype = c(rep("E1E1", length(vec_val_e1e1)),
+                                                     rep("E1E2", length(vec_val_e1e2)),
+                                                     rep("E2E2", length(vec_val_e2e2))),
+                                        Value = c(vec_val_e1e1, 
+                                                  vec_val_e1e2, 
+                                                  vec_val_e2e2))
+tbl_geno_data_enz$Genotype <- as.factor(tbl_geno_data_enz$Genotype)
+```
+
+Recently published research results indicate that the level of a critical enzyme is mostly determined by a single genetic locus. The locus is bi-allelic with alleles $E_1$ and $E_2$. $E_1$ is the favorite allele which increases the enzyme level and it has a frequency of $`r n_freq_e1`$. For reasons of simplicity, we assume that the Hardy-Weinberg equilibrium holds. The following plot indicates the distribution of enzyme levels accross the three genotypes for a given population of interest. 
+
+\textit{Kürzlich publizierte Forschungsergebnisse geben Hinweise, dass die produzierte Menge eines bestimmten Enzyms im wesentlichen von einem einzigen Genort bestimmt wird. Es handelt sich dabei um einen bi-allelen Genort mit den Allelen $E_1$ und $E_2$. Das Allele $E_1$ ist das Allel mit der positiven Wirkung. Es tritt mit einer Häufigkeit von $`r n_freq_e1`$ auf. Der Einfachheit halber nehmen wir an, dass für den Genort das Hardy-Weinberg-Gleichgewicht gilt. Der folgende Plot zeigt die Verteilung der Enzymlevels über die drei Genotypen.}
+
+\vspace{3ex}
+```{r PlotGenoData, echo=FALSE, out.width='10cm', fig.align='center'}
+library(ggplot2)
+# qplot(Genotype, Value, data = tbl_geno_data_enz, geom = c("point", "smooth"), method = "lm")
+ggplot(tbl_geno_data_enz, aes(Genotype, Value)) + geom_point()
+```
+
+We take the mean enzyme levels as the characteristic values for a given genotype. This results in 
+
+\textit{Die mittleren Enzymlevels pro Genotyp werden als genotypische Werte für die Genotypen angenommen. Daraus resultiert dann}
+
+\vspace{3ex}
+
+```{r MeanEnzLevel, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+library(dplyr)
+tbl_mean_enz <- tbl_geno_data_enz %>% group_by(Genotype) %>% summarise(`Mean Enzyme Level` = round(mean(Value), digits = 2))
+knitr::kable(tbl_mean_enz, booktabs = TRUE, lontable = TRUE)
+```
+
+After re-scaling the Mean Enzyme Levels for each genotype such that the origin is exactly between the two homozygous genotypes `E1E1` and `E2E2`, we get the following genotypic values for the three genotypes.
+
+\textit{Die mittleren Enzymlevels werden so skaliert, dass sich der Nullpunkt der neuen Skala genau in der Mitte zwischen den genotypischen Werte für die homzygoten Genotypen $E_1E_1$ und $E_2E_2$ befinden.}
+
+```{r RescaledEnzLevel, echo=FALSE, results='asis'}
+n_scale_origin <- (tbl_mean_enz %>% filter(Genotype == "E1E1") %>% select(`Mean Enzyme Level`) + tbl_mean_enz %>% filter(Genotype == "E2E2") %>% select(`Mean Enzyme Level`)) / 2
+n_scale_origin <- n_scale_origin[[1]]
+tbl_mean_enz_resc <- tbl_mean_enz %>% mutate(`Genotypic Value` = `Mean Enzyme Level` - n_scale_origin) %>% select(Genotype, `Genotypic Value`)
+knitr::kable(tbl_mean_enz_resc, booktabs = TRUE, lontable = TRUE)
+```
+
+
+
+\begin{enumerate}
+\item[a)] Assuming a single locus model, what are the values of $a$ and $d$ for the enzyme levels at locus $E$ and what is the population mean $\mu$?
+
+\textit{Wir nehmen ein Ein-Locus-Modell an. Was sind die Werte für $a$ und $d$ für die Enzymlevels am Locus $E$ gemäss dem Ein-Locus-Modell und wie gross ist das Populationsmittel $\mu$?}
+\points{`r lPointsQ1$TaskA`}
+\end{enumerate}
+
+
+\pagebreak
+
+
+
+\clearpage
+\pagebreak
+
+
+\begin{enumerate}
+\item[b)] Compute the breeding values and the dominance deviations for all three genotypes
+
+\textit{Berechnen Sie die Zuchtwerte und die Dominanzabweichung für alle drei Genotypen}
+\points{`r lPointsQ1$TaskB`}
+\end{enumerate}
+
+
+\clearpage
+\pagebreak
+
+\begin{enumerate}
+\item[c)] Compute the genetic additive variance and the dominance variance.
+
+\textit{Berechnen Sie die genetisch additive Varianz und die Dominanzvarianz}
+\points{`r lPointsQ1$TaskC`}
+\end{enumerate}
+
+
+
+\clearpage
+\pagebreak
+
+\begin{enumerate}
+\item[d)] When two heterozygous parents have offspring, these offspring individuals can have genotypes $E_1E_1$, $E_1E_2$ or $E_2E_2$. When comparing the breeding values of the offspring with different genotypes, we realize that the breeding values are different. Compute all pairwise differences between the breeding values of all offspring genotypes. What is the name of the specific effect that appears in the differences of the breeding values? 
+
+\textit{Eine Paarung aus zwei heterozygoten Eltern kann zu Nachkommen mit allen drei Genotypen $E_1E_1$, $E_1E_2$ or $E_2E_2$ führen. Beim Vergleich der Zuchtwerte der Nachkommen mit den verschiedenen Genotypen, realisieren wir, dass diese unterschiedlich sind. Berechnen Sie alle paar-weise Unterschiede zwischen den Zuchtwerten der Nachkommengenotypen. Wie lautet der Effekt, welcher in allen Differenzen von Zuchtwerten erscheint?}
+\points{`r lPointsQ1$TaskD`}
+\end{enumerate}
+
+
+
+\clearpage
+\pagebreak
+
+```{r, echo=FALSE, results='asis'}
+cat(cnt$out(ps_suffix = "Livestock Breeding"), "\n")
+```
+A group of farmers have decided to start a breeding organisation for [Alpaca](https://en.wikipedia.org/wiki/Alpaca) (_Vicugna pacos_). In a first time period, the breeding organisation focuses on importing animals from South America. In a second stage, the breeding organisation wants to establish an own breeding program. The members of the breeding organisation have decided to use the wool of the alpacas as a marketable product. From an economic point of view the two traits wool yield and wool quality are of primary importance to be able to sell the wools of the alpaca.
+
+The members of the breeding organisation have a few questions with respect to the design of the planned breeding program. You as an expert in Livestock breeding are now asked to answer the following questions.
+
+\textit{Eine Gruppe von Landwirten entschliesst sich eine Zuchtorganisation für Alpacas zu gründen. In einer ersten Phase werden Tiere aus Südamerika importiert. In einer zweiten Phase entwirft die Zuchtorganisation ihr eigenes Zuchtprogramm. Die Zuchtorganisation findet heraus, dass ein Markt für Alpacawolle besteht. Von einem wirtschaftlichen Standpunkt aus sind dabei die Merkmale Wollertrag und Wollqualität sehr wichtig, damit die Wolle verkauft werden kann.}
+
+\textit{Die Mitglieder der Zuchtorganisation haben ein paar Fragen betreffend der Planung des Zuchtprogramms. Sie als Expertinnen und Experten auf dem Gebiet der Nutztierzucht sind gebeten die folgenden Fragen zu beantworten.}
+
+\begin{enumerate}
+\item[a)] The breeding organisation wants to increase wool yield. To do that they plan to get the weight of the wool of every male animal at the age of two years. The male animals with the highest wool weight at the age of two years are selected to be sires of the future generation. The female animals are mated to the sires randomly. Do you think this is a good strategy? Please reason about your answer by providing facts from Livestock Breeding. Could you suggest some improvements to the planned breeding program of the alpaca breeders. 
+
+\textit{Die Zuchtorganisation will den Wollertrag der Tiere steigern. Dazu planen sie das Wollgewicht der männlichen Tiere im Alter von zwei Jahren zu erfassen. Die männlichen Tiere mit dem höchsten Wollgewicht werden als Väter der zukünftigen Generation ausgewählt. Die weiblichen Tiere werden zufällig ausgewählt. Wie beurteilen Sie diese Strategie? Bitte begründen Sie Ihre Antwort anhand von Fakten aus der Nutztierzucht. Können Sie Verbesserungen des geplanten Zuchtprogramms vorschlagen.}
+\points{`r lPointsQ2$TaskA`}
+\end{enumerate}
+
+
+\clearpage
+\pagebreak
+
+\begin{enumerate}
+\item[b)] During the negociations between the farmers and the buyers of the wool, it became clear, that the quality of the wool is a second important criterion. The trait `fiber diameter` is used to describe the wool quality. Now the Alpaca breeder want to improve their population with respect to the two traits `wool yield` and `fiber diameter`. What are the different selection strategies when a population should be improved with respect to several traits? Please specify three selection strategies. Which of the three strategies do you recommend to the Alpaca breeders? What is the reason for your recommendation?  
+
+\textit{Bei den Verhandlungen der Alpacazüchter mit den Abnehmern der Wolle wird klar, dass die Wollqualität auch eine wichtige Eigenschaft ist. Das Merkmal `Faserdurchmesser` wird verwendet um die Qualität der Wolle zu beschreiben. Basierend auf diesen Erkenntnissen wollen die Alpacazüchter ihre Tiere in den zwei Merkmalen Wollertrag und Wollqualität verbessern. Welche Selektionsstrategien existieren für die Verbesserung einer Population in mehreren Merkmalen? Bitte geben Sie drei Strategien. Welche der drei Strategien empfehlen Sie den Alpcazüchtern? Bitte begründen Sie Ihre Empfehlung.}
+\points{`r lPointsQ2$TaskB`}
+\end{enumerate}
+
+
+\clearpage
+\pagebreak
+
+\begin{enumerate}
+\item[c)] The breeding organisation has decided to define an aggregate genotype with the two traits of `wool yield` and `fiber diameter`. The economic values for the two traits are given in the table below. The aggregate genotype is approximated using an index with the predicted breeding values for the same traits `wool yield` and `fiber diameter` as information sources. The breeding values are predicted using a multivariate BLUP animal model. What are the index weights with which the information sources are used in the index.
+
+\textit{Die Zuchtorganisation hat sich entschieden einen Gesamtzuchtwert bestehend aus den Merkmalen Wollertrag und Faserdurchmesser zu definieren. Die wirtschaftlichen Gewichte für diese Merkmale sind in der nachfolgenden Tabelle aufgelistet. Der Gesamtzuchtwert wird mit einem Index geschätzt, welcher aus den geschätzten Zuchtwerten für die Merkmale Wollertrag und Faserdurchmesser besteht. Die Zuchtwerte werden anhand eines multivariaten BLUP Tiermodells geschätzt. Wie lauten die Indexgewichte mit welchen die Informationen im Index gewichtet werden müssen?}
+\points{`r lPointsQ2$TaskC`}
+\end{enumerate}
+
+```{r EvWoolFibre, echo=FALSE, results='asis'}
+tbl_ev_wool <- tibble::tibble(Trait = c("Wool Yield", "Fibre Diameter"),
+                                  `Economic Value` = c(12.75, -3.20))
+knitr::kable(tbl_ev_wool, booktabs = TRUE, longtable = TRUE)
+```
+
+\clearpage
+\pagebreak
+
+```{r, echo=FALSE, results='asis'}
+cat(cnt$out(ps_suffix = "Own Performance and Progeny Records"), "\n")
+```
+Given is the following data set
+
+\textit{Gegeben ist der folgende Datensatz.}
+
+```{r BvPredData, echo=FALSE, results='hide'}
+set.seed(1521)
+n_nr_obs <- 4
+### # intercept and two levels of a fixed effect
+vec_beta <- c(10.34, 5.2, -1.92)
+mat_x <- matrix(c(1, 1, 0,
+                  1, 0, 1,
+                  1, 0, 1,
+                  1, 0, 1), nrow = n_nr_obs, byrow = TRUE)
+### # find number of herds, knowing that first column is intercept
+n_nr_herd <- ncol(mat_x)-1
+### # variance components
+n_sigmae2 <- 60
+n_sigmaa2 <- 20
+n_sigmas2 <- n_sigmaa2 / 4
+n_h2 <- n_sigmaa2 / (n_sigmaa2 + n_sigmae2)
+n_k_sire <- (4-n_h2)/n_h2
+
+### # pedigree
+tbl_ped_exmp3 <- tibble::tibble(Animal = c(4, 5, 6, 7),
+                                    Sire   = c(1, 1, 3, 6),
+                                    Dam    = c(2, 4, 2, 5))
+### # number of animals, number of founders and number of sirees
+n_nr_ani_exmp3pedext <- max(tbl_ped_exmp3$Animal)
+n_nr_founder_exmp3pedext <- min(tbl_ped_exmp3$Animal) - 1
+n_nr_sire_exmp3pedext <- nlevels(as.factor(tbl_ped_exmp3$Sire))
+### # extend pedigree with founders
+tbl_ped_exmp3_ext <- tibble::tibble(Animal = c(1:n_nr_ani_exmp3pedext),
+                                        Sire   = c(rep(NA, n_nr_founder_exmp3pedext), tbl_ped_exmp3$Sire),
+                                        Dam    = c(rep(NA, n_nr_founder_exmp3pedext), tbl_ped_exmp3$Dam))
+
+### # breeding values
+### # function to get breeding values
+#' @title Generate vector of breeding values 
+#'
+#' @description
+#' Breeding values are generated using a vectorized 
+#' version of the generation of breeding values
+generate_vec_bv <- function(ptbl_ped, pn_sigmaa2){
+  ### # get pedigree
+  ped <- pedigreemm::pedigree(sire = ptbl_ped$Sire, dam = ptbl_ped$Dam, label = as.character(ptbl_ped$Animal))
+  ### # number of animal
+  n_nr_ani <- nrow(ptbl_ped)
+  ### # get matrix D
+  diag_mat_d <- diag(pedigreemm::Dmat(ped = ped), nrow = n_nr_ani, ncol = n_nr_ani)
+  ### # get matrix A based on pedigree
+  mat_a <- as.matrix(pedigreemm::getA(ped = ped))
+  ### # cholesky of A
+  mat_r <- t(chol(mat_a))
+  ### # sqrt(D) to mat_s
+  mat_s <- sqrt(diag_mat_d)
+  ### # matrix L
+  mat_l <- mat_r %*% solve(mat_s)
+  ### # finally get matrix P
+  mat_p <- diag(n_nr_ani) - solve(mat_l)
+  ### # sample the vector of mendelian sampling
+  vec_a <- rnorm(n_nr_ani, mean = 0, sd = sqrt(diag(diag_mat_d) * pn_sigmaa2))
+  ### # adding pedigree Information
+  vec_a_result <- mat_p %*% vec_a + vec_a
+  ### # return result
+  return(vec_a_result)
+}
+### # vector of breeding values
+vec_bv <- generate_vec_bv(ptbl_ped = tbl_ped_exmp3_ext, pn_sigmaa2 = n_sigmaa2)
+### # design matrix Z
+mat_z <- cbind(matrix(0, nrow = n_nr_obs, ncol = n_nr_founder_exmp3pedext), diag(1, nrow = n_nr_obs, ncol = n_nr_obs))
+
+### # generate observations
+vec_y <- crossprod(t(mat_x), vec_beta) + crossprod(t(mat_z), vec_bv) + rnorm(n_nr_obs, mean = 0, sd = sqrt(n_sigmae2))
+
+### # population mean
+n_mu <- mean(vec_y)
+```
+
+
+```{r BvPredTable, echo=FALSE, results='asis'}
+library(dplyr)
+mat_herd <- crossprod(t(mat_x), c(0,1,2))
+tbl_dat_exmp3 <- tbl_ped_exmp3 %>% mutate(Herd = mat_herd[,1], Observation = round(vec_y, digits = 2))
+knitr::kable(tbl_dat_exmp3, booktabs = TRUE, longtable = TRUE)
+```
+
+The variance components $\sigma_e^2$ (residual) and $\sigma_u^2$ (genetic) are 
+
+\textit{Die Varianzkomponenten $\sigma_e^2$ (Residuen) und $\sigma_u^2$ (genetisch) betragen}
+
+$$\sigma_e^2 = `r n_sigmae2`$$
+$$\sigma_u^2 = `r n_sigmaa2`$$
+
+
+\begin{enumerate}
+\item[a)] Predict the breeding values and the corresponding accuracies of the predicted breeding values based on the animals own performance. The population mean $\mu$ is taken as the average of all observations, $\mu = `r round(n_mu, digits = 2)`$. 
+
+\textit{Schätzen Sie die Zuchtwerte und berechnen Sie die Genauigkeiten der geschätzen Zuchtwerte aufgrund der Eigenleistungen der Tiere. Das Populationsmittel $\mu$ entspricht dem Mittelwert aller Beobachtungen, $\mu = `r round(n_mu, digits = 2)`$.}
+\points{`r lPointsQ3$TaskA`}
+\end{enumerate}
+
+
+\clearpage
+\pagebreak
+
+```{r VecSireIdx, echo=FALSE, results='hide'}
+vec_sire_idx <- unique(tbl_ped_exmp3$Sire)
+```
+
+\begin{enumerate}
+\item[b)] Predict the breeding values of the sires $`r vec_sire_idx[1]`$, $`r vec_sire_idx[2]`$ and $`r vec_sire_idx[3]`$ based on the performance records of their progeny using the regression method. Indicate for each breeding value the corresponding accuracy.
+
+\textit{Schätzen Sie die Zuchtwerte der Väter $`r vec_sire_idx[1]`$, $`r vec_sire_idx[2]`$ und $`r vec_sire_idx[3]`$ basierend auf den Leistungen der Nachkommen mittels der Regressionsmethode. Geben Sie für jeden geschätzten Zuchtwert die entsprechende Genauigkeit an.}
+\points{`r lPointsQ3$TaskB`}
+\end{enumerate}
+
+
+
+\clearpage
+\pagebreak
+
+
+\begin{enumerate}
+\item[c)] What is the reason for the difference between the accuracies found in Problem 3a and 3b? How many offspring does a sire need that the accuracy of its predicted breeding value based on progeny records will be bigger than the accuracy in 3a? 
+
+\textit{Wo liegen die Gründe für die unterschiedlichen Genauigkeiten in den Aufgaben 3a und 3b? Wieviele Nachkommen muss ein Vater haben, damit die Genauigkeit des geschätzten Zuchtwerts aufgrund von Nachkommenleistungen grösser wird als unter 3a?}
+\points{`r lPointsQ3$TaskC`}
+\end{enumerate}
+
+\clearpage
+\pagebreak
+
+```{r, echo=FALSE, results='asis'}
+cat(cnt$out(ps_suffix = "BLUP Models"), "\n")
+```
+
+Given is the same data set as in Problem 3. 
+
+\textit{Gegeben ist der gleiche Datensatz, wie in der Aufgabe 3.}
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(tbl_dat_exmp3, booktabs = TRUE, longtable = TRUE)
+```
+
+The variance components $\sigma_e^2$ (residual) and $\sigma_u^2$ (genetic) are 
+
+\textit{Die Varianzkomponenten betragen}
+
+$$\sigma_e^2 = `r n_sigmae2`$$
+$$\sigma_u^2 = `r n_sigmaa2`$$
+
+\begin{enumerate}
+\item[a)] Predict the breeding values based on the data given above, using a sire model. Herds are treated as fixed effects and sire breeding values are modeled as random effects. Please specify all model components including expected values and variances for the random components. Set up the mixed model equations to get solutions for the predicted breeding values. 
+
+\textit{Schätzen Sie die Zuchtwerte aufgrund des gegebenen Datensatzes mit einem Vatermodell. Herden werden als fixe Effekte behandelt und Vatereffekte werden als zufällige Effekte modelliert. Bitte geben sie alle Modellkomonenten inklusive der Erwartungswerte und der Varianz der zufälligen Komponenten an. Stellen Sie die Mischmodellgleichungen auf und lösen Sie diese nach den geschätzen fixen Effekte und nach den geschätzten Vatereffekten.}
+\points{`r lPointsQ4$TaskA`}
+\end{enumerate}
+
+
+
+
+\clearpage
+\pagebreak
+
+
+\begin{enumerate}
+\item[b)] Predict the breeding values based on the data given above, using an animal model. Herds are treated as fixed effects and breeding values are modeled as random effects. Please specify all model components including expected values and variances for the random components. Set up the mixed model equations to get solutions for the predicted breeding values.  
+
+\textit{Schätzen Sie die Zuchtwerte mit den gegebenen Daten aufgrund eines Tiermodells. Herden werden als fixe Effekte behandelt und Zuchtwerte der Tiere werden als zufällige Effekte modelliert. Geben Sie alle Modellkomponenten inklusive der Erwartungswerte und der Varianzen der zufälligen Effekte an. Stellen Sie die Mischmodellgleichungen auf und lösen Sie diese nach den unbekannten Grössen im Modell.}
+\points{`r lPointsQ4$TaskB`}
+\end{enumerate}
+
+
+\clearpage
+\pagebreak
+
+
+```{r, echo=FALSE, results='asis'}
+cat(cnt$out(ps_suffix = "Relationship and Inbreeding"), "\n")
+```
+
+Given is the following pedigree
+
+\textit{Gegeben ist das folgende Pedigree}
+
+```{r, echo=FALSE, results='asis'}
+tbl_ped_exmp5 <- tibble::tibble(Animal = c("FREUDI", "RENARD","SIRA", "Flurina"),
+                                    Sire   = c("RENARD", "LARS", "TELL", "HARRY"),
+                                    Dam    = c("Flurina", "SIRA", "SILVA", "Freia"))
+
+knitr::kable(tbl_ped_exmp5, booktabs = TRUE, longtable = TRUE)
+```
+
+
+\begin{enumerate}
+\item[a)] Compute the numerator relationship matrix for the above given pedigree. 
+
+\textit{Stellen Sie die additive genetische Verwandtschaftsmatrix für das oben gegebene Pedigree auf.}
+\points{`r lPointsQ5$TaskA`}
+\end{enumerate}
+
+
+\clearpage
+\pagebreak
+
+
+\begin{enumerate}
+\item[b)] Compute the inverse numerator relationship matrix $A^{-1}$ from the above given pedigree.
+
+\textit{Berechnen Sie die Inverse $A^{-1}$ der additiv genetischen Verwandtschaftsmatrix.}
+\points{`r lPointsQ5$TaskB`}
+\end{enumerate}
+
