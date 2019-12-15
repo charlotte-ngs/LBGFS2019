@@ -2,7 +2,9 @@
 title: "Variance Components Estimation Re-Worked"
 author: "Peter von Rohr"
 date: "12/6/2019"
-output: beamer_presentation
+output:
+  beamer_presentation: default
+  ioslides_presentation: default
 ---
 
 ```{r setup, include=FALSE}

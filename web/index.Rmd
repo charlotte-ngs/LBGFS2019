@@ -203,8 +203,9 @@ vecExTopic[which(Date == format(as.Date("2019/11/22"), "%d.%m"))] <- paste0("[Va
 vecExTopic[which(Date == format(as.Date("2019/11/29"), "%d.%m"))] <- paste0("[Accuracy and Decomposition of Predicted Breeding Values](", s_base_url_ex, "/w11/lbgfs2019_w11_ex10.pdf)", collapse = '')
 # w12 ex/w12/lbg_fs_2019_w12_ex11.pdf
 vecExTopic[which(Date == format(as.Date("2019/12/06"), "%d.%m"))] <- paste0("[Multivariate Analysis](", s_base_url_ex, "/w12/lbgfs2019_w12_ex11.pdf)", collapse = '')
-# w13 w13/lbg_hs2017_exam.pdf
-# vecExTopic[which(Date == format(as.Date("2019/12/13"), "%d.%m"))] <- "[]()"
+# w13 w13/lbg_hs2017_exam.pdf /w13/lbgfs2019_w13_ex12.pdf
+vecExTopic[which(Date == format(as.Date("2019/12/13"), "%d.%m"))] <- paste0("[Genomic Selection](", s_base_url_ex, "/w13/lbgfs2019_w13_ex12.pdf)", collapse = '')
+vecExTopic[which(Date == format(as.Date("2019/12/20"), "%d.%m"))] <- paste0("[Test Exam](", s_base_url_ex, "/w13/lbgfs2019_test_exm.pdf)", collapse = '')
 
 ### # generate table output
 dfExTable <- data.frame(Woche, Date, vecExTopic, stringsAsFactors = FALSE)
@@ -240,9 +241,9 @@ vecSolTopic[which(Date == format(as.Date("2019/11/29"), "%d.%m"))] <- paste0("[V
 # w12 sol/w11/lbg_fs_2019_w11_sol10.pdf
 vecSolTopic[which(Date == format(as.Date("2019/12/06"), "%d.%m"))] <- paste0("[Accuracy and Decomposition of Predicted Breeding Values](", s_base_url_sol, "/w11/lbgfs2019_w11_sol10.pdf)", collapse = '')
 # w13 sol/w12/lbg_fs_2019_w12_sol11.pdf
-# vecSolTopic[which(Date == format(as.Date("2019/12/13"), "%d.%m"))] <- paste0("[Multivariate Analysis](", s_base_url_sol, "/w12/lbgfs2019_w12_sol11.pdf)", collapse = '')
+vecSolTopic[which(Date == format(as.Date("2019/12/13"), "%d.%m"))] <- paste0("[Multivariate Analysis](", s_base_url_sol, "/w12/lbgfs2019_w12_sol11.pdf)", collapse = '')
 # w14 
-# vecSolTopic[which(Date == format(as.Date("2019/12/20"), "%d.%m"))] <- "[]()"
+vecSolTopic[which(Date == format(as.Date("2019/12/20"), "%d.%m"))] <- paste0("[Genomic Selection](", s_base_url_sol, "/w13/lbgfs2019_w13_sol12.pdf), [Test Exam](", s_base_url_sol, "/w13/lbgfs2019_test_exmsol.pdf)" , collapse = '')
 
 ### # construct the table
 dfSolTable <- data.frame(Woche, Date, vecSolTopic, stringsAsFactors = FALSE)

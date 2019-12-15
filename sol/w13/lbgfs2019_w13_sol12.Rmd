@@ -24,95 +24,297 @@ cnt$set_prefix(ps_prefix = "## Problem")
 
 
 ```{r, echo=FALSE, results='asis'}
-cat(cnt$out(ps_suffix = "Variance Components Estimation"), "\n")
+cat(cnt$out(ps_suffix = "Marker Effect Model"), "\n")
 ```
-The simplest forM of variance components estimation is based on the residuals of a fitted linear model and is shown in the summary results of the R-function `lm()`. Let us assume that we are given the dataset in the table shown below to which we fit a simple sire model. 
 
+```{r dataflemsnpobs, echo=FALSE, message=FALSE}
+library(dplyr)
+### # fix the number of animals
+n_nr_animal <- 10
+### # intercept
+n_inter_cept <- 150
+### # residual standard deviation
+n_res_sd <- 9.3
+### # vector of genotype value coefficients
+vec_geno_value_coeff <- c(-1,0,1)
+### # sample genotypes of unlinked SNP randomly
+set.seed(5432)
+### # fix allele frequency of positive allele
+n_prob_snps <- .45
+### # genotypic values 
+vec_geno_val <- c(17.9, 3.3)
+n_nr_snp <- length(vec_geno_val)
+### # put together the genotypes into a matrix
+mat_geno_snp <- matrix(c(sample(vec_geno_value_coeff, n_nr_animal, prob = c((1-n_prob_snps)^2, 
+                                                                   2*(1-n_prob_snps)*n_prob_snps, 
+                                                                   n_prob_snps^2), 
+                       replace = TRUE),
+                       sample(vec_geno_value_coeff, n_nr_animal, prob = c(n_prob_snps^2, 
+                                                                   2*(1-n_prob_snps)*n_prob_snps, 
+                                                                   (1-n_prob_snps)^2), 
+                       replace = TRUE)),
+                       nrow = n_nr_snp)
+mat_obs_y <- n_inter_cept + crossprod(mat_geno_snp, vec_geno_val) + rnorm(n = n_nr_animal, mean = 0, sd = n_res_sd)
+### # combine SNP genotypes into a tibble
+geno_code <- tibble::tibble(`SNP A` = mat_geno_snp[1,],
+                            `SNP B` = mat_geno_snp[2,])
 
-```{r datasol12p02}
-tbl_data_sol12p02 <- tibble::tibble( Animal = c(4, 5, 6, 7, 8),
-                                         Sire   = c(2, 1, 1, 2, 1),
-                                         WWG    = c(4.5,2.9,3.9,3.5,5.0) )
+### # add the data
+mat_obs_y_rounded <- round(mat_obs_y, digits = 0)
+tbl_obs <- tibble::tibble(Observation = mat_obs_y_rounded[,1])
+geno_code %>% bind_cols(tbl_obs) -> tbl_all_data
+### # add animal ids
+tbl_all_data <- bind_cols(Animal = c(1:n_nr_animal),tbl_all_data)
+```
 
-knitr::kable(tbl_data_sol12p02,
-             booktabs  = TRUE,
+We are given the dataset that is shown in the table below. This dataset contains gentyping results of `r n_nr_animal` for `r n_nr_snp` SNP loci.
+
+```{r showdataex13}
+knitr::kable(tbl_all_data,
+             booktabs = TRUE,
              longtable = TRUE,
-             caption   = "Example Dataset for Variance Components Estimation Based on Residuals Using a Sire Model")
+#             caption = "Animals With Two SNP Loci A and B Affecting A Quantitative Trait",
+             escape = FALSE)
 
 ```
 
-The sire model is simplified to have a common mean $\mu$.  For a moment we are setting the sire effects to be fixed effects. This leads to the following model with $var(e) = I * \sigma_e^2$
 
-$$y = X\mu + Z_ss + e$$
+### Your Task
+* The goal of this problem is to estimate SNP marker effects using a `marker effect model`. Because we have just `r n_nr_snp` SNP loci, you can use a fixed effects linear model with the `r n_nr_snp` loci as fixed effects. Furthermore you can also include a fixed intercept into the model.
+* Specify all the model components including the vector of observations, the design matrix $X$, the vector of unknowns and the vector of residuals. 
+* You can use the R-function `lm()` to get the solutions for estimates of the unknown SNP effects.
 
-Using the above shown dataset we can use the R-function `lm()` to fit this simple linear model. Because, we want to have the sires as fixed effects, we have to convert them into factors before calling `lm()`.
 
-```{r, echo=TRUE, results='markup'}
-tbl_data_sol12p02$Sire <- as.factor(tbl_data_sol12p02$Sire)
-lm_data_sol12p02 <- lm( WWG ~ 1 + Sire, data = tbl_data_sol12p02 )
-summary(lm_data_sol12p02)
-```
+### Solution
+The fixed effects model to estimate the marker effects can be written as
 
-```{r, echo=FALSE, results='hide'}
-res_std_sol12p02 <- sigma(lm_data_sol12p02)
-```
+$$y = X\beta + e$$
+where $y$ is the vector of observations, $\beta$ is the vector of fixed effects and $e$ is the vector of residuals. Inserting the data from the dataset into the model components leads to
 
-From the output of `summary()` we are given the residual standard error to be `r round(res_std_sol12p02, digits = 4)`. This residual standard error is an estimate of $\sigma_e$. The question is where does it come from. The least-squares procedure does not yield this estimate for $\sigma_e$. The answer is that this estimate comes from the residuals $r$ of the model. For our model the vector $r$ of residuals is defined as
-
-$$r = y - X\widehat{\mu} - Z_s\widehat{s}$$
-
-where $\widehat{\mu}$ and $\widehat{s}$ can be taken from the ouput of the `summary()` function. They correspond to
-
-```{r, echo=FALSE, results='asis'}
-vec_coeff <- coefficients(lm_data_sol12p02)
-n_mu_hat <- vec_coeff[[1]]
-vec_sire_hat <- c(0, vec_coeff[[2]])
-
-cat("$$\\widehat{\\mu} = ", n_mu_hat, "$$\n")
+```{r show-vec-obs, echo=FALSE, results='asis'}
+vec_beta <- c("\\beta_0", "\\beta_{A}", "\\beta_{B}")
+vec_res <- rmddochelper::vecGetVecElem(psBaseElement = "e", pnVecLen = n_nr_animal, psResult = 'latex')
 cat("$$\n")
-cat("\\widehat{s} = \\left[\n")
-cat(paste(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_sire_hat, pnDigits = 4), collapse = "\n"), "\n")
+cat("y = \\left[\n")
+cat(paste0(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = tbl_all_data$Observation, 
+                                                    pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right], \n")
+cat("\\beta = \\left[\n")
+cat(paste0(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_beta), collapse = "\n"), "\n")
+cat("\\right], \n")
+cat("e = \\left[\n")
+cat(paste0(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_res), collapse = "\n"), "\n")
+cat("\\right], \n")
+cat("$$\n")
+```
+
+where $\beta_0$ is the intercept and $\beta_A$ and $\beta_B$ correspond to the marker effects (a-values) for both SNPs A and B.
+
+The design matrix $X$ is taken from the dataset as
+
+```{r show-design-mat-x, echo=FALSE, results='asis'}
+cat("$$\n")
+cat("X = \\left[\n")
+cat(paste0(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = t(mat_geno_snp), pnDigits = 0), collapse = "\n"), "\n")
 cat("\\right]\n")
 cat("$$\n")
 ```
 
-The estimate $\widehat{\sigma_e^2}$ for $\sigma_e^2$ is obtained by
+The solution for the intercept and the marker effects are obtained with 
 
-$$\widehat{\sigma_e^2} = \frac{1}{n-p} \sum_{i=1}^n r_i^2$$
+```{r, results='markup'}
+lm_snp_eff <- lm(tbl_all_data$Observation ~ tbl_all_data$`SNP A` + tbl_all_data$`SNP B`, data = tbl_all_data)
+summary(lm_snp_eff)
+```
 
-where $n$ is the total number of observations and $p$ is the number of parameters that are estimated by `lm` which is `r length(vec_coeff)` for our sire model. The term $n-p$ is also called __degrees of freedom__ (df). What is given as residual standard error by the output of `summary()` is the square root of $\widehat{\sigma_e^2}$.
 
-### Your Task
-Verify for the above given dataset and the proposed sire model the residual standard error given by `summary()` by using the computation based on the residuals shown above.
+\pagebreak
+
+
+```{r, echo=FALSE, results='asis'}
+cat(cnt$out(ps_suffix = "Breeding Value Model"), "\n")
+```
+
+Use the same data as in Problem 1 to estimate genomic breeding values using a `breeding value model`.
+
+
+### Hints
+* The only fixed effect in this model is the mean $\mu$ which is the same for all observations.
+* You can use the following matrix as the genomic relationship matrix
+
+```{r, echo=FALSE}
+#' Compute genomic relationship matrix based on data matrix
+computeMatGrm <- function(pmatData) {
+  matData <- pmatData
+  # check the coding, if matData is -1, 0, 1 coded, then add 1 to get to 0, 1, 2 coding
+  if (min(matData) < 0) matData <- matData + 1
+  # Allele frequencies, column vector of P and sum of frequency products
+  freq <- apply(matData, 2, mean) / 2
+  P <- 2 * (freq - 0.5)
+  sumpq <- sum(freq*(1-freq))
+  # Changing the coding from (0,1,2) to (-1,0,1) and subtract matrix P
+  Z <- matData - 1 - matrix(P, nrow = nrow(matData), 
+                             ncol = ncol(matData), 
+                             byrow = TRUE)
+  # Z%*%Zt is replaced by tcrossprod(Z)
+  return(tcrossprod(Z)/(2*sumpq))
+}
+matG <-computeMatGrm(pmatData = t(mat_geno_snp))
+matG_star <- rvcetools::make_pd_rat_ev(matG, pn_max_ratio = 100)
+```
+
+```{r show-genomic-reltionship-matrix, echo=FALSE, results='asis'}
+cat("$$\n")
+cat("G = \\left[\n")
+cat(paste0(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matG_star, pnDigits = 3), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+```
+
+### Your Tasks
+* Specify all model components of the linear mixed model, including the expected values and the variance-covariance matrix of the random effects.
 
 
 ### Solution
-The vector $r$ of residuals can be obtained using the function `residuals()`
+The breeding value model is a linear mixed effects model which can be written as
 
-```{r, echo=TRUE, results='markup'}
-(vec_res <- residuals(lm_data_sol12p02))
+$$y = X \beta + W u + e$$
+where 
+
+* $y$ is the vector of observations
+* $\beta$ is the vector of fixed effects
+* $u$ is the vector of random genomic breeding values
+* $e$ is the vector of random residuals
+* $X$ and $W$ are design matrices linking fixed effects and genomic breeding values to observations.
+
+Inserting the information from the dataset into the model leads to
+
+```{r show-vecs-bv-model, echo=FALSE, results='asis'}
+vec_beta <- c("\\mu")
+vec_u <- rmddochelper::vecGetVecElem(psBaseElement = "u", pnVecLen = n_nr_animal, psResult = 'latex')
+vec_res <- rmddochelper::vecGetVecElem(psBaseElement = "e", pnVecLen = n_nr_animal, psResult = 'latex')
+cat("$$\n")
+cat("y = \\left[\n")
+cat(paste0(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = tbl_all_data$Observation, 
+                                                    pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right], \n")
+cat("\\beta = \\left[\n")
+cat(paste0(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_beta), collapse = "\n"), "\n")
+cat("\\right], \n")
+cat("u = \\left[\n")
+cat(paste0(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_u), collapse = "\n"), "\n")
+cat("\\right], \n")
+cat("e = \\left[\n")
+cat(paste0(rmddochelper::sConvertVectorToLaTexArray(pvec_avector = vec_res), collapse = "\n"), "\n")
+cat("\\right], \n")
+cat("$$\n")
 ```
 
-The degrees of freedom for the residuals ($n-p$) are obtained by the function `df.residual()`
+The design matrices $X$ and $W$ correspond to
 
-```{r, echo=TRUE, results='markup'}
-(n_df_e <- df.residual(lm_data_sol12p02))
+```{r show-design-mat-bv-model, echo=FALSE, results='asis'}
+mat_x_bv <- matrix(1, nrow = n_nr_animal, ncol = 1)
+mat_w_bv <- diag(nrow = n_nr_animal)
+cat("$$\n")
+cat("X = \\left[\n")
+cat(paste0(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_x_bv, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right] , \n")
+cat("W = \\left[\n")
+cat(paste0(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_w_bv, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
 ```
 
-From this the residual standard error is computed as
+The expected values of the random effects are
 
-```{r, echo=TRUE, results='markup'}
-(n_res_sd <- sqrt(sum(vec_res^2) / n_df_e))
+$$E(u) = 0$$
+$$E(e) = 0$$
+$$E(y) = X\beta$$
+
+The variance-covariance matrices of the random effects are
+
+$$var(u) = G * \sigma_u^2$$
+where $G$ is the genomic relationship matrix and $\sigma_u^2$ the genetic additive variance explained by the SNPs 
+
+$$var(e) = I * \sigma_e^2 = R$$
+where $I$ is the identity matrix and $\sigma_e^2$ the residual variance.
+
+$$var(y) = WGW^T * \sigma_u^2 + R$$
+
+The solutions for the fixed effects are obtained from mixed model equations.
+
+\begin{equation}
+\left[
+  \begin{array}{lr}
+  X^TX  &  X^TW \\
+  W^TX  &  W^TW + G^{-1}* \lambda
+  \end{array}
+\right]
+\left[
+  \begin{array}{c}
+  \hat{\beta} \\
+  \hat{u}
+  \end{array}
+\right]
+=
+\left[
+  \begin{array}{c}
+  X^Ty \\
+  W^Ty
+  \end{array}
+\right]
+\notag
+\end{equation}
+
+```{r}
+lambda <- 3
 ```
 
-The same result can be obtained using the function `sigma()`
+The parameter $\lambda = \sigma_e^2 / \sigma_u^2$ is the ratio between residual variance and genetic variance. We assume that this value corresponds to $\lambda = `r lambda`$. 
 
-```{r, echo=TRUE, results='markup'}
-sigma(lm_data_sol12p02)
+The single components of the mixed model equations are
+
+```{r}
+mat_xtx <- crossprod(mat_x_bv)
+mat_xtw <- crossprod(mat_x_bv, mat_w_bv)
+mat_wtx <- t(mat_xtw)
+mat_wtw_ginv_lam <- crossprod(mat_w_bv) + solve(matG_star) * lambda
+mat_coeff <- rbind(cbind(mat_xtx, mat_xtw), cbind(mat_wtx, mat_wtw_ginv_lam))
+mat_rhs <- rbind(crossprod(mat_x_bv, mat_obs_y), crossprod(mat_w_bv, mat_obs_y))
+mat_sol <- solve(mat_coeff, mat_rhs)
 ```
 
+```{r}
+cat("$$\n")
+cat("X^TX = \\left[\n")
+cat(paste0(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_xtx, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right] , \n")
+cat("X^TW = \\left[\n")
+cat(paste0(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_xtw, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right] , \n")
+cat("W^TX = \\left[\n")
+cat(paste0(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_wtx, pnDigits = 0), collapse = "\n"), "\n")
+cat("\\right]\n")
+cat("$$\n")
+cat("$$\n")
+cat("W^TW + G^{-1}* \\lambda = \\left[\n")
+cat(paste0(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_wtw_ginv_lam, pnDigits = 3), collapse = "\n"), "\n")
+cat("\\right] , \n")
+cat("$$\n")
+cat("$$\n")
+cat("\\left[\\begin{array}{c} X^Ty \\\\ W^Ty \\end{array}\\right] = \\left[\n")
+cat(paste0(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_rhs, pnDigits = 3), collapse = "\n"), "\n")
+cat("\\right] , \n")
+cat("$$\n")
+```
 
+The solution vector for the estimate of the fixed effect $\mu$ and the genomic breeding values for all animals are given by
 
-
-
+```{r}
+cat("$$\n")
+cat("\\left[\\begin{array}{c} \\hat{\\beta} \\\\ \\hat{u} \\end{array}\\right] = \\left[\n")
+cat(paste0(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = mat_sol, pnDigits = 3), collapse = "\n"), "\n")
+cat("\\right] , \n")
+cat("$$\n")
+```
 
