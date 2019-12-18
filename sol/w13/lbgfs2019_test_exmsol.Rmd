@@ -10,7 +10,7 @@ documentclass: article
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-knitr::knit_hooks$set(conv.odg = rmddochelper::odg.graphics.conv.hook)
+knitr::knit_hooks$set(hook_convert_odg = rmdhelp::hook_convert_odg)
 ```
 
 ```{r TaskCounts, echo=FALSE}
